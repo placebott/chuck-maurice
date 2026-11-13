@@ -1,0 +1,22 @@
+{
+  "name": "chuck-maurice",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "chuckmaurice.com — mini-jeux d'arcade absurdes. Mission 1 : Opération Cornichon.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "assets": "python3 scripts/build_assets.py"
+  },
+  "dependencies": {
+    "@fontsource/press-start-2p": "^5.2.5",
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "vite": "^7.0.0"
+  },
+  "engines": { "node": ">=20" }
+}

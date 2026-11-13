@@ -1,0 +1,139 @@
+{
+ "kitchen": {
+  "w": 480,
+  "h": 270
+ },
+ "table": {
+  "w": 480,
+  "h": 78,
+  "y": 192
+ },
+ "chuck_front": {
+  "w": 116,
+  "h": 176
+ },
+ "chuck_three_quarter": {
+  "w": 101,
+  "h": 176
+ },
+ "chuck_side": {
+  "w": 65,
+  "h": 176
+ },
+ "chuck_back": {
+  "w": 113,
+  "h": 178
+ },
+ "chuck_cool": {
+  "w": 87,
+  "h": 176
+ },
+ "chuck_squat": {
+  "w": 121,
+  "h": 162
+ },
+ "chuck_punch": {
+  "w": 152,
+  "h": 166
+ },
+ "chuck_victory": {
+  "w": 108,
+  "h": 179
+ },
+ "chuck_despair": {
+  "w": 112,
+  "h": 137
+ },
+ "chuck_rage": {
+  "w": 125,
+  "h": 168
+ },
+ "chuck_twist": {
+  "w": 128,
+  "h": 176
+ },
+ "jar_closed": {
+  "w": 60,
+  "h": 89
+ },
+ "jar_open_body": {
+  "w": 60,
+  "h": 95
+ },
+ "open_part_00": {
+  "w": 54,
+  "h": 31
+ },
+ "open_part_01": {
+  "w": 22,
+  "h": 22
+ },
+ "open_part_02": {
+  "w": 7,
+  "h": 8
+ },
+ "open_part_03": {
+  "w": 8,
+  "h": 7
+ },
+ "boom_part_00": {
+  "w": 84,
+  "h": 86
+ },
+ "boom_part_01": {
+  "w": 49,
+  "h": 33
+ },
+ "boom_part_02": {
+  "w": 21,
+  "h": 23
+ },
+ "boom_part_03": {
+  "w": 21,
+  "h": 16
+ },
+ "boom_part_04": {
+  "w": 25,
+  "h": 22
+ },
+ "boom_part_05": {
+  "w": 18,
+  "h": 13
+ },
+ "boom_part_06": {
+  "w": 16,
+  "h": 15
+ },
+ "boom_part_07": {
+  "w": 16,
+  "h": 16
+ },
+ "boom_part_08": {
+  "w": 15,
+  "h": 15
+ },
+ "boom_part_09": {
+  "w": 12,
+  "h": 8
+ },
+ "boom_part_10": {
+  "w": 9,
+  "h": 11
+ },
+ "boom_part_11": {
+  "w": 9,
+  "h": 6
+ },
+ "boom_part_12": {
+  "w": 8,
+  "h": 6
+ },
+ "boom_part_13": {
+  "w": 10,
+  "h": 6
+ },
+ "jar_explosion": {
+  "w": 121,
+  "h": 116
+ }
+}
