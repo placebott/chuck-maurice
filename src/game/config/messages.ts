@@ -1,0 +1,69 @@
+import type { Outcome } from './balance';
+
+export const HEADLINES: Record<Outcome, string[]> = {
+  perfect: ['OUVERTURE PARFAITE', 'MISSION ACCOMPLIE', 'POP !'],
+  chaos: ['VICTOIRE CHAOTIQUE', 'OUVERT. PLUS OU MOINS.', 'ÇA COMPTE QUAND MÊME'],
+  explosion: ['BOUM.', 'PUISSANCE EXCESSIVE', 'CUISINE : 0'],
+  timeout: ['TEMPS ÉCOULÉ', 'LE BOCAL A GAGNÉ', 'ÉCHEC DE LA MISSION'],
+};
+
+export const MESSAGES: Record<Outcome, string[]> = {
+  perfect: [
+    'LA FRANCE EST SAUVÉE !',
+    "L'APÉRO EST MAINTENU. LE PEUPLE RESPIRE.",
+    "LE PRÉSIDENT A ÉTÉ PRÉVENU. IL A PLEURÉ.",
+    'UN COUVERCLE. UN HOMME. UN DESTIN.',
+    "LES CORNICHONS SE RENDENT SANS CONDITION.",
+    "L'ONU PARLE D'UN « GESTE D'UNE RARE ÉLÉGANCE ».",
+    'UNE STATUE EST DÉJÀ EN COMMANDE.',
+  ],
+  chaos: [
+    'LE BOCAL EST OUVERT. LE PLAFOND AUSSI.',
+    "MISSION RÉUSSIE. L'ASSURANCE A RACCROCHÉ.",
+    'ON A RETROUVÉ UN CORNICHON À STRASBOURG.',
+    'LA FRANCE EST SAUVÉE. LA NAPPE, NON.',
+    'LE COUVERCLE A QUITTÉ LE TERRITOIRE NATIONAL.',
+    'CHUCK MAURICE PARLE DE « DOMMAGES ACCEPTABLES ».',
+    'ÇA SENT LE VINAIGRE JUSQU’À LA MAIRIE.',
+  ],
+  explosion: [
+    '18 DÉPARTEMENTS ONT ÉTÉ ÉVACUÉS.',
+    'CHUCK MAURICE REFUSE TOUT COMMENTAIRE.',
+    "LA CUISINE N'EXISTE PLUS. LE BOCAL NON PLUS. MATCH NUL ?",
+    'LE VINAIGRE EST DÉTECTABLE DEPUIS LA STATION MIR.',
+    "LE MINISTÈRE DE L'INTÉRIEUR DEMANDE « POURQUOI ? ».",
+    'LES SISMOGRAPHES SUISSES ONT PORTÉ PLAINTE.',
+    'LA BELLE-MÈRE DE CHUCK AVAIT PRÉVENU TOUT LE MONDE.',
+  ],
+  timeout: [
+    'LE BOCAL A GAGNÉ. LA NATION EST SOUS LE CHOC.',
+    'LE BOCAL RESTE INVAINCU. IL DEMANDE UNE REVANCHE. NON, ATTENDEZ.',
+    'CHUCK MAURICE ACCUSE « UN COUVERCLE DOPÉ ».',
+    "L'APÉRO EST ANNULÉ. DEUIL NATIONAL DE TROIS JOURS.",
+    "LE BOCAL VIENT D'ÊTRE DÉCORÉ PAR L'ARMÉE ADVERSE.",
+    'ON SERVIRA DES CHIPS. LA HONTE.',
+    'CHUCK MAURICE REFUSE TOUT COMMENTAIRE.',
+  ],
+};
+
+/** Répliques de Chuck selon son niveau d'énervement. */
+export const CHUCK_BARKS = {
+  warmup: ['HMPF.', 'FACILE.', 'RECULEZ.', 'OBSERVEZ.'],
+  effort: ['GNNNN…', 'HNNNGH !', 'ALLEZ…', 'TU VAS CÉDER.'],
+  angry: ['SACREBLEU !', "NOM D'UN CORNICHON !", 'RAAAAH !', 'POUR LA FRANCE !'],
+  rage: ['RAAAAAAAH !!', 'TROP… DE… PUISSANCE…', 'JE VOIS ROUGE !', 'AAAAAAH !!'],
+  resist: ['CLONK.', 'QUOI ?!', 'IMPOSSIBLE.', 'IL EST SOUDÉ ?!', 'MAIS… ?!'],
+};
+
+export const JAR_BARKS = ['…', 'TROP FACILE.', 'SUIVANT.', 'HIN HIN HIN.', 'PETIT BRAS.'];
+
+export const INTRO_LINES = [
+  'FRANCE, 1993 — 19H02',
+  'MENACE : UN BOCAL. HERMÉTIQUE.',
+  "ENJEU : L'APÉRO DE LA NATION.",
+  "UN SEUL HOMME PEUT L'OUVRIR.",
+];
+
+export function pick<T>(list: readonly T[]): T {
+  return list[Math.floor(Math.random() * list.length)];
+}

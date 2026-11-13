@@ -6,9 +6,9 @@ Premier mini-jeu du projet **Chuck Maurice**, un univers de jeux d’arcade absu
 
 ## État du projet
 
-Ce dépôt contient pour le moment la documentation et les dossiers de préparation du projet **Phaser / TypeScript / Vite**. Le moteur, les dépendances et le jeu jouable ne sont pas encore installés : il n’existe pas encore de commande de lancement.
+Première version jouable d’**Opération Cornichon** : écran titre, briefing, partie de 20 secondes, quatre dénouements, score, statistiques, médailles et son. Voir « Stack et lancement » pour les commandes.
 
-Lors de l’initialisation, le dépôt GitHub était vide. Les illustrations créées et validées séparément doivent encore y être téléversées. Les noms de fichiers indiqués ci-dessous sont des exemples, pas un inventaire d’images présentes.
+Reste à faire avant publication : essais sur de vrais téléphones, réglage de la difficulté par des joueurs, validation du son à l’oreille, crédits.
 
 ## Expérience visée
 
@@ -66,8 +66,12 @@ chuck-maurice/
 │       ├── references/     # Maquettes et planches de référence
 │       ├── audio/          # Sons ou musiques exportés si nécessaires
 │       ├── fonts/          # Polices avec droits d’utilisation adaptés
-│       └── ui/             # Éléments graphiques de l’interface
+│       ├── ui/             # Éléments graphiques de l’interface
+│       └── sprites/        # Sprites du jeu, générés depuis les originaux (ne pas éditer à la main)
+├── scripts/
+│   └── build_assets.py     # Détourage, découpe et réduction des originaux vers sprites/
 ├── src/
+│   ├── main.ts             # Contrôleur : enchaînement des écrans et entrées
 │   ├── game/
 │   │   ├── scenes/         # Chargement, titre, partie et résultats
 │   │   ├── entities/       # Chuck, bocal et objets de jeu
@@ -99,20 +103,50 @@ Dans GitHub, ouvrir le dossier approprié, puis **Add file → Upload files** et
 
 Avant intégration, vérifier les dimensions, la transparence, l’échelle, l’alignement des poses et les éventuelles grilles de sprites. Si un découpage ou redimensionnement est nécessaire, conserver l’original et produire une copie distincte. Utiliser les graphismes fournis ; signaler les éléments manquants avant d’en créer de nouveaux.
 
-## Stack et lancement à venir
+## Stack et lancement
 
-Stack prévue : **TypeScript, Phaser et Vite**, application web statique. Les versions seront fixées lors de l’installation et enregistrées dans un fichier de verrouillage.
+**TypeScript, Phaser 3 et Vite**, application web statique. Versions fixées dans `package-lock.json`. Prérequis : Node.js 20 ou plus.
 
-L’initialisation actuelle ne crée pas encore `package.json`, `index.html`, les configurations TypeScript/Vite ni le point d’entrée. **Les commandes npm ne sont donc pas encore utilisables dans ce dépôt.**
+```bash
+npm install
+npm run dev      # développement, http://localhost:5173
+npm run build    # vérification TypeScript + build de production dans dist/
+npm run preview  # sert dist/ en local
+```
 
-La prochaine étape de développement devra :
-1. Inspecter les fichiers présents, notamment les illustrations ajoutées depuis cette initialisation.
-2. Installer et configurer la stack, ajouter les points d’entrée et les scripts de développement/construction.
-3. Charger les assets et assembler la première scène jouable.
-4. Implémenter la jauge, le chronomètre et les quatre résultats.
-5. Ajouter les animations, le son, les menus et la progression locale.
-6. Vérifier les limites 70/85/95 %, la fin du temps, le redémarrage, le stockage indisponible et les commandes clavier/tactiles.
-7. Documenter les commandes réellement disponibles et vérifier la construction avant publication.
+### Commandes de jeu
+
+| Action | Clavier | Souris / tactile |
+| --- | --- | --- |
+| Faire monter la puissance | Espace, ↑ ou F (marteler) | bouton FORCER, ou toucher la scène |
+| Tenter l’ouverture | Entrée ou O | bouton OUVRIR CE FOUTU BOCAL |
+| Couper le son | M | bouton SON |
+| Retour au menu | Échap | bouton MENU |
+
+Toute la difficulté se règle dans `src/game/config/balance.ts`.
+
+### Sprites
+
+Les originaux de `public/assets/` ne sont jamais modifiés. `scripts/build_assets.py` en tire des copies prêtes pour le jeu dans `public/assets/sprites/` : fonds retirés, planches découpées en poses, réduction à la résolution 480 × 270. Après modification d’un original :
+
+```bash
+pip install pillow numpy scipy
+npm run assets
+```
+
+Constats sur les originaux :
+
+- `chuck_idle.png` (fond gris), `jar_open.png`, `jar_explosion.png` et `gameplay_mockup.png` (faux damier incrusté) n’ont pas de vraie transparence ; le script retire leur fond.
+- `gameplay_mockup.png` n’est pas une maquette d’écran mais une pose de Chuck en torsion ; elle sert de pose d’effort principale.
+- `victory_mockup.png` reste une référence de composition et n’est pas chargée par le jeu.
+
+### Déploiement Cloudflare Pages
+
+- Commande de build : `npm run build`
+- Dossier de sortie : `dist`
+- Variable d’environnement : `NODE_VERSION=20` (ou plus)
+
+Le build retire de `dist/` les originaux et les maquettes (environ 15 Mo) : seuls les sprites sont déployés.
 
 ## Périmètre
 

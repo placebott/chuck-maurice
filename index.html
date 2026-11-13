@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#120a14" />
+    <title>Chuck Maurice — Opération Cornichon</title>
+    <meta name="description" content="Chuck Maurice doit ouvrir un pot de cornichons. La France retient son souffle. Un mini-jeu d'arcade absurde, rejouable en 20 secondes." />
+    <meta property="og:title" content="Chuck Maurice — Opération Cornichon" />
+    <meta property="og:description" content="Un homme. Un bocal. Vingt secondes pour sauver la France." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="./assets/sprites/jar_closed.png" />
+  </head>
+  <body>
+    <div id="app" data-screen="loading">
+      <div class="stage" id="stage">
+        <div id="game" aria-hidden="true"></div>
+
+        <div class="overlay">
+          <div class="logo" aria-hidden="true">
+            <span class="logo-kicker">LE MINISTÈRE DU CONDIMENT PRÉSENTE</span>
+            <span class="logo-name">CHUCK MAURICE</span>
+            <span class="logo-mission">OPÉRATION CORNICHON</span>
+          </div>
+
+          <div class="loading" id="loading">CHARGEMENT…</div>
+
+          <div class="intro" id="intro" aria-live="polite"></div>
+          <div class="go" id="go" aria-hidden="true"></div>
+
+          <div class="timer" id="timer" aria-label="Temps restant"><span id="timer-value">20</span></div>
+          <div class="banner" id="banner" role="status"></div>
+          <div class="barks" id="barks" aria-hidden="true"></div>
+          <div class="scanlines" aria-hidden="true"></div>
+        </div>
+
+        <button class="mute" id="mute" type="button" aria-pressed="false" aria-label="Couper le son">SON</button>
+      </div>
+
+      <div class="deck">
+        <!-- Écran titre -->
+        <section class="panel panel-title" aria-label="Menu principal">
+          <h1 class="sr-only">Chuck Maurice — Opération Cornichon</h1>
+          <button class="btn btn-primary btn-blink" id="start" type="button">SAUVER LA FRANCE</button>
+          <p class="hint">20 SECONDES. UN BOCAL. AUCUNE EXCUSE.</p>
+          <dl class="stats" id="stats"></dl>
+          <div class="medals">
+            <h2>MÉDAILLES <span id="medal-count"></span></h2>
+            <ul id="medals"></ul>
+            <p class="medal-info" id="medal-info" aria-live="polite">&nbsp;</p>
+          </div>
+        </section>
+
+        <!-- Jeu -->
+        <section class="panel panel-play" aria-label="Commandes">
+          <div class="gauge-wrap">
+            <div class="gauge-head">
+              <span>PUISSANCE</span>
+              <span class="gauge-pct" id="gauge-pct">0%</span>
+            </div>
+            <div class="gauge" id="gauge" role="progressbar" aria-label="Puissance" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="zone zone-perfect"></div>
+              <div class="zone zone-chaos"></div>
+              <div class="zone zone-boom"></div>
+              <div class="gauge-fill" id="gauge-fill"></div>
+              <div class="gauge-needle" id="gauge-needle"></div>
+            </div>
+            <div class="gauge-labels" aria-hidden="true">
+              <span class="lbl-resist">ÇA RÉSISTE</span>
+              <span class="lbl-perfect">PARFAIT</span>
+              <span class="lbl-chaos">CHAOS</span>
+              <span class="lbl-boom">!</span>
+            </div>
+          </div>
+          <div class="controls">
+            <button class="btn btn-pump" id="pump" type="button">
+              FORCER
+              <small>ESPACE · MARTELER</small>
+            </button>
+            <button class="btn btn-open" id="open" type="button">
+              OUVRIR CE FOUTU BOCAL
+              <small>ENTRÉE</small>
+            </button>
+          </div>
+        </section>
+
+        <!-- Résultat -->
+        <section class="panel panel-result" aria-label="Résultat">
+          <p class="result-message" id="result-message" aria-live="assertive"></p>
+          <div class="result-score">
+            <span id="result-score"></span>
+            <span class="record" id="result-record" hidden>NOUVEAU RECORD !</span>
+          </div>
+          <p class="result-detail" id="result-detail"></p>
+          <ul class="new-medals" id="new-medals"></ul>
+          <div class="result-actions">
+            <button class="btn btn-primary" id="retry" type="button">PRENDRE SA REVANCHE</button>
+            <button class="btn btn-ghost" id="share" type="button">PARTAGER</button>
+            <button class="btn btn-ghost" id="menu" type="button">MENU</button>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

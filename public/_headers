@@ -1,0 +1,3 @@
+# Les sprites ne sont pas versionnes par hash : cache court.
+/assets/sprites/*
+  Cache-Control: public, max-age=3600
