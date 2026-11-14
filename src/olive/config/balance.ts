@@ -15,7 +15,7 @@ export const STORM = {
   /** Accélération de la pesanteur (px/s²). */
   gravity: 300,
   /** Vitesse initiale de l'olive (px/s) : la cuillère tire toujours avec la même force. */
-  speed: 272,
+  speed: 258,
   /**
    * Angle de tir autorisé (°, 0 = horizontal vers la droite) : c'est le seul réglage du joueur.
    * La cuillère ne descend pas sous 40° : le tir est forcément en cloche.
@@ -42,6 +42,8 @@ export const STORM = {
   restTime: 0.22,
   /** Durée de vol maximale avant de déclarer l'olive perdue (s). */
   maxFlight: 4.5,
+  /** Après son premier rebond, délai laissé à l'olive pour entrer dans le verre (s). */
+  bounceGrace: 1.5,
 
   /** Restitution (énergie rendue au rebond) et adhérence (part de vitesse tangentielle perdue). */
   materials: {
@@ -58,15 +60,15 @@ export const STORM = {
    * Elle est fixée au début de la mission et ne bouge plus ensuite. Le ventilateur souffle dans le dos
    * de Chuck (positif = vers la droite) : il faut lober plus haut, et le plafond n'est pas loin.
    */
-  winds: [14, 18, 22],
+  winds: [15, 22, 30],
 
   // ------------------------------------------------------------ phases
   /** Durée de trajectoire affichée pendant la visée (s), par phase : l'amorce du tir, pas la suite. */
-  preview: [0.5, 0.4, 0.4],
+  preview: [0.8, 0.62, 0.62],
   /** Intervalle entre deux points de l'amorce (s) : assez serré pour dessiner une courbe. */
   previewEvery: 0.03,
   /** Phase 3 : le boxer bondit toutes les `period` s ; `warn` s d'avertissement avant chaque saut. */
-  boxer: { first: 1.6, period: 3.3, leap: 0.95, warn: 0.75, radius: 20 },
+  boxer: { first: 1.6, period: 3.6, leap: 0.95, warn: 0.9, radius: 18 },
 
   // ------------------------------------------------------------ score
   points: { olive: 500, direct: 300, ricochet: 200, center: 500, streak: 1000 },

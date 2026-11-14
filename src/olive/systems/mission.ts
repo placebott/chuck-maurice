@@ -92,6 +92,8 @@ export class Mission {
   private boxerWarned = -1;
   private boxerLeapt = -1;
   private hadEntry = false;
+  /** Temps de vol au premier rebond (-1 tant qu'il n'a pas eu lieu). */
+  private bouncedAt = -1;
 
   constructor(readonly layout: Layout = randomLayout()) {
     this.segments = buildSegments(layout.glassX);
@@ -147,6 +149,7 @@ export class Mission {
     this.current = { angle: a };
     this.shotsLeft--;
     this.hadEntry = false;
+    this.bouncedAt = -1;
     return true;
   }
 
@@ -181,7 +184,10 @@ export class Mission {
     const o = this.olive;
     if (o) {
       const discs = [...this.settled];
-      for (const contact of stepOlive(o, this.segments, discs, this.wind, dt, this.layout.glassX)) events.push({ type: 'bounce', contact });
+      for (const contact of stepOlive(o, this.segments, discs, this.wind, dt, this.layout.glassX)) {
+        events.push({ type: 'bounce', contact });
+        if (this.bouncedAt < 0) this.bouncedAt = o.t;
+      }
       if (o.entry && !this.hadEntry) events.push({ type: 'enter' });
       this.hadEntry = o.entry !== null;
       const fate = this.fateOf(o);
@@ -203,6 +209,8 @@ export class Mission {
     if (inWindow(o) && o.touched.has('pan')) return 'window';
     if (o.still >= STORM.restTime) return insideGlass(o.x, o.y, this.layout.glassX) ? 'scored' : 'lost';
     if (o.t > STORM.maxFlight || o.y > FLOOR_Y + 60 || o.x > WORLD_W + 12) return 'lost';
+    // après un premier rebond, on lui laisse le temps d'un ricochet vers le verre, pas plus
+    if (this.bouncedAt >= 0 && !o.entry && o.t - this.bouncedAt > STORM.bounceGrace) return 'lost';
     return null;
   }
 

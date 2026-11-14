@@ -293,9 +293,9 @@ test('la trajectoire prévisionnelle utilise le même modèle que le tir, vent c
     const first = pts[0];
     const last = pts[pts.length - 1];
     const share = (last.x - first.x) / (GLASS.x - first.x);
-    assert.ok(share > 0.15 && share < 0.4, `amorce : ${Math.round(share * 100)} % du chemin`);
+    assert.ok(share > 0.25 && share < 0.6, `amorce : ${Math.round(share * 100)} % du chemin`);
     assert.ok(last.y < first.y - 30, 'elle montre bien le départ en cloche');
-    assert.ok(pts[pts.length - 2].y > last.y, 'et s’arrête avant le sommet : la retombée reste à estimer');
+    assert.ok(last.y < FLOOR_Y - GLASS.rim - 60, 'et s’arrête bien au-dessus du verre : la retombée reste à estimer');
   }
 });
 
@@ -468,14 +468,14 @@ test('un tir avec deux rebonds avant le verre existe réellement', () => {
 test('équilibrage : une seule fenêtre d’angle, en cloche, qui se décale et se resserre avec le vent', () => {
   const calm = mainWindow(false);
   const rows = [`  sans vent : ${calm.lo}°–${calm.hi}° (${calm.width}°)`];
-  assert.ok(calm.width >= 6 && calm.width <= 9, `phase 1 : ${calm.width}°`);
+  assert.ok(calm.width >= 9 && calm.width <= 12, `phase 1 : ${calm.width}°`);
   assert.ok(calm.lo >= 50, `le tir gagnant doit être un vrai lob : ${calm.lo}°`);
   assert.ok(calm.lo > STORM.angleMin + 5, 'la fenêtre ne doit pas buter sur l’angle minimal');
   let previous = calm;
   for (const wind of STORM.winds) {
     const w = mainWindow(true, wind);
     rows.push(`  vent ${wind} : ${w.lo}°–${w.hi}° (${w.width}°)`);
-    assert.ok(w.width >= 3.5 && w.width <= 7, `vent ${wind} : fenêtre de ${w.width}°`);
+    assert.ok(w.width >= 6.5 && w.width <= 9.5, `vent ${wind} : fenêtre de ${w.width}°`);
     assert.ok(w.width < previous.width, `vent ${wind} : la fenêtre doit se resserrer`);
     assert.ok(w.lo > previous.lo, `vent ${wind} : il faut lober plus haut`);
     previous = w;
@@ -488,7 +488,8 @@ test('équilibrage : une seule fenêtre d’angle, en cloche, qui se décale et 
   assert.ok(strongest.lo - calm.lo >= 3, 'le bas de la fenêtre de phase 1 ne passe plus avec le vent le plus fort');
   // trop lober, c'est le plafond
   const over = sweep(true, STORM.winds[STORM.winds.length - 1]).filter((r) => r.angle > strongest.hi + 1);
-  assert.ok(over.length > 0 && over.every((r) => r.shot.fate === 'space'), 'au-dessus de la fenêtre : incident spatial');
+  assert.ok(over.length > 0 && over.every((r) => r.shot.fate !== 'scored'), 'au-dessus de la fenêtre, plus rien ne rentre');
+  assert.ok(over.some((r) => r.shot.fate === 'space'), 'et les tirs les plus en cloche partent au plafond');
   console.log(rows.join('\n'));
 });
 
