@@ -10,7 +10,8 @@ export const SPOT = {
   /** Sa chaise, pour la sieste. */
   chair: { x: 334, feet: 196 },
   glass: { x: 384, y: 148 },
-  gnome: { x: 441, feet: 239 },
+  /** Le boxer, dans le jardin de Chuck, entre son maître et la clôture. */
+  boxer: { x: 226, feet: 264 },
   fuego: { x: 78, base: 230 },
   barbecue: { x: 100, base: 232 },
   stereo: { x: 72, base: 237 },

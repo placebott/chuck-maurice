@@ -268,7 +268,7 @@ Un « 1, 2, 3, soleil » à une seule commande : faire monter la colère de Jean
 
 ### Fins
 
-- **Victoire — « Le short de la discorde »** : cinq plans (l’implosion, l’assaut de la clôture, le short se déchire, le silence de Chuck, le triomphe national), environ 10 secondes. Sans aucun flagrant délit, un court épilogue s’ajoute (« Tu veux que je mette moins fort ? »).
+- **Victoire — « Le short de la discorde »** : cinq plans (l’implosion, l’assaut de la clôture, le short se déchire, le silence de Chuck, le triomphe national) et le gag du boxer avant la fanfare, environ 14 secondes. Sans aucun flagrant délit, un court épilogue s’ajoute (« Tu veux que je mette moins fort ? »).
 - **Trois flagrants délits — « Le dossier Jean-Mi »**.
 - **Chronomètre écoulé — « La sieste de Jean-Mi »** : Jean-Mi a gagné le droit de boire son pastis au calme (illustration pleine page, en lent travelling), jusqu’à ce que Chuck retourne à sa Fuego.
 
@@ -299,6 +299,8 @@ Les 18 fichiers d’origine de `public/assets/bon-voisinage/` portent les noms c
 - `jeanmi_short_torn.png` contient Jean-Mi **et** un panneau de clôture vu de face. Il n’est jamais posé sur la clôture en perspective du décor : les plans où il apparaît utilisent des cadrages du décor sans cette clôture (`cine_*`), et la clôture y est prolongée par le même panneau, vidé de Jean-Mi (`fence_*`). Le bas de sa jambe pendante est détaché (`leg_*`) pour mouliner autour du genou ; le grillage est reconstitué derrière par décalage d’un nombre entier de mailles.
 - `jeanmi_back.png` est découpé en tronc + deux jambes articulées à la hanche pour l’escalade.
 - `sound_waves.png` a un faux damier incrusté : il est détouré et ses quatre arcs sont séparés. Les autres originaux ont un halo semi-transparent, coupé au seuil.
+- Le **boxer de Chuck** (`characters/boxer_calm.png`, `characters/boxer_dancing.png`) remplace les nains de jardin : tranquille aux actes 1 et 2, il passe en fondu à sa pose de danse dès 80 % de colère, puis danse par transformations continues (balancement, rebonds, rotation calés sur les basses, amplitude selon la colère). Les deux poses partagent la même échelle. Dans la cinématique de victoire il danse derrière chaque plan, continue seul dans le silence après « Bah quoi ? », s’arrête, regarde Chuck, puis repart avec la fanfare. `objects/garden_gnome*.png` restent dans le dépôt mais ne sont plus utilisés.
+- `boxer_dancing.png` a un faux damier clair au lieu d’une vraie transparence, et des traits de mouvement dessinés autour du chien : le script détoure l’image et ne garde que le chien.
 - `victory_reference.png` n’est pas chargée par le jeu : elle a guidé la composition des plans 4 et 5.
 - Le verre de pastis vient de la mission 003 (`olive-storm/objects/pastis_glass.png`).
 - Pas d’illustration pour le dossier de Jean-Mi, sa feuille, la table vue de près, le « ! » ni la feuille morte : petits éléments dessinés en code. Jean-Mi n’a pas de pose souriante debout : son sourire satisfait du « dossier » est joué avec `jeanmi_watch.png`.

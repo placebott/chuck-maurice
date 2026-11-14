@@ -48,7 +48,7 @@ export const ONOMA: Record<Act, string[]> = {
 export const JEANMI_GRUMBLE: Record<Act, string[]> = {
   1: ['Hmm ?', "C'est quoi ce bruit ?", 'Mon pastis tremble…'],
   2: ['KOF ! KOF !', 'Ça sent le brûlé…', 'KOF !'],
-  3: ['MES VITRES !', 'MOINS FORT !', 'MON NAIN !'],
+  3: ['MES VITRES !', 'MOINS FORT !', 'MÊME LE CHIEN DANSE !'],
 };
 /** Chuck, entre deux actes. */
 export const CHUCK_NEXT: Record<2 | 3, string> = {

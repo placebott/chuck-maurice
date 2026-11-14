@@ -506,6 +506,12 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+// Safari (iPhone, iPad, Mac) ne débloque l'audio que sur un geste « terminé » : toucher relâché, clic
+// ou touche. Le jeu démarre sur l'appui, donc on redébloque ici, à chaque geste, sans rien jouer.
+for (const type of ['pointerup', 'touchend', 'click', 'keydown'] as const) {
+  window.addEventListener(type, () => sfx.unlock(), { capture: true, passive: true });
+}
+
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) stopEngine();
