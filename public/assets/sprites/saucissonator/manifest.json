@@ -1,0 +1,103 @@
+{
+ "chuck_trophy": {
+  "w": 112,
+  "h": 179
+ },
+ "chuck_cutting": {
+  "w": 128,
+  "h": 160
+ },
+ "boxer_idle": {
+  "w": 98,
+  "h": 104
+ },
+ "boxer_steal": {
+  "w": 236,
+  "h": 150
+ },
+ "boxer_eat": {
+  "w": 109,
+  "h": 150
+ },
+ "board": {
+  "w": 320,
+  "h": 110
+ },
+ "board_half_l": {
+  "w": 160,
+  "h": 128
+ },
+ "board_half_r": {
+  "w": 165,
+  "h": 124
+ },
+ "splinter_00": {
+  "w": 43,
+  "h": 24
+ },
+ "splinter_01": {
+  "w": 27,
+  "h": 29
+ },
+ "splinter_02": {
+  "w": 28,
+  "h": 23
+ },
+ "splinter_03": {
+  "w": 29,
+  "h": 17
+ },
+ "splinter_04": {
+  "w": 14,
+  "h": 13
+ },
+ "splinter_05": {
+  "w": 12,
+  "h": 10
+ },
+ "splinter_06": {
+  "w": 11,
+  "h": 9
+ },
+ "splinter_07": {
+  "w": 8,
+  "h": 10
+ },
+ "splinters": {
+  "count": 8
+ },
+ "knife": {
+  "w": 61,
+  "h": 190
+ },
+ "saucisson": {
+  "w": 298,
+  "h": 63,
+  "body": 250
+ },
+ "saucisson_face": {
+  "w": 46,
+  "h": 63,
+  "rx": 23.0
+ },
+ "slice_thin": {
+  "w": 42,
+  "h": 14
+ },
+ "slice_ok": {
+  "w": 44,
+  "h": 21
+ },
+ "slice_thick": {
+  "w": 48,
+  "h": 39
+ },
+ "slice_giant": {
+  "w": 210,
+  "h": 167
+ },
+ "platter": {
+  "w": 190,
+  "h": 91
+ }
+}

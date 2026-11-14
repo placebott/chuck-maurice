@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#120a14" />
+    <title>Chuck Maurice — Saucissonator 3000</title>
+    <meta name="description" content="19h44. Douze rondelles de saucisson à découper avant l'arrivée des invités, 25 secondes et un couteau manifestement trop grand. Mission 002 de Chuck Maurice." />
+    <meta property="og:title" content="Chuck Maurice — Saucissonator 3000" />
+    <meta property="og:description" content="Opération Charcuterie : douze rondelles, 25 secondes, un couteau beaucoup trop grand." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="./assets/sprites/saucissonator/slice_ok.png" />
+  </head>
+  <body>
+    <div id="app" class="game-saucisson" data-screen="loading">
+      <div class="stage" id="stage">
+        <div id="game" aria-hidden="true"></div>
+
+        <div class="overlay">
+          <div class="logo" aria-hidden="true">
+            <span class="logo-kicker">MISSION 002 — OPÉRATION CHARCUTERIE</span>
+            <span class="logo-name">CHUCK MAURICE</span>
+            <span class="logo-mission">SAUCISSONATOR 3000</span>
+          </div>
+
+          <div class="loading" id="loading">CHARGEMENT…</div>
+
+          <div class="intro" id="intro" aria-live="polite"></div>
+          <div class="go" id="go" aria-hidden="true"></div>
+
+          <div class="hud hud-left" id="hud-slices" aria-label="Rondelles découpées"><b id="slice-count">00</b>/12</div>
+          <div class="timer" id="timer" aria-label="Temps restant"><span id="timer-value">25</span></div>
+          <div class="hud hud-right" aria-label="Score"><b id="score">000000</b></div>
+
+          <div class="combo" id="combo" role="status"></div>
+          <div class="banner" id="banner" role="status"></div>
+          <div class="barks" id="barks" aria-hidden="true"></div>
+          <div class="scanlines" aria-hidden="true"></div>
+        </div>
+
+        <button class="mute" id="mute" type="button" aria-pressed="false" aria-label="Couper le son">SON</button>
+      </div>
+
+      <div class="deck">
+        <!-- Écran de lancement -->
+        <section class="panel panel-title" aria-label="Menu de la mission">
+          <h1 class="sr-only">Chuck Maurice — Saucissonator 3000 : Opération Charcuterie</h1>
+          <button class="btn btn-primary btn-blink" id="start" type="button">TRANCHER POUR LA FRANCE</button>
+          <p class="hint">25 SECONDES. 12 RONDELLES. UN COUTEAU BEAUCOUP TROP GRAND.</p>
+          <nav class="missions" aria-label="Missions">
+            <a class="mission" href="./index.html">
+              <small>MISSION 001</small>
+              OPÉRATION CORNICHON
+            </a>
+            <a class="mission is-current" href="./saucissonator.html" aria-current="page">
+              <small>MISSION 002</small>
+              SAUCISSONATOR 3000
+            </a>
+          </nav>
+          <dl class="stats" id="stats"></dl>
+          <div class="medals">
+            <h2>MÉDAILLES <span id="medal-count"></span></h2>
+            <ul id="medals"></ul>
+            <p class="medal-info" id="medal-info" aria-live="polite">&nbsp;</p>
+          </div>
+        </section>
+
+        <!-- Jeu -->
+        <section class="panel panel-play" aria-label="Commandes">
+          <div class="gauge-wrap">
+            <div class="gauge-head">
+              <span>ÉPAISSEUR</span>
+              <ol class="pips" id="pips" aria-hidden="true"></ol>
+              <span class="gauge-pct" id="gauge-mm">0,0 MM</span>
+            </div>
+            <div class="gauge gauge-cut" id="gauge" role="progressbar" aria-label="Épaisseur de la rondelle" aria-valuemin="0" aria-valuemax="18" aria-valuenow="0">
+              <div class="zone cz-good" id="cz-good"></div>
+              <div class="zone cz-perfect" id="cz-perfect"></div>
+              <div class="zone cz-thick" id="cz-thick"></div>
+              <div class="gauge-fill" id="gauge-fill"></div>
+              <div class="gauge-needle" id="gauge-needle"></div>
+            </div>
+            <div class="gauge-labels cut-labels" aria-hidden="true">
+              <span class="cl-thin" id="cl-thin">TROP FIN</span>
+              <span class="cl-perfect" id="cl-perfect">PARFAIT</span>
+              <span class="cl-thick" id="cl-thick">TROP ÉPAIS</span>
+            </div>
+          </div>
+          <div class="controls controls-cut">
+            <button class="btn btn-pump btn-cut" id="cut" type="button">
+              TRANCHER
+              <small>ESPACE · ↓ · ENTRÉE</small>
+            </button>
+          </div>
+        </section>
+
+        <!-- Résultat -->
+        <section class="panel panel-result" aria-label="Résultat">
+          <p class="result-message" id="result-message" aria-live="assertive"></p>
+          <p class="result-sub" id="result-sub"></p>
+          <div class="result-score">
+            <span id="result-score"></span>
+            <span class="record" id="result-record" hidden>NOUVEAU RECORD !</span>
+          </div>
+          <p class="result-detail" id="result-detail"></p>
+          <ul class="new-medals" id="new-medals"></ul>
+          <div class="result-actions">
+            <button class="btn btn-primary" id="retry" type="button">REPARTIR AU COMBAT</button>
+            <button class="btn btn-ghost" id="share" type="button">PARTAGER</button>
+            <button class="btn btn-ghost" id="menu" type="button">MENU</button>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="/src/saucissonator/main.ts"></script>
+  </body>
+</html>

@@ -41,7 +41,7 @@ export class Sfx {
     if (this.ctx.state === 'suspended') void this.ctx.resume();
   }
 
-  private tone(freq: number, dur: number, type: Wave, vol: number, delay = 0, slideTo?: number): void {
+  protected tone(freq: number, dur: number, type: Wave, vol: number, delay = 0, slideTo?: number): void {
     if (!this.ctx || !this.master) return;
     const t = this.ctx.currentTime + delay;
     const osc = this.ctx.createOscillator();
@@ -57,7 +57,7 @@ export class Sfx {
     osc.stop(t + dur + 0.02);
   }
 
-  private noise(dur: number, vol: number, from: number, to: number, delay = 0): void {
+  protected noise(dur: number, vol: number, from: number, to: number, delay = 0): void {
     if (!this.ctx || !this.master) return;
     const t = this.ctx.currentTime + delay;
     const len = Math.ceil(this.ctx.sampleRate * dur);
