@@ -12,11 +12,14 @@
   },
   "dependencies": {
     "@fontsource/press-start-2p": "^5.2.5",
+    "@vercel/analytics": "^2.0.1",
     "phaser": "^3.90.0"
   },
   "devDependencies": {
     "typescript": "^5.8.0",
     "vite": "^7.0.0"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }
