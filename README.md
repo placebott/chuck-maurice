@@ -10,6 +10,8 @@ Première version jouable d’**Opération Cornichon** : écran titre, briefing,
 
 Reste à faire avant publication : essais sur de vrais téléphones, réglage de la difficulté par des joueurs, validation du son à l’oreille, crédits.
 
+**Mission 002 — Saucissonator 3000** est jouable sur sa propre page (`saucissonator.html`), accessible depuis l’accueil. Voir « Mission 002 » plus bas.
+
 ## Expérience visée
 
 Une partie courte de **20 secondes**, drôle, nerveuse et immédiatement rejouable, sur ordinateur et smartphone. Une tâche banale est mise en scène comme un combat de fin de jeu : introduction militaire, bocal menaçant, réactions exagérées de Chuck et résultats spectaculaires.
@@ -67,13 +69,15 @@ chuck-maurice/
 │       ├── audio/          # Sons ou musiques exportés si nécessaires
 │       ├── fonts/          # Polices avec droits d’utilisation adaptés
 │       ├── ui/             # Éléments graphiques de l’interface
-│       ├── sprites/        # Sprites du jeu, générés depuis les originaux (ne pas éditer à la main)
+│       ├── sprites/        # Sprites des jeux, générés depuis les originaux (ne pas éditer à la main) ; saucissonator/ pour la mission 002
 │       ├── shared/         # Originaux communs à plusieurs jeux : chuck/, kitchen/ (vides pour l’instant)
 │       └── saucissonator/  # Originaux du 2ᵉ jeu : objects/, characters/, references/
 ├── scripts/
 │   └── build_assets.py     # Détourage, découpe et réduction des originaux vers sprites/
+│   └── build_saucissonator_assets.py  # Idem pour Saucissonator 3000
 ├── src/
-│   ├── main.ts             # Contrôleur : enchaînement des écrans et entrées
+│   ├── main.ts             # Contrôleur d’Opération Cornichon : enchaînement des écrans et entrées
+│   ├── saucissonator/      # Mission 002 : contrôleur, scène, règles, médailles, sauvegarde
 │   ├── game/
 │   │   ├── scenes/         # Chargement, titre, partie et résultats
 │   │   ├── entities/       # Chuck, bocal et objets de jeu
@@ -85,7 +89,7 @@ chuck-maurice/
 │   ├── styles/             # Styles, adaptation des écrans, pixel art
 │   └── types/              # Types TypeScript partagés
 ├── docs/                   # Notes de conception et inventaire des assets
-└── tests/                  # Futurs tests des règles et de la progression
+└── tests/                  # Tests des règles et de l’équilibrage (Saucissonator)
 ```
 
 Les dossiers vides contiennent un fichier `.gitkeep` afin d’être conservés par Git. Ce fichier n’a aucun rôle dans le jeu et peut être retiré lorsqu’un dossier reçoit de vrais fichiers.
@@ -150,9 +154,49 @@ Constats sur les originaux :
 
 Le build retire de `dist/` les originaux et les maquettes (environ 15 Mo) : seuls les sprites sont déployés.
 
+## Mission 002 — Saucissonator 3000
+
+> 19h44. Le bocal est neutralisé. Mais l’apéritif est toujours en danger.
+
+Douze rondelles à découper en 25 secondes, avec un couteau manifestement trop grand. Page : `saucissonator.html`, code dans `src/saucissonator/`, sprites dans `public/assets/sprites/saucissonator/`.
+
+### Règles
+
+- Le saucisson avance vers une ligne de coupe fixe : il rampe, puis glisse de plus en plus vite. Ce qui dépasse de la ligne au moment de la coupe **est** la rondelle : son épaisseur est mesurée, affichée et jugée.
+- Parfaite (15 px ± 2) : 500 pts · correcte (± 5) : 250 · trop épaisse : 100 · trop fine : 50. Toutes les trois coupes parfaites d’affilée : +500 et « MODE CHARCUTERIE TACTIQUE ACTIVÉ ».
+- Victoire : douze rondelles avant la fin du chrono, dont au moins huit correctes ou parfaites. La mission s’arrête donc dès la cinquième coupe ratée.
+- Échecs : **le parpaing de porc** (les rondelles épaisses dominent), **vol aggravé de charcuterie** (les fines dominent, le boxer s’en charge), **la découpe nucléaire** (saucisson laissé filer jusqu’à la zone rouge, ou chrono écoulé sans erreur dominante).
+
+| Action | Clavier | Souris / tactile |
+| --- | --- | --- |
+| Trancher | Espace, ↓, Entrée, F ou X | bouton TRANCHER, clic, toucher ou geste vers le bas sur la scène |
+| Couper le son | M | bouton SON |
+| Retour au menu | Échap | bouton MENU |
+
+La coupe part dès le contact du doigt (début du geste), sans attendre la fin du mouvement : c’est ce qui garde la précision.
+
+Tous les réglages (durée, tolérances, vitesses, barème) sont dans `src/saucissonator/config/balance.ts`. Ils sont vérifiés par des joueurs simulés :
+
+```bash
+npm test                    # règles, médailles et équilibrage (node:test, sans dépendance ajoutée)
+npm run assets:saucissonator  # régénère les sprites depuis public/assets/saucissonator/
+```
+
+### Ce qui est partagé avec Opération Cornichon
+
+Décor (`kitchen`, `table`), poses de Chuck (`cool`, `rage`, `despair`), moteur sonore (`src/audio/sfx.ts`, étendu par `src/saucissonator/sfx.ts`), feuille de style et composants (`main.css` : boutons, jauge, panneaux, médailles, sélecteur de mission), réglage du son. La progression de chaque mission est stockée sous sa propre clé `localStorage`.
+
+### Illustrations : constats
+
+- Tous les originaux de `public/assets/saucissonator/` sont utilisés, sauf les trois maquettes de `references/`, qui servent de guide de composition.
+- `chuck_cutting.png` : Chuck a le poing levé mais **pas de couteau en main** ; le jeu y accroche `knife.png`. Une seule pose de découpe existe : ses réactions passent par l’animation du sprite et par les poses d’Opération Cornichon.
+- `boxer_stealing.png` porte déjà le saucisson : il n’existe pas de pose de course à vide, ni de boxer accoudé au plan de travail comme sur la maquette (le boxer debout est placé derrière le comptoir).
+- Aucune illustration pour le plancher défoncé, le parpaing de porc (la rondelle épaisse est agrandie), la cuisine tranchée en deux ni les drapeaux de la maquette de victoire : ces effets sont produits par Phaser.
+- La plupart des fichiers ont un faux damier blanc incrusté au lieu d’une vraie transparence ; `knife.png` a un halo sombre. Le script de sprites les détoure.
+
 ## Périmètre
 
-La priorité est une première version complète d’**Opération Cornichon**. Les autres missions, le site arcade complet, la publication sur chuckmaurice.com et l’idée d’un beat’em all sont des évolutions ultérieures, hors de cette initialisation.
+Deux missions sont jouables : **Opération Cornichon** et **Saucissonator 3000**. Les autres missions, le site arcade complet, la publication sur chuckmaurice.com et l’idée d’un beat’em all sont des évolutions ultérieures, hors de cette initialisation.
 
 ## Droits et crédits
 

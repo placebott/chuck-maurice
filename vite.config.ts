@@ -1,10 +1,11 @@
 import { rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vite';
 
 /**
  * public/assets/ contient aussi les illustrations originales (≈ 15 Mo) et les
- * maquettes de référence. Le jeu ne charge que public/assets/sprites/ :
+ * maquettes de référence. Les jeux ne chargent que public/assets/sprites/ :
  * on retire donc les originaux du build pour ne pas les déployer.
  */
 function dropSourceArt(): Plugin {
@@ -29,6 +30,11 @@ export default defineConfig({
     target: 'es2022',
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
+      // une page par mission : l'accueil (Opération Cornichon) et Saucissonator 3000
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        saucissonator: fileURLToPath(new URL('./saucissonator.html', import.meta.url)),
+      },
       output: { manualChunks: { phaser: ['phaser'] } },
     },
   },

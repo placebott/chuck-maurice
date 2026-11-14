@@ -1,0 +1,338 @@
+/*
+ * SAUCISSONATOR 3000 — compléments à main.css (identité, boutons, panneaux et jauge communs).
+ * Tout est limité à .game-saucisson : rien ici ne s'applique à Opération Cornichon.
+ */
+.game-saucisson {
+  --salami: #c8323c;
+}
+
+/* un geste vertical sur la scène tranche : il ne doit pas faire défiler la page */
+.game-saucisson .stage {
+  touch-action: none;
+}
+
+.game-saucisson .logo-mission {
+  width: 50cqw;
+}
+
+/* ------------------------------------------------------------ incrustations */
+.hud {
+  position: absolute;
+  top: 3cqw;
+  display: none;
+  font-size: 2.6cqw;
+  padding: 1.5cqw 1.5cqw 1.2cqw;
+  background: #120a14;
+  color: var(--cream);
+  border: 0.4cqw solid var(--cream);
+  box-shadow: 0.5cqw 0.5cqw 0 #000;
+}
+
+.hud b {
+  font-weight: normal;
+  color: var(--yellow);
+}
+
+.hud-left {
+  left: 3cqw;
+}
+
+.hud-left::before {
+  content: '';
+  display: inline-block;
+  width: 2.6cqw;
+  height: 2.6cqw;
+  margin-right: 1cqw;
+  vertical-align: -0.5cqw;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, #f6c6b0 0 14%, transparent 15%),
+    radial-gradient(circle at 68% 55%, #f6c6b0 0 12%, transparent 13%),
+    radial-gradient(circle at 42% 72%, #f6c6b0 0 10%, transparent 11%),
+    var(--salami);
+  box-shadow: 0 0 0 0.3cqw #f4e6dc;
+}
+
+.hud-right {
+  right: 3cqw;
+}
+
+.hud.is-bump {
+  animation: hud-bump 0.22s steps(4);
+}
+
+@keyframes hud-bump {
+  30% {
+    transform: scale(1.22);
+    border-color: var(--yellow);
+  }
+}
+
+#app[data-screen='play']:not([data-ended]) .hud {
+  display: block;
+}
+
+.game-saucisson[data-tactical] .stage {
+  box-shadow: 0 0 0 3px #000, 0 0 0 6px var(--yellow), 0 0 44px rgba(255, 210, 58, 0.55);
+}
+
+.game-saucisson[data-tactical] .hud-right {
+  border-color: var(--yellow);
+}
+
+.combo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 17%;
+  text-align: center;
+  font-size: 2.85cqw;
+  line-height: 1.35;
+  white-space: nowrap;
+  color: var(--yellow);
+  opacity: 0;
+  text-shadow: 0.4cqw 0.4cqw 0 var(--red), 0.8cqw 0.8cqw 0 #000, -0.2cqw -0.2cqw 0 #000;
+}
+
+.combo.is-on {
+  animation: combo-slam 1.15s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+
+@keyframes combo-slam {
+  0% {
+    opacity: 0;
+    transform: scale(3) rotate(-4deg);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1) rotate(-2deg);
+  }
+  22%,
+  38% {
+    color: #fff;
+  }
+  30%,
+  80% {
+    opacity: 1;
+    color: var(--yellow);
+    transform: scale(1) rotate(-2deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15) rotate(-2deg);
+  }
+}
+
+/* verdict de chaque coupe, au-dessus de la planche */
+.verdict {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 2.3cqw;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  color: #fff;
+  text-shadow: 0.3cqw 0.3cqw 0 #000, -0.2cqw -0.2cqw 0 #000, 0.3cqw -0.2cqw 0 #000, -0.2cqw 0.3cqw 0 #000;
+  animation: verdict 0.85s steps(9) both;
+}
+
+.verdict small {
+  display: block;
+  font-size: 1.5cqw;
+  color: var(--cream);
+}
+
+.verdict.is-perfect {
+  color: var(--yellow);
+  font-size: 2.9cqw;
+}
+
+.verdict.is-good {
+  color: #b9ff9a;
+}
+
+.verdict.is-thick,
+.verdict.is-thin,
+.verdict.is-disaster {
+  color: #ff8d86;
+}
+
+.verdict.is-bonus {
+  color: #fff;
+  font-size: 2.6cqw;
+  animation-duration: 1.1s;
+}
+
+@keyframes verdict {
+  0% {
+    opacity: 0;
+    margin-top: 2cqw;
+    transform: translate(-50%, -50%) scale(1.6);
+  }
+  14% {
+    opacity: 1;
+    margin-top: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  75% {
+    opacity: 1;
+    margin-top: -4cqw;
+  }
+  100% {
+    opacity: 0;
+    margin-top: -5.5cqw;
+  }
+}
+
+.bark-boxer {
+  background: #f0a04a;
+  color: #2a1200;
+}
+
+.banner.is-victory {
+  top: 76%;
+  color: var(--yellow);
+  font-size: 3.5cqw;
+}
+
+.banner.is-thick {
+  color: #ffc98a;
+}
+
+.banner.is-dog {
+  color: #fff;
+}
+
+.banner.is-nuclear {
+  color: #fff;
+  font-size: 5cqw;
+}
+
+/* ------------------------------------------------------------ jauge d'épaisseur */
+.gauge-head .pips {
+  list-style: none;
+  display: flex;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+}
+
+.pips li {
+  width: 9px;
+  height: 9px;
+  background: var(--panel-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.pips li.is-perfect {
+  background: var(--yellow);
+  box-shadow: none;
+}
+
+.pips li.is-good {
+  background: var(--green);
+  box-shadow: none;
+}
+
+.pips li.is-thick,
+.pips li.is-thin,
+.pips li.is-disaster {
+  background: var(--red);
+  box-shadow: none;
+}
+
+.cz-good {
+  background: #6b5a12;
+}
+
+.cz-perfect {
+  background: #1f6b22;
+  box-shadow: inset 2px 0 0 var(--green), inset -2px 0 0 var(--green);
+}
+
+.cz-thick {
+  background: repeating-linear-gradient(45deg, #a0101c 0 4px, #300 4px 8px);
+}
+
+.gauge-cut[data-zone='good'] .gauge-fill {
+  background: linear-gradient(to bottom, #fff2b0 0 30%, var(--yellow) 30% 70%, #c7930e 70%);
+}
+
+.gauge-cut[data-zone='thin'] .gauge-fill {
+  background: linear-gradient(to bottom, #e8d8f0 0 30%, var(--muted) 30% 70%, #7a6486 70%);
+}
+
+.gauge-cut[data-zone='thick'] .gauge-fill {
+  background: #fff;
+  animation: blink-red 0.12s steps(2) infinite;
+}
+
+.cut-labels span {
+  overflow: hidden;
+}
+
+.cl-thin {
+  left: 0;
+  color: var(--muted);
+}
+
+.cl-perfect {
+  color: var(--green);
+}
+
+.cl-thick {
+  right: 0;
+  color: var(--red);
+}
+
+.controls-cut {
+  grid-template-columns: 1fr;
+}
+
+.btn-cut {
+  font-size: clamp(20px, 6vw, 34px);
+}
+
+.btn-cut[data-zone='perfect'] {
+  background: var(--green);
+  color: #06250a;
+}
+
+.btn-cut[data-zone='thick'] {
+  background: #fff;
+  color: var(--red);
+}
+
+/* ------------------------------------------------------------ résultat */
+.result-sub {
+  margin: -4px 0 0;
+  font-size: clamp(8px, 2.2vw, 11px);
+  line-height: 1.7;
+  color: var(--yellow);
+}
+
+.game-saucisson[data-outcome='thick'] .result-score,
+.game-saucisson[data-outcome='dog'] .result-score,
+.game-saucisson[data-outcome='nuclear'] .result-score {
+  color: var(--muted);
+}
+
+.game-saucisson .medals ul {
+  grid-template-columns: repeat(4, minmax(0, 44px));
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .pips {
+    display: none;
+  }
+  .result-sub {
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gauge-cut[data-zone='thick'] .gauge-fill,
+  .hud.is-bump {
+    animation: none;
+  }
+}
