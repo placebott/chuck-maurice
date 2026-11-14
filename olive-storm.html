@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#120a14" />
+    <title>Chuck Maurice — Olive Storm</title>
+    <meta name="description" content="19h46. Il n'y a pas d'olives dans le verre. Chuck Maurice refuse de marcher trois mètres : il a transformé une cuillère en catapulte. Mission 003." />
+    <meta property="og:title" content="Chuck Maurice — Olive Storm" />
+    <meta property="og:description" content="Opération balistique apéritive : trois olives, cinq tirs, 35 secondes, un voisin susceptible." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="./assets/sprites/olive-storm/olive.png" />
+  </head>
+  <body>
+    <div id="app" class="game-olive" data-screen="loading">
+      <div class="stage" id="stage">
+        <div id="game" aria-hidden="true"></div>
+
+        <div class="overlay">
+          <div class="logo" aria-hidden="true">
+            <span class="logo-kicker">MISSION 003 — OPÉRATION BALISTIQUE APÉRITIVE</span>
+            <span class="logo-name">CHUCK MAURICE</span>
+            <span class="logo-mission">OLIVE STORM</span>
+          </div>
+
+          <div class="loading" id="loading">CHARGEMENT…</div>
+
+          <div class="intro" id="intro" aria-live="polite"></div>
+          <div class="go" id="go" aria-hidden="true"></div>
+
+          <div class="hud hud-left" aria-label="Olives dans le verre et tirs restants">
+            <span class="hud-olive" aria-hidden="true"></span><b id="olive-count">0</b>/3
+            <span class="hud-sep">TIRS</span><b id="shot-count">5</b>/5
+          </div>
+          <div class="timer" id="timer" aria-label="Temps restant"><span id="timer-value">35</span></div>
+          <div class="hud hud-right" aria-label="Score"><b id="score">000000</b></div>
+          <div class="phase-tag" id="phase-tag" aria-label="Phase actuelle"></div>
+          <div class="wind" id="wind" aria-label="Vent" hidden><span class="wind-arrows" aria-hidden="true">◀◀◀</span> VENT <b id="wind-value"></b></div>
+
+          <div class="announce" id="announce" role="status"></div>
+          <div class="yell" id="yell" aria-hidden="true"></div>
+          <div class="banner" id="banner" role="status"></div>
+          <div class="barks" id="barks" aria-hidden="true"></div>
+          <div class="scanlines" aria-hidden="true"></div>
+        </div>
+
+        <button class="mute" id="mute" type="button" aria-pressed="false" aria-label="Couper le son">SON</button>
+      </div>
+
+      <div class="deck">
+        <!-- Écran de lancement -->
+        <section class="panel panel-title" aria-label="Menu de la mission">
+          <h1 class="sr-only">Chuck Maurice — Olive Storm : Opération balistique apéritive</h1>
+          <button class="btn btn-primary btn-blink" id="start" type="button">OUVRIR LE FEU</button>
+          <p class="hint">3 OLIVES. 5 TIRS. 35 SECONDES. UN VOISIN SUSCEPTIBLE.</p>
+          <nav class="missions" aria-label="Missions">
+            <a class="mission" href="./index.html">
+              <small>MISSION 001</small>
+              OPÉRATION CORNICHON
+            </a>
+            <a class="mission" href="./saucissonator.html">
+              <small>MISSION 002</small>
+              SAUCISSONATOR 3000
+            </a>
+            <a class="mission is-current" href="./olive-storm.html" aria-current="page">
+              <small>MISSION 003</small>
+              OLIVE STORM
+            </a>
+          </nav>
+          <dl class="stats" id="stats"></dl>
+          <div class="medals">
+            <h2>MÉDAILLES <span id="medal-count"></span></h2>
+            <ul id="medals"></ul>
+            <p class="medal-info" id="medal-info" aria-live="polite">&nbsp;</p>
+          </div>
+        </section>
+
+        <!-- Jeu -->
+        <section class="panel panel-play" aria-label="Commandes">
+          <div class="gauge-wrap">
+            <div class="gauge-head">
+              <span>PUISSANCE <b class="readout" id="power-value">50 %</b></span>
+              <span>ANGLE <b class="readout" id="angle-value">45°</b></span>
+            </div>
+            <div class="gauge gauge-power" id="gauge" role="progressbar" aria-label="Puissance de tir" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+              <div class="gauge-fill" id="gauge-fill"></div>
+              <div class="gauge-needle" id="gauge-needle"></div>
+            </div>
+          </div>
+          <p class="hint aim-hint">TIREZ VERS L'ARRIÈRE SUR LA SCÈNE, PUIS RELÂCHEZ <span class="keys">· OU LES FLÈCHES, PUIS ESPACE</span></p>
+          <div class="controls controls-fire">
+            <div class="pad" role="group" aria-label="Réglage de la visée">
+              <button class="btn btn-ghost" id="angle-up" type="button" aria-label="Augmenter l'angle">ANGLE +</button>
+              <button class="btn btn-ghost" id="power-up" type="button" aria-label="Augmenter la puissance">FORCE +</button>
+              <button class="btn btn-ghost" id="angle-down" type="button" aria-label="Diminuer l'angle">ANGLE −</button>
+              <button class="btn btn-ghost" id="power-down" type="button" aria-label="Diminuer la puissance">FORCE −</button>
+            </div>
+            <button class="btn btn-pump btn-fire" id="fire" type="button">
+              FEU !
+              <small>ESPACE · ENTRÉE</small>
+            </button>
+          </div>
+        </section>
+
+        <!-- Résultat -->
+        <section class="panel panel-result" aria-label="Résultat">
+          <p class="result-message" id="result-message" aria-live="assertive"></p>
+          <p class="result-sub" id="result-sub"></p>
+          <div class="result-score">
+            <span id="result-score"></span>
+            <span class="record" id="result-record" hidden>NOUVEAU RECORD !</span>
+          </div>
+          <p class="result-detail" id="result-detail"></p>
+          <ul class="new-medals" id="new-medals"></ul>
+          <div class="result-actions">
+            <button class="btn btn-primary" id="retry" type="button">REPARTIR AU COMBAT</button>
+            <button class="btn btn-ghost" id="share" type="button">PARTAGER</button>
+            <button class="btn btn-ghost" id="menu" type="button">MENU</button>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="/src/olive/main.ts"></script>
+  </body>
+</html>

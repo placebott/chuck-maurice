@@ -3,14 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "chuckmaurice.com — mini-jeux d'arcade absurdes. Mission 1 : Opération Cornichon. Mission 2 : Saucissonator 3000.",
+  "description": "chuckmaurice.com — mini-jeux d'arcade absurdes. Mission 1 : Opération Cornichon. Mission 2 : Saucissonator 3000. Mission 3 : Olive Storm.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "esbuild tests/saucissonator.test.ts --bundle --platform=node --format=esm --log-level=warning --outfile=.vite/tests/saucissonator.test.mjs && node --test .vite/tests/saucissonator.test.mjs",
+    "test": "esbuild tests/saucissonator.test.ts tests/olive.test.ts --bundle --platform=node --format=esm --log-level=warning --out-extension:.js=.mjs --outdir=.vite/tests && node --test .vite/tests/saucissonator.test.mjs .vite/tests/olive.test.mjs",
     "assets": "python3 scripts/build_assets.py",
-    "assets:saucissonator": "python3 scripts/build_saucissonator_assets.py"
+    "assets:saucissonator": "python3 scripts/build_saucissonator_assets.py",
+    "assets:olive": "python3 scripts/build_olive_assets.py"
   },
   "dependencies": {
     "@fontsource/press-start-2p": "^5.2.5",
