@@ -24,9 +24,9 @@ export const DUEL = {
   /** Fin de chaque acte, en % de colère : Fuego, barbecue, sono. */
   thresholds: [33, 80, 100] as const,
   acts: [
-    { gain: 7, back: [2.3, 3.3], warning: 0.65, watch: [1.1, 1.5] },
-    { gain: 8.4, back: [1.7, 2.5], warning: 0.5, watch: [1.0, 1.4] },
-    { gain: 4.6, back: [1.0, 1.6], warning: 0.4, watch: [0.8, 1.15] },
+    { gain: 7.7, back: [2.3, 3.3], warning: 0.65, watch: [0.95, 1.3] },
+    { gain: 9.2, back: [1.7, 2.5], warning: 0.5, watch: [0.85, 1.2] },
+    { gain: 5.1, back: [1.0, 1.6], warning: 0.4, watch: [0.7, 1.0] },
   ] as readonly ActTuning[],
   /** Tout premier dos tourné : le temps de comprendre. */
   firstBack: 2.8,
