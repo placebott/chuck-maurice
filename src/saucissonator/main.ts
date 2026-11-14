@@ -1,3 +1,4 @@
+import '../analytics';
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
