@@ -505,29 +505,36 @@ export class Director {
       this.sfx('sigh');
       this.say({ kind: 'bubble', text: CINE.sigh, who: 'jeanmi', x: 66, y: 34, ms: 700 });
     });
-    this.at(700, () => s.tweens.add({ targets: jm, x: SPOT.chair.x, y: SPOT.chair.feet, scale: 0.9, duration: 380 }));
+    this.at(700, () => s.tweens.add({ targets: jm, x: SPOT.chair.x, y: SPOT.chair.feet, duration: 380 }));
+    // il s'installe dans sa chaise, pastis levé
+    const seat = { x: SPOT.chair.x - 4, y: SPOT.chair.feet + 2 };
+    const sit = () => {
+      s.tweens.killTweensOf(jm);
+      jm.setTexture('jm_pastis').setFlipX(false).clearTint().setScale(1).setAngle(0).setPosition(seat.x, seat.y);
+      s.glass.setVisible(false);
+    };
+    this.at(1100, () => {
+      sit();
+      this.sfx('gulp');
+      s.tweens.add({ targets: jm, y: seat.y - 2, duration: 160, yoyo: true, repeat: -1 });
+    });
 
-    // Jean-Mi a gagné le droit de boire son pastis au calme : lent travelling sur l'illustration
-    const peace = (): Img => {
+    // gros plan : Jean-Mi a gagné le droit de boire son pastis au calme (lent travelling sur l'illustration)
+    this.at(1900, () => {
       this.cut(null);
+      this.say({ kind: 'clear' });
       const img = this.img('cine_pastis', 0, -30, 50).setOrigin(0);
       this.loops.push((_t, dt) => {
         img.x = Math.max(GAME_W - SPRITES.cine_pastis.w, img.x - 22 * dt);
       });
-      return img;
-    };
-    this.at(1150, () => {
-      this.say({ kind: 'clear' });
-      peace();
-      this.sfx('gulp');
+      this.sfx('clink');
       this.say({ kind: 'sub', text: CINE.peace });
     });
-    this.at(1750, () => this.sfx('clink'));
     // il s'assoupit. Silence absolu.
-    this.at(2500, () => this.say({ kind: 'zzz', x: 66, y: 20 }));
+    this.at(3200, () => this.say({ kind: 'zzz', x: 66, y: 20 }));
 
     // Chuck observe. Il hausse les épaules.
-    this.at(3500, () => {
+    this.at(4200, () => {
       this.cut('cine_chuck');
       this.say({ kind: 'clear' });
       const chuck = this.img('chuck_unbothered_cu', 322, 318, 60).setOrigin(1, 1);
@@ -538,42 +545,41 @@ export class Director {
       });
     });
 
-    // il retourne à sa Fuego
-    this.at(4800, () => {
+    // il retourne à sa Fuego ; Jean-Mi dort dans sa chaise
+    this.at(5500, () => {
       this.cut(null);
       this.say({ kind: 'clear' });
       s.setProp(1);
+      sit();
+      jm.setAngle(6);
       s.tweens.add({ targets: s.chuck, x: SPOT.chuck.right - 44, duration: 320 });
     });
-    this.at(5200, () => {
+    this.at(5900, () => {
       this.sfx('roar');
       this.say({ kind: 'onoma', text: CINE.vroom, x: 32, y: 50, ms: 420 });
       s.shake(500, 0.022);
       s.tweens.add({ targets: s.prop, y: SPOT.fuego.base - 7, duration: 60, yoyo: true, repeat: 4 });
       for (let i = 0; i < 10; i++) this.at(i * 30, () => s.exhaust(1.8));
     });
-    // Jean-Mi sursaute violemment : le pastis aussi
-    this.at(5380, () => {
-      const img = peace();
-      img.x = GAME_W - SPRITES.cine_pastis.w;
-      s.flash(0xffffff, 120);
-      s.shake(260, 0.04);
-      s.tweens.add({ targets: img, y: -54, angle: -3, duration: 90, yoyo: true, ease: 'Quad.easeOut' });
-      s.sweat.explode(16, 300, 90);
+    // Jean-Mi sursaute violemment sur sa chaise
+    this.at(6060, () => {
+      s.tweens.add({ targets: jm, y: seat.y - 46, angle: -24, duration: 150, ease: 'Quad.easeOut' });
+      s.sweat.explode(14, seat.x, seat.y - 80);
+      s.splash.explode(16, seat.x - 22, seat.y - 80);
     });
     // coupure immédiate sur noir
-    this.at(5600, () => {
+    this.at(6290, () => {
       this.sfx('hush');
       this.say({ kind: 'black', lines: [] });
     });
-    this.at(6650, () => {
+    this.at(7350, () => {
       this.sfx('blip');
       this.say({ kind: 'black', lines: [CINE.calm] });
     });
-    this.at(7850, () => {
+    this.at(8550, () => {
       this.sfx('blip');
       this.say({ kind: 'black', lines: [CINE.calm, CINE.timeoutSub] });
     });
-    this.at(9000, () => this.done());
+    this.at(9700, () => this.done());
   }
 }

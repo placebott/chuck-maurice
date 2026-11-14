@@ -292,7 +292,7 @@ Les règles ne dépendent pas de l’affichage : `Duel.update(dt, maintenu)` suf
 
 ### Illustrations
 
-Les 18 fichiers d’origine de `public/assets/bon-voisinage/` portent les noms convenus ; aucun n’est modifié. S’y ajoute `backgrounds/jeanmi_pastis_victory.webp` (Jean-Mi savourant son pastis), utilisée pour la fin au chronomètre. `scripts/build_bon_voisinage_assets.py` en tire les dérivés, à trois échelles (plan large, plan moyen, gros plan) pour que chaque plan s’affiche à 1 texel = 1 pixel de la scène 480×270, sans flou.
+Les 18 fichiers d’origine de `public/assets/bon-voisinage/` portent les noms convenus ; aucun n’est modifié. S’y ajoutent, pour la fin au chronomètre, `backgrounds/jeanmi_pastis_victory.webp` (la scène complète, en gros plan) et `characters/jeanmi_pastis_victory.webp` (Jean-Mi seul dans sa chaise, détouré et animé dans le plan large). `scripts/build_bon_voisinage_assets.py` en tire les dérivés, à trois échelles (plan large, plan moyen, gros plan) pour que chaque plan s’affiche à 1 texel = 1 pixel de la scène 480×270, sans flou.
 
 - `chuck_unbothered.png` ne montre pas Chuck bras croisés mais une main levée, l’autre sur la hanche : c’est sa pose « innocente ». `chuck_sunglasses.png` sert de pose « en pleine activité » pendant le jeu, et de geste des lunettes dans les cinématiques.
 - `jeanmi_turn.png` et `jeanmi_watch.png` regardent vers la droite ; Chuck étant à gauche, ils sont affichés en miroir.

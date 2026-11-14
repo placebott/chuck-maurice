@@ -81,7 +81,7 @@ export class GardenScene extends Phaser.Scene {
   private flames!: Phaser.GameObjects.Image;
   private mark!: Phaser.GameObjects.Image;
   private veil!: Phaser.GameObjects.Rectangle;
-  private splash!: Phaser.GameObjects.Particles.ParticleEmitter;
+  splash!: Phaser.GameObjects.Particles.ParticleEmitter;
   private sparks!: Phaser.GameObjects.Particles.ParticleEmitter;
 
   private drifts: Drift[] = [];

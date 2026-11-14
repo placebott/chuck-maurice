@@ -137,6 +137,9 @@ save("jm_meltdown", melt, JEANMI_H * 0.93 / height_of(melt))
 save("jm_meltdown_cu", melt, JEANMI_CU_H / height_of(melt))
 save("jm_watch_cu", watch, JEANMI_CU_H / height_of(watch))
 save("jm_rage_mid", rage, JEANMI_MID_H * 0.9 / height_of(rage))
+# Jean-Mi assis, pastis levé (fin « sieste ») : faux damier clair à retirer ; la chaise blanche reste pleine
+seated = key_checker(load(SRC / "characters/jeanmi_pastis_victory.webp"), floor=236, spread=10)
+save("jm_pastis", seated, 82 / height_of(seated))
 
 # Jean-Mi de dos, découpé : tronc (avec les mains) + deux jambes articulées à la hanche
 print("jean-mi de dos, articulé")
