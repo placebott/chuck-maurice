@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fontsource/press-start-2p": "^5.2.5",
+    "@vercel/analytics": "^2.0.1",
     "phaser": "^3.90.0"
   },
   "devDependencies": {

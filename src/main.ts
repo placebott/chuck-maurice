@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import './styles/main.css';
+import { inject } from '@vercel/analytics';
 
 import { BALANCE, judge, scoreFor, type Outcome } from './game/config/balance';
 import { CHUCK_BARKS, HEADLINES, INTRO_LINES, JAR_BARKS, MESSAGES, pick } from './game/config/messages';
@@ -10,6 +11,9 @@ import { Sfx } from './audio/sfx';
 import { awardMedals, type RoundSummary } from './game/systems/medals';
 import { loadSave, writeSave } from './storage/save';
 import { UI, type ResultView } from './ui/ui';
+
+// Initialize Vercel Web Analytics
+inject();
 
 type Phase = 'loading' | 'title' | 'intro' | 'play' | 'lock' | 'result';
 
