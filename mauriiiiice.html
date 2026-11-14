@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#120a14" />
+    <title>Chuck Maurice — MAURIIIIICE !!!</title>
+    <meta name="description" content="19h58. Chuck Maurice démarre sa Fuego, allume son barbecue et teste sa sono. Jean-Mi voulait juste boire son pastis. Mission 004 : Opération Bon Voisinage." />
+    <meta property="og:title" content="Chuck Maurice — MAURIIIIICE !!!" />
+    <meta property="og:description" content="Opération Bon Voisinage : la tranquillité est une menace nationale. Fais craquer Jean-Mi en 35 secondes." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="./assets/sprites/bon-voisinage/gnome_dancing_big.png" />
+  </head>
+  <body>
+    <div id="app" class="game-voisin" data-screen="loading" data-watch="back" data-act="1">
+      <div class="stage" id="stage">
+        <div id="game" aria-hidden="true"></div>
+
+        <div class="overlay">
+          <div class="logo" aria-hidden="true">
+            <span class="logo-kicker">MISSION 004 — OPÉRATION BON VOISINAGE</span>
+            <span class="logo-name">CHUCK MAURICE</span>
+            <span class="logo-mission">MAURIIIIICE !!!</span>
+          </div>
+
+          <div class="loading" id="loading">CHARGEMENT…</div>
+
+          <div class="intro" id="intro" aria-live="polite"></div>
+          <div class="go" id="go" aria-hidden="true"></div>
+
+          <div class="hud hud-left" aria-label="Mission et acte en cours">MISSION 004 <b id="act-tag">ACTE 1</b></div>
+          <div class="timer" id="timer" aria-label="Temps restant"><span id="timer-value">35</span></div>
+          <div class="hud hud-right" id="strikes" aria-label="Flagrants délits">FLAGRANTS DÉLITS <b id="strike-count">0</b>/3</div>
+
+          <div class="rage" id="rage" role="progressbar" aria-label="Colère de Jean-Mi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="rage-fill" id="rage-fill"></div>
+            <span class="rage-label">COLÈRE DE JEAN-MI</span>
+            <b class="rage-pct" id="rage-pct">0 %</b>
+          </div>
+          <div class="watch" id="watch" role="status"></div>
+
+          <div class="announce" id="announce" role="status"></div>
+          <div class="card" id="card" role="status"></div>
+          <div class="sub" id="sub" role="status"></div>
+          <div class="shout" id="shout" aria-hidden="true"></div>
+          <div class="barks" id="barks" aria-hidden="true"></div>
+          <div class="black" id="black" role="status"></div>
+          <div class="scanlines" aria-hidden="true"></div>
+        </div>
+
+        <button class="mute" id="mute" type="button" aria-pressed="false" aria-label="Couper le son">SON</button>
+        <button class="mute calm" id="calm" type="button" aria-pressed="false" aria-label="Réduire les secousses et les flashs">SECOUSSES</button>
+      </div>
+
+      <div class="deck">
+        <!-- Écran de lancement -->
+        <section class="panel panel-title" aria-label="Menu de la mission">
+          <h1 class="sr-only">Chuck Maurice — MAURIIIIICE !!! : Opération Bon Voisinage</h1>
+          <button class="btn btn-primary btn-blink" id="start" type="button">SORTIR DANS LE JARDIN</button>
+          <p class="hint">LA TRANQUILLITÉ EST UNE MENACE NATIONALE.</p>
+          <nav class="missions" aria-label="Missions">
+            <a class="mission" href="./index.html">
+              <small>MISSION 001</small>
+              OPÉRATION CORNICHON
+            </a>
+            <a class="mission" href="./saucissonator.html">
+              <small>MISSION 002</small>
+              SAUCISSONATOR 3000
+            </a>
+            <a class="mission" href="./olive-storm.html">
+              <small>MISSION 003</small>
+              OLIVE STORM
+            </a>
+            <a class="mission mission-wide is-current" href="./mauriiiiice.html" aria-current="page">
+              <small>MISSION 004 — MAURIIIIICE !!!</small>
+              OPÉRATION BON VOISINAGE
+              <em>LA TRANQUILLITÉ EST UNE MENACE NATIONALE.</em>
+            </a>
+          </nav>
+          <dl class="stats" id="stats"></dl>
+          <div class="medals">
+            <h2>MÉDAILLES <span id="medal-count"></span></h2>
+            <ul id="medals"></ul>
+            <p class="medal-info" id="medal-info" aria-live="polite">&nbsp;</p>
+          </div>
+        </section>
+
+        <!-- Jeu : une seule commande -->
+        <section class="panel panel-play" aria-label="Commande">
+          <button class="btn btn-hold" id="hold" type="button" aria-label="Faire comme d'habitude : maintenir quand Jean-Mi tourne le dos, relâcher quand il regarde">
+            <b id="hold-verb">DÉMARRER</b>
+            <span id="hold-label">FAIRE COMME D'HABITUDE</span>
+            <small>MAINTENIR ESPACE OU LE CLIC</small>
+          </button>
+        </section>
+
+        <!-- Résultat -->
+        <section class="panel panel-result" aria-label="Résultat">
+          <p class="result-message" id="result-message" aria-live="assertive"></p>
+          <p class="result-sub" id="result-sub"></p>
+          <div class="result-score">
+            <span id="result-score"></span>
+            <span class="record" id="result-record" hidden>NOUVEAU RECORD !</span>
+          </div>
+          <p class="result-detail" id="result-detail"></p>
+          <ul class="new-medals" id="new-medals"></ul>
+          <div class="result-actions">
+            <button class="btn btn-primary" id="retry" type="button">REVANCHE</button>
+            <button class="btn btn-ghost" id="share" type="button">PARTAGER</button>
+            <button class="btn btn-ghost" id="menu" type="button">RETOUR À L'ARCADE</button>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="/src/voisinage/main.ts"></script>
+  </body>
+</html>
