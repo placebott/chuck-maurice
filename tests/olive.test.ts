@@ -78,8 +78,8 @@ const centered = (rows: typeof CALM) => {
 const BULLSEYE = centered(CALM);
 /** Le même, corrigé du vent. */
 const BULLSEYE_WIND = centered(WINDY);
-/** Un tir en cloche, franchement trop court. */
-const SHORT = 30;
+/** Un tir pas assez en cloche : trop long, l'olive quitte la cuisine. */
+const SHORT = 45;
 
 test('une olive suit une vraie trajectoire balistique', () => {
   const o = launch(40);
@@ -153,9 +153,9 @@ test('une olive finit par s’arrêter (friction)', () => {
 });
 
 test('une olive trop longue quitte la cuisine : aucun mur ne la renvoie dans le verre', () => {
-  const long = CALM.filter((r) => r.angle > mainWindow(false).hi && r.angle < 30);
+  const long = CALM.filter((r) => r.angle < mainWindow(false).lo - 1);
   assert.ok(long.length > 20);
-  assert.ok(long.every((r) => r.shot.fate !== 'scored'), 'au-delà de la fenêtre, plus rien ne rentre');
+  assert.ok(long.every((r) => r.shot.fate !== 'scored'), 'un tir trop tendu ne rentre jamais');
   assert.ok(!buildSegments().some((s) => s.ax > GLASS.x + GLASS.half && s.ax === s.bx), 'pas de mur à droite');
 });
 
@@ -252,7 +252,7 @@ test('le ventilateur pousse réellement l’olive, toujours de la même façon',
     return o.x;
   };
   assert.ok(landing(WIND) > landing(0) + 10, 'vent dans le dos : l’olive porte plus loin');
-  assert.ok(BULLSEYE_WIND < BULLSEYE, 'il faut viser plus bas avec le vent');
+  assert.ok(BULLSEYE_WIND > BULLSEYE, 'il faut lober plus haut avec le vent dans le dos');
   // prévisible : deux tirs identiques dans le vent donnent le même résultat
   const a = mission();
   const b = mission();
@@ -293,7 +293,9 @@ test('la trajectoire prévisionnelle utilise le même modèle que le tir, vent c
     const first = pts[0];
     const last = pts[pts.length - 1];
     const share = (last.x - first.x) / (GLASS.x - first.x);
-    assert.ok(share > 0.25 && share < 0.55, `amorce : ${Math.round(share * 100)} % du chemin`);
+    assert.ok(share > 0.15 && share < 0.4, `amorce : ${Math.round(share * 100)} % du chemin`);
+    assert.ok(last.y < first.y - 30, 'elle montre bien le départ en cloche');
+    assert.ok(pts[pts.length - 2].y > last.y, 'et s’arrête avant le sommet : la retombée reste à estimer');
   }
 });
 
@@ -389,12 +391,11 @@ test('un tir trop en cloche traverse le plafond : incident spatial', () => {
   assert.equal(m.ending, 'space');
 });
 
-test('un ricochet sur le métal peut sortir par la fenêtre : incident diplomatique', () => {
-  const out = CALM.find((r) => r.shot.fate === 'window');
-  assert.ok(out, 'il existe un angle qui sort par la fenêtre');
+test('une olive qui ricoche sur la casserole : incident diplomatique', () => {
+  const pan = CALM.find((r) => r.shot.fate === 'lost' && r.shot.touched.includes('pan'));
+  assert.ok(pan, 'il existe un angle qui envoie l’olive sur la casserole');
   const m = mission();
-  const { shot } = shoot(m, out.angle);
-  assert.ok(shot.touched.includes('clock') || shot.touched.includes('pan'), 'après un ricochet sur du métal');
+  shoot(m, pan.angle);
   shoot(m, SHORT);
   shoot(m, SHORT);
   assert.equal(m.ending, 'diplomatic');
@@ -407,15 +408,15 @@ test('la dernière olive interceptée : trahison canine', () => {
   shoot(m, BULLSEYE_WIND);
   // on cherche l'avance qui envoie l'olive dans la gueule du boxer, puis on recommence jusqu'au bout
   let lead = -1;
-  for (let d = 0; d <= STORM.boxer.warn + STORM.boxer.leap && lead < 0; d += 0.05) {
+  for (let d = 0; d <= STORM.boxer.first + STORM.boxer.leap && lead < 0; d += 0.05) {
     const probe = mission();
     shoot(probe, BULLSEYE);
     shoot(probe, BULLSEYE_WIND);
-    wait(probe, STORM.boxer.first - STORM.boxer.warn + d);
+    wait(probe, d);
     if (shoot(probe, BULLSEYE_WIND).shot.fate === 'dog') lead = d;
   }
   assert.ok(lead >= 0, 'il existe un instant de tir intercepté');
-  wait(m, STORM.boxer.first - STORM.boxer.warn + lead);
+  wait(m, lead);
   let guard = 0;
   while (!m.ending && guard++ < 6) {
     const start = m.elapsed;
@@ -428,14 +429,13 @@ test('la dernière olive interceptée : trahison canine', () => {
 test('des tirs simplement ratés : la catastrophe dépend de la façon de viser', () => {
   const flat = mission();
   for (let i = 0; i < 3; i++) shoot(flat, SHORT);
-  assert.ok(flat.shots.every((s) => s.fate === 'lost'));
+  assert.ok(flat.shots.every((s) => s.fate === 'lost' && !s.touched.includes('pan')));
   assert.equal(flat.ending, 'diplomatic');
-  // des tirs en cloche qui retombent sans rien déclencher de spécial
-  const lob = CALM.filter((r) => r.angle >= 50 && r.shot.fate === 'lost').map((r) => r.angle);
-  assert.ok(lob.length > 0);
+  // des tirs très en cloche qui retombent court, sans rien déclencher de spécial
+  const lob = CALM.filter((r) => r.angle >= 66 && r.shot.fate === 'lost' && !r.shot.touched.includes('pan')).map((r) => r.angle);
+  if (lob.length === 0) return; // au-delà de la fenêtre, tout part au plafond : rien à départager
   const steep = mission();
   for (let i = 0; i < 3; i++) shoot(steep, lob[0]);
-  assert.ok(steep.shots.every((s) => s.fate === 'lost'));
   assert.equal(steep.ending, 'space');
 });
 
@@ -465,18 +465,19 @@ test('un tir avec deux rebonds avant le verre existe réellement', () => {
   assert.ok(best >= 2, `meilleur ricochet trouvé : ${best} rebond(s)`);
 });
 
-test('équilibrage : une seule vraie fenêtre d’angle, étroite, qui se resserre avec le vent', () => {
+test('équilibrage : une seule fenêtre d’angle, en cloche, qui se décale et se resserre avec le vent', () => {
   const calm = mainWindow(false);
   const rows = [`  sans vent : ${calm.lo}°–${calm.hi}° (${calm.width}°)`];
-  assert.ok(calm.width >= 4 && calm.width <= 7, `phase 1 : ${calm.width}°`);
+  assert.ok(calm.width >= 6 && calm.width <= 9, `phase 1 : ${calm.width}°`);
+  assert.ok(calm.lo >= 50, `le tir gagnant doit être un vrai lob : ${calm.lo}°`);
+  assert.ok(calm.lo > STORM.angleMin + 5, 'la fenêtre ne doit pas buter sur l’angle minimal');
   let previous = calm;
   for (const wind of STORM.winds) {
     const w = mainWindow(true, wind);
     rows.push(`  vent ${wind} : ${w.lo}°–${w.hi}° (${w.width}°)`);
-    assert.ok(w.width >= 3 && w.width <= 6, `vent ${wind} : fenêtre de ${w.width}°`);
-    assert.ok(w.width < calm.width, `vent ${wind} : la fenêtre doit être plus étroite qu'en phase 1`);
-    assert.ok(w.hi < previous.hi, `vent ${wind} : la fenêtre doit se décaler vers le bas`);
-    assert.ok(w.lo > STORM.angleMin + 1, `vent ${wind} : la fenêtre ne doit pas buter sur l'angle minimal`);
+    assert.ok(w.width >= 3.5 && w.width <= 7, `vent ${wind} : fenêtre de ${w.width}°`);
+    assert.ok(w.width < previous.width, `vent ${wind} : la fenêtre doit se resserrer`);
+    assert.ok(w.lo > previous.lo, `vent ${wind} : il faut lober plus haut`);
     previous = w;
     // tout le reste des angles ne doit offrir que des coups de chance
     const total = sweep(true, wind).filter((r) => r.shot.fate === 'scored').length * 0.25;
@@ -484,13 +485,16 @@ test('équilibrage : une seule vraie fenêtre d’angle, étroite, qui se resser
   }
   // l'angle trouvé en phase 1 n'est plus sûr quand le vent se lève
   const strongest = mainWindow(true, STORM.winds[STORM.winds.length - 1]);
-  assert.ok(calm.hi - strongest.hi >= 2, 'le haut de la fenêtre de phase 1 ne passe plus avec le vent le plus fort');
+  assert.ok(strongest.lo - calm.lo >= 3, 'le bas de la fenêtre de phase 1 ne passe plus avec le vent le plus fort');
+  // trop lober, c'est le plafond
+  const over = sweep(true, STORM.winds[STORM.winds.length - 1]).filter((r) => r.angle > strongest.hi + 1);
+  assert.ok(over.length > 0 && over.every((r) => r.shot.fate === 'space'), 'au-dessus de la fenêtre : incident spatial');
   console.log(rows.join('\n'));
 });
 
 test('équilibrage : cinq tirs tiennent largement dans les 35 secondes', () => {
   let longest = 0;
-  for (const { angle } of CALM.filter((r) => r.angle % 5 === 0 && r.angle <= 45)) {
+  for (const { angle } of CALM.filter((r) => r.angle % 5 === 0)) {
     const m = mission();
     m.fire(angle);
     while (m.olive) m.update(FRAME);

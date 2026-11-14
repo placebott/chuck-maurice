@@ -15,12 +15,15 @@ export const STORM = {
   /** Accélération de la pesanteur (px/s²). */
   gravity: 300,
   /** Vitesse initiale de l'olive (px/s) : la cuillère tire toujours avec la même force. */
-  speed: 290,
-  /** Angle de tir autorisé (°, 0 = horizontal vers la droite) : c'est le seul réglage du joueur. */
-  angleMin: 8,
+  speed: 272,
+  /**
+   * Angle de tir autorisé (°, 0 = horizontal vers la droite) : c'est le seul réglage du joueur.
+   * La cuillère ne descend pas sous 40° : le tir est forcément en cloche.
+   */
+  angleMin: 40,
   angleMax: 82,
   /** L'angle de départ est tiré au hasard dans cette plage à chaque mission. */
-  angleStart: [18, 30],
+  angleStart: [42, 50],
   /** Pas des touches directionnelles (°) ; Maj multiplie par 4. */
   angleStep: 0.5,
   /** Tirage minimal (px écran logique) pour qu'un glisser compte comme une visée. */
@@ -53,17 +56,17 @@ export const STORM = {
   /**
    * La force du ventilateur change d'une mission à l'autre : on ne peut pas apprendre l'angle par cœur.
    * Elle est fixée au début de la mission et ne bouge plus ensuite. Le ventilateur souffle dans le dos
-   * de Chuck (positif = vers la droite) : l'olive porte plus loin et la bonne fenêtre d'angle rétrécit.
+   * de Chuck (positif = vers la droite) : il faut lober plus haut, et le plafond n'est pas loin.
    */
-  winds: [40, 50, 60],
+  winds: [14, 18, 22],
 
   // ------------------------------------------------------------ phases
   /** Durée de trajectoire affichée pendant la visée (s), par phase : l'amorce du tir, pas la suite. */
-  preview: [0.36, 0.28, 0.28],
+  preview: [0.5, 0.4, 0.4],
   /** Intervalle entre deux points de l'amorce (s) : assez serré pour dessiner une courbe. */
   previewEvery: 0.03,
   /** Phase 3 : le boxer bondit toutes les `period` s ; `warn` s d'avertissement avant chaque saut. */
-  boxer: { first: 1.6, period: 3.3, leap: 0.95, warn: 0.75, radius: 14 },
+  boxer: { first: 1.6, period: 3.3, leap: 0.95, warn: 0.75, radius: 20 },
 
   // ------------------------------------------------------------ score
   points: { olive: 500, direct: 300, ricochet: 200, center: 500, streak: 1000 },
