@@ -101,6 +101,7 @@ export class GardenScene extends Phaser.Scene {
   private beatStep = 0;
   private fxClock = 0;
   private coughClock = 0;
+  private hazeClock = 0;
   private glassDown = false;
 
   constructor() {
@@ -126,7 +127,7 @@ export class GardenScene extends Phaser.Scene {
     this.chuck = this.add.image(SPOT.chuck.right, SPOT.chuck.feet, 'chuck_unbothered').setOrigin(1, 1).setDepth(4);
     this.jeanmi = this.add.image(SPOT.jeanmi.x, SPOT.jeanmi.feet, 'jm_back').setOrigin(0.5, 1).setDepth(4);
     this.gnome = this.add.image(SPOT.gnome.x, SPOT.gnome.feet, 'gnome').setOrigin(0.5, 1).setDepth(4);
-    this.mark = this.add.image(0, 0, 'mark').setOrigin(0.5, 1).setDepth(5).setVisible(false);
+    this.mark = this.add.image(0, 0, 'mark').setOrigin(0.5, 1).setDepth(8).setVisible(false);
     this.veil = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0xff1a00).setDepth(20).setAlpha(0);
 
     const tricolor = [0x2a5cff, 0xffffff, 0xe63946];
@@ -252,7 +253,7 @@ export class GardenScene extends Phaser.Scene {
     this.f = { act: 1, watch: 'back', working: false, rage: 0, holdTime: 0, paused: false };
     this.jmBusy = false;
     this.glassDown = false;
-    this.spawnClock = this.beatClock = this.fxClock = this.coughClock = 0;
+    this.spawnClock = this.beatClock = this.fxClock = this.coughClock = this.hazeClock = 0;
     this.beatStep = 0;
     this.veil.setAlpha(0);
     this.mark.setVisible(false);
@@ -489,6 +490,14 @@ export class GardenScene extends Phaser.Scene {
     return d;
   }
 
+  /** Une bouffée du barbecue, qui file vers le jardin de Jean-Mi. */
+  private smoke(density: number, power: number): void {
+    const spot = SPOT.barbecue;
+    const d = this.drift('smoke', spot.x + rnd(-8, 16), spot.base - rnd(52, 78), rnd(44, 78), rnd(-18, 4),
+      rnd(3.6, 5.2), rnd(0.4, 0.65) * power, 1.3 + density * 1.1, 0.8);
+    d.img.setFlipX(Math.random() < 0.5).setAngle(rnd(-25, 25));
+  }
+
   exhaust(power: number): void {
     const p = this.prop;
     this.drift('puff', p.x - 66, p.y - 12, rnd(-46, -18) * power, rnd(-22, -6), rnd(0.5, 0.9), rnd(0.8, 1.4) * power, 2.2, 0.8, 3.2)
@@ -536,7 +545,15 @@ export class GardenScene extends Phaser.Scene {
       .setScale(Math.sin(t * 30) > 0 ? 1 : 1.25);
 
     if (f.working && this.propReady && this.propAct === f.act) this.work(dt, t, hot, r);
-    else if (this.propAct === 2 && this.propReady) this.flames.setScale(0.55 + Math.sin(t * 9) * 0.05, 0.5 + Math.sin(t * 13) * 0.08);
+    else if (this.propAct === 2 && this.propReady) {
+      // même sans y toucher, le barbecue de Chuck fume
+      this.flames.setScale(0.55 + Math.sin(t * 9) * 0.05, 0.5 + Math.sin(t * 13) * 0.08);
+      this.spawnClock -= dt;
+      if (this.spawnClock <= 0 && this.mode === 'play' && !f.paused) {
+        this.spawnClock = 0.45;
+        this.smoke(clamp((f.rage - 33) / 47, 0, 1), 0.6);
+      }
+    }
 
     // le verre : il tremble, puis glisse sur la table
     if (!this.glassDown) {
@@ -586,21 +603,26 @@ export class GardenScene extends Phaser.Scene {
       );
       this.flames.x = spot.x - 6 + (Math.sin(t * 40) > 0 ? 1 : 0);
       if (this.spawnClock <= 0) {
-        this.spawnClock = 0.3 - density * 0.19;
-        // la fumée part vers le jardin de Jean-Mi
-        const d = this.drift('smoke', spot.x + rnd(-6, 14), spot.base - rnd(54, 74), rnd(40, 66), rnd(-16, -2),
-          rnd(3.2, 4.4), rnd(0.3, 0.5), 1.1 + density * 0.9, 0.92);
-        d.img.setFlipX(Math.random() < 0.5).setAngle(rnd(-20, 20));
+        this.spawnClock = 0.13 - density * 0.07;
+        this.smoke(density, 1);
         if (Math.random() < 0.3) this.onSfx?.('puff');
+      }
+      // la fumée stagne chez Jean-Mi : de gros paquets s'installent dans son jardin
+      this.hazeClock -= dt;
+      if (this.hazeClock <= 0) {
+        this.hazeClock = 0.9 - density * 0.45;
+        const d = this.drift('smoke_big', rnd(250, 330), rnd(110, 170), rnd(14, 30), rnd(-8, -2),
+          rnd(3.5, 5), rnd(0.45, 0.7), 0.5, 0.4 + density * 0.2);
+        d.img.setFlipX(Math.random() < 0.5);
       }
       if (this.fxClock <= 0) {
         this.fxClock = rnd(0.06, 0.2);
         this.sparks.explode(1, spot.x - 6 + rnd(-10, 10), spot.base - 44);
       }
-      if (this.coughClock <= 0 && density > 0.15 && this.f.watch === 'back' && !this.jmBusy) {
-        this.coughClock = rnd(0.9, 1.5) - density * 0.4;
+      if (this.coughClock <= 0 && this.f.watch === 'back' && !this.jmBusy) {
+        this.coughClock = rnd(0.7, 1.1) - density * 0.35;
         this.onSfx?.('cough');
-        this.tweens.add({ targets: this.jeanmi, y: SPOT.jeanmi.feet - 5, angle: rnd(-6, 6), duration: 70, yoyo: true, repeat: 1 });
+        this.tweens.add({ targets: this.jeanmi, y: SPOT.jeanmi.feet - 6, angle: rnd(-12, 12), duration: 70, yoyo: true, repeat: 2 });
       }
     } else {
       const spot = SPOT.stereo;

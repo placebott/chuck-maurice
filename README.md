@@ -252,6 +252,7 @@ Un « 1, 2, 3, soleil » à une seule commande : faire monter la colère de Jean
 - Jean-Mi passe par trois états : **dos tourné → avertissement → regard**. Le regard est toujours précédé d’un avertissement complet (pose qui se retourne, « ! », bip, bouton et cadre qui virent au jaune) : 0,65 s à l’acte 1, 0,5 s à l’acte 2, 0,4 s à l’acte 3. 90 ms de tolérance au début du regard absorbent la latence d’un écran tactile.
 - Maintenir pendant le regard = **flagrant délit** : un seul par regard, puis une pause comique. Après la pause Jean-Mi fixe encore Chuck pendant un regard complet (se faire prendre ne fait donc pas gagner de temps) et il faut relâcher puis rappuyer. Trois flagrants délits : défaite.
 - La colère ne redescend jamais. Trois actes s’enchaînent seuls : **Fuego** (0–33 %), **barbecue** (33–80 %), **sono** (80–100 %), avec des retournements de plus en plus fréquents. Alerte à 95 %.
+- Pendant l’acte du barbecue, la fumée envahit le jardin de Jean-Mi (bouffées rapides + gros paquets qui stagnent), même quand on ne maintient pas ; plus on attise, plus elle est dense.
 - Le chronomètre ne compte que le jeu actif : pauses, changements d’acte et cinématiques ne le consomment pas.
 - La commande est remise à zéro à chaque changement d’état (début de partie, pause, changement d’acte, fin) et relâchée d’office si la page perd le focus, passe en arrière-plan ou si le toucher est interrompu.
 - Score : mission terminée 1 000, 100 par seconde restante, 1 000 sans flagrant délit, 200 par **relâchement précis** (dans les 0,24 dernière seconde de l’avertissement, après au moins 0,6 s de maintien, une fois par avertissement). En cas de défaite : 5 points par % de colère, plus les relâchements précis.
@@ -269,7 +270,7 @@ Un « 1, 2, 3, soleil » à une seule commande : faire monter la colère de Jean
 
 - **Victoire — « Le short de la discorde »** : cinq plans (l’implosion, l’assaut de la clôture, le short se déchire, le silence de Chuck, le triomphe national), environ 10 secondes. Sans aucun flagrant délit, un court épilogue s’ajoute (« Tu veux que je mette moins fort ? »).
 - **Trois flagrants délits — « Le dossier Jean-Mi »**.
-- **Chronomètre écoulé — « La sieste de Jean-Mi »**.
+- **Chronomètre écoulé — « La sieste de Jean-Mi »** : Jean-Mi a gagné le droit de boire son pastis au calme (illustration pleine page, en lent travelling), jusqu’à ce que Chuck retourne à sa Fuego.
 
 ### Architecture
 
@@ -291,7 +292,7 @@ Les règles ne dépendent pas de l’affichage : `Duel.update(dt, maintenu)` suf
 
 ### Illustrations
 
-Les 18 fichiers de `public/assets/bon-voisinage/` portent les noms convenus ; aucun n’est modifié. `scripts/build_bon_voisinage_assets.py` en tire les dérivés, à trois échelles (plan large, plan moyen, gros plan) pour que chaque plan s’affiche à 1 texel = 1 pixel de la scène 480×270, sans flou.
+Les 18 fichiers d’origine de `public/assets/bon-voisinage/` portent les noms convenus ; aucun n’est modifié. S’y ajoute `backgrounds/jeanmi_pastis_victory.webp` (Jean-Mi savourant son pastis), utilisée pour la fin au chronomètre. `scripts/build_bon_voisinage_assets.py` en tire les dérivés, à trois échelles (plan large, plan moyen, gros plan) pour que chaque plan s’affiche à 1 texel = 1 pixel de la scène 480×270, sans flou.
 
 - `chuck_unbothered.png` ne montre pas Chuck bras croisés mais une main levée, l’autre sur la hanche : c’est sa pose « innocente ». `chuck_sunglasses.png` sert de pose « en pleine activité » pendant le jeu, et de geste des lunettes dans les cinématiques.
 - `jeanmi_turn.png` et `jeanmi_watch.png` regardent vers la droite ; Chuck étant à gauche, ils sont affichés en miroir.
@@ -300,7 +301,7 @@ Les 18 fichiers de `public/assets/bon-voisinage/` portent les noms convenus ; au
 - `sound_waves.png` a un faux damier incrusté : il est détouré et ses quatre arcs sont séparés. Les autres originaux ont un halo semi-transparent, coupé au seuil.
 - `victory_reference.png` n’est pas chargée par le jeu : elle a guidé la composition des plans 4 et 5.
 - Le verre de pastis vient de la mission 003 (`olive-storm/objects/pastis_glass.png`).
-- Pas d’illustration pour le dossier de Jean-Mi, sa feuille, la table vue de près, le « ! » ni la feuille morte : petits éléments dessinés en code. Jean-Mi n’a pas de pose assise ni souriante : la sieste et le sourire satisfait sont joués avec les poses existantes.
+- Pas d’illustration pour le dossier de Jean-Mi, sa feuille, la table vue de près, le « ! » ni la feuille morte : petits éléments dessinés en code. Jean-Mi n’a pas de pose souriante debout : son sourire satisfait du « dossier » est joué avec `jeanmi_watch.png`.
 
 ## Périmètre
 

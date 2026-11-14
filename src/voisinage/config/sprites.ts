@@ -17,6 +17,10 @@ export const SPRITES = {
   "w": 480,
   "h": 270
  },
+ "cine_pastis": {
+  "w": 576,
+  "h": 324
+ },
  "chuck_unbothered": {
   "w": 74,
   "h": 108

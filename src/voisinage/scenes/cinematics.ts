@@ -500,26 +500,34 @@ export class Director {
     jm.setTexture('jm_turn').setFlipX(false).setPosition(SPOT.jeanmi.x, SPOT.jeanmi.feet).setAngle(0);
     s.glass.setPosition(SPOT.glass.x, SPOT.glass.y).setAngle(0);
 
-    // un long soupir, la chaise, le pastis
+    // un long soupir, et il retourne vers sa chaise
     this.at(200, () => {
       this.sfx('sigh');
-      this.say({ kind: 'bubble', text: CINE.sigh, who: 'jeanmi', x: 66, y: 34, ms: 800 });
+      this.say({ kind: 'bubble', text: CINE.sigh, who: 'jeanmi', x: 66, y: 34, ms: 700 });
     });
-    this.at(750, () => s.tweens.add({ targets: jm, x: SPOT.chair.x, y: SPOT.chair.feet, scale: 0.9, duration: 380 }));
-    this.at(1180, () => s.tweens.add({ targets: jm, y: SPOT.chair.feet + 7, scaleY: 0.8, duration: 110 }));
-    this.at(1320, () => {
+    this.at(700, () => s.tweens.add({ targets: jm, x: SPOT.chair.x, y: SPOT.chair.feet, scale: 0.9, duration: 380 }));
+
+    // Jean-Mi a gagné le droit de boire son pastis au calme : lent travelling sur l'illustration
+    const peace = (): Img => {
+      this.cut(null);
+      const img = this.img('cine_pastis', 0, -30, 50).setOrigin(0);
+      this.loops.push((_t, dt) => {
+        img.x = Math.max(GAME_W - SPRITES.cine_pastis.w, img.x - 22 * dt);
+      });
+      return img;
+    };
+    this.at(1150, () => {
+      this.say({ kind: 'clear' });
+      peace();
       this.sfx('gulp');
-      s.tweens.add({ targets: s.glass, x: SPOT.chair.x + 12, y: SPOT.chair.feet - 68, angle: -55, duration: 190, yoyo: true, hold: 240 });
+      this.say({ kind: 'sub', text: CINE.peace });
     });
+    this.at(1750, () => this.sfx('clink'));
     // il s'assoupit. Silence absolu.
-    this.at(2050, () => {
-      s.tweens.add({ targets: jm, angle: 10, duration: 320, ease: 'Sine.easeOut' });
-      s.tweens.add({ targets: jm, scaleY: 0.83, duration: 620, yoyo: true, repeat: -1, delay: 320 });
-      this.say({ kind: 'zzz', x: 72, y: 36 });
-    });
+    this.at(2500, () => this.say({ kind: 'zzz', x: 66, y: 20 }));
 
     // Chuck observe. Il hausse les épaules.
-    this.at(2950, () => {
+    this.at(3500, () => {
       this.cut('cine_chuck');
       this.say({ kind: 'clear' });
       const chuck = this.img('chuck_unbothered_cu', 322, 318, 60).setOrigin(1, 1);
@@ -531,40 +539,41 @@ export class Director {
     });
 
     // il retourne à sa Fuego
-    this.at(4250, () => {
+    this.at(4800, () => {
       this.cut(null);
       this.say({ kind: 'clear' });
       s.setProp(1);
       s.tweens.add({ targets: s.chuck, x: SPOT.chuck.right - 44, duration: 320 });
     });
-    this.at(4650, () => {
+    this.at(5200, () => {
       this.sfx('roar');
-      this.say({ kind: 'onoma', text: CINE.vroom, x: 32, y: 50, ms: 400 });
+      this.say({ kind: 'onoma', text: CINE.vroom, x: 32, y: 50, ms: 420 });
       s.shake(500, 0.022);
       s.tweens.add({ targets: s.prop, y: SPOT.fuego.base - 7, duration: 60, yoyo: true, repeat: 4 });
       for (let i = 0; i < 10; i++) this.at(i * 30, () => s.exhaust(1.8));
     });
-    // Jean-Mi sursaute violemment
-    this.at(4800, () => {
-      s.tweens.killTweensOf(jm);
-      jm.setTexture('jm_meltdown').setScale(1).setTint(0xff8a7a);
-      s.tweens.add({ targets: jm, y: SPOT.chair.feet - 44, angle: -22, duration: 150, ease: 'Quad.easeOut' });
-      s.tweens.add({ targets: s.glass, y: SPOT.glass.y - 44, x: SPOT.glass.x + 22, angle: 260, duration: 220 });
-      s.sweat.explode(12, SPOT.chair.x, SPOT.chair.feet - 110);
+    // Jean-Mi sursaute violemment : le pastis aussi
+    this.at(5380, () => {
+      const img = peace();
+      img.x = GAME_W - SPRITES.cine_pastis.w;
+      s.flash(0xffffff, 120);
+      s.shake(260, 0.04);
+      s.tweens.add({ targets: img, y: -54, angle: -3, duration: 90, yoyo: true, ease: 'Quad.easeOut' });
+      s.sweat.explode(16, 300, 90);
     });
     // coupure immédiate sur noir
-    this.at(5020, () => {
+    this.at(5600, () => {
       this.sfx('hush');
       this.say({ kind: 'black', lines: [] });
     });
-    this.at(6100, () => {
+    this.at(6650, () => {
       this.sfx('blip');
       this.say({ kind: 'black', lines: [CINE.calm] });
     });
-    this.at(7350, () => {
+    this.at(7850, () => {
       this.sfx('blip');
       this.say({ kind: 'black', lines: [CINE.calm, CINE.timeoutSub] });
     });
-    this.at(8500, () => this.done());
+    this.at(9000, () => this.done());
   }
 }

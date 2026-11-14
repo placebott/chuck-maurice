@@ -83,6 +83,7 @@ export const CINE = {
   bustedSub: "LE VOISIN A ENCORE DE L'ÉNERGIE.",
   // la sieste de Jean-Mi
   sigh: 'Pfffff…',
+  peace: 'ENFIN. LE CALME.',
   bon: 'Bon.',
   vroom: 'VROOOOOOOM !',
   calm: 'LE CALME AURA DURÉ 1,3 SECONDE.',

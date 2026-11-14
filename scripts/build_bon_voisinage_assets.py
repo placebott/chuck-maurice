@@ -106,6 +106,13 @@ backdrop("duel", (0, 0, bg.width, bg.height))
 backdrop("cine_chuck", (0, 340, 764, 770))
 backdrop("cine_chuck_big", (130, 480, 663, 780))
 backdrop("cine_jeanmi", (965, 360, 1672, 758))
+# Jean-Mi a gagné le droit de boire son pastis au calme : illustration pleine page de la fin « sieste ».
+# Un peu plus large que la scène, pour un lent travelling sans agrandir les pixels.
+PASTIS_W, PASTIS_H = 576, 324
+img = Image.open(SRC / "backgrounds/jeanmi_pastis_victory.webp").convert("RGB").resize((PASTIS_W, PASTIS_H), Image.BOX)
+img.save(OUT / "cine_pastis.png", optimize=True)
+manifest["cine_pastis"] = {"w": PASTIS_W, "h": PASTIS_H}
+print(f"  {'cine_pastis':22s} {PASTIS_W:4d} x {PASTIS_H}")
 
 # ---------------------------------------------------------------- personnages
 print("personnages")
