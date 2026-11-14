@@ -8,7 +8,7 @@ import { defineConfig, type Plugin } from 'vite';
  * on retire donc les originaux du build pour ne pas les déployer.
  */
 function dropSourceArt(): Plugin {
-  const dirs = ['characters', 'objects', 'backgrounds', 'references'];
+  const dirs = ['characters', 'objects', 'backgrounds', 'references', 'shared', 'saucissonator'];
   let outDir = 'dist';
   return {
     name: 'drop-source-art',
