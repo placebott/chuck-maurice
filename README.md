@@ -14,6 +14,8 @@ Reste à faire avant publication : essais sur de vrais téléphones, réglage de
 
 **Mission 003 — Olive Storm** est jouable sur `olive-storm.html`. Voir « Mission 003 » plus bas.
 
+**Mission 004 — MAURIIIIICE !!! (Opération Bon Voisinage)** est jouable sur `mauriiiiice.html`. Voir « Mission 004 » plus bas.
+
 ## Expérience visée
 
 Une partie courte de **20 secondes**, drôle, nerveuse et immédiatement rejouable, sur ordinateur et smartphone. Une tâche banale est mise en scène comme un combat de fin de jeu : introduction militaire, bocal menaçant, réactions exagérées de Chuck et résultats spectaculaires.
@@ -73,14 +75,18 @@ chuck-maurice/
 │       ├── ui/             # Éléments graphiques de l’interface
 │       ├── sprites/        # Sprites des jeux, générés depuis les originaux (ne pas éditer à la main) ; saucissonator/ pour la mission 002
 │       ├── shared/         # Originaux communs à plusieurs jeux : chuck/, kitchen/ (vides pour l’instant)
-│       └── saucissonator/  # Originaux du 2ᵉ jeu : objects/, characters/, references/
+│       ├── saucissonator/  # Originaux du 2ᵉ jeu : objects/, characters/, references/
+│       ├── olive-storm/    # Originaux du 3ᵉ jeu
+│       └── bon-voisinage/  # Originaux du 4ᵉ jeu : backgrounds/, characters/, objects/, effects/, references/
 ├── scripts/
 │   └── build_assets.py     # Détourage, découpe et réduction des originaux vers sprites/
 │   └── build_saucissonator_assets.py  # Idem pour Saucissonator 3000
+│   └── build_bon_voisinage_assets.py  # Idem pour MAURIIIIICE !!! (trois échelles de plan, Jean-Mi articulé)
 ├── src/
 │   ├── main.ts             # Contrôleur d’Opération Cornichon : enchaînement des écrans et entrées
 │   ├── saucissonator/      # Mission 002 : contrôleur, scène, règles, médailles, sauvegarde
 │   ├── olive/              # Mission 003 : contrôleur, scène, physique, règles, médailles, sauvegarde
+│   ├── voisinage/          # Mission 004 : contrôleur, entrée, scène, cinématiques, règles, médailles, sauvegarde
 │   ├── game/
 │   │   ├── scenes/         # Chargement, titre, partie et résultats
 │   │   ├── entities/       # Chuck, bocal et objets de jeu
@@ -92,7 +98,7 @@ chuck-maurice/
 │   ├── styles/             # Styles, adaptation des écrans, pixel art
 │   └── types/              # Types TypeScript partagés
 ├── docs/                   # Notes de conception et inventaire des assets
-└── tests/                  # Tests des règles, de la physique et de l’équilibrage (missions 002 et 003)
+└── tests/                  # Tests des règles, de la physique et de l’équilibrage (missions 002, 003 et 004)
 ```
 
 Les dossiers vides contiennent un fichier `.gitkeep` afin d’être conservés par Git. Ce fichier n’a aucun rôle dans le jeu et peut être retiré lorsqu’un dossier reçoit de vrais fichiers.
@@ -234,9 +240,74 @@ Les 15 fichiers de `public/assets/olive-storm/` sont tous utilisés, sans modifi
 - Pas d’illustration pour le radar, le projecteur ni le plafond percé : effets Phaser. Le hurlement de Jean-Mi est un son de synthèse, accompagné du texte à l’écran.
 - Réutilisés : la cuisine et le plan de travail, `chuck_despair` (mission 001), `boxer_idle` (mission 002).
 
+## Mission 004 — MAURIIIIICE !!! (Opération Bon Voisinage)
+
+> 19h58. Chuck démarre sa Fuego, allume son barbecue et teste sa sono. Pour lui, tout est normal.
+
+Un « 1, 2, 3, soleil » à une seule commande : faire monter la colère de Jean-Mi à 100 % en 35 secondes, sans se faire prendre trois fois. Page : `mauriiiiice.html`, code dans `src/voisinage/`, sprites dans `public/assets/sprites/bon-voisinage/`.
+
+### Règles
+
+- **Une seule commande**, par maintien : barre Espace, clic gauche ou doigt, sur le gros bouton ou n’importe où sur la scène. Jean-Mi tourne le dos : on maintient, la colère monte. Il regarde : on relâche.
+- Jean-Mi passe par trois états : **dos tourné → avertissement → regard**. Le regard est toujours précédé d’un avertissement complet (pose qui se retourne, « ! », bip, bouton et cadre qui virent au jaune) : 0,65 s à l’acte 1, 0,5 s à l’acte 2, 0,4 s à l’acte 3. 90 ms de tolérance au début du regard absorbent la latence d’un écran tactile.
+- Maintenir pendant le regard = **flagrant délit** : un seul par regard, puis une pause comique. Après la pause Jean-Mi fixe encore Chuck pendant un regard complet (se faire prendre ne fait donc pas gagner de temps) et il faut relâcher puis rappuyer. Trois flagrants délits : défaite.
+- La colère ne redescend jamais. Trois actes s’enchaînent seuls : **Fuego** (0–33 %), **barbecue** (33–80 %), **sono** (80–100 %), avec des retournements de plus en plus fréquents. Alerte à 95 %.
+- Pendant l’acte du barbecue, la fumée envahit le jardin de Jean-Mi (bouffées rapides + gros paquets qui stagnent), même quand on ne maintient pas ; plus on attise, plus elle est dense.
+- Le chronomètre ne compte que le jeu actif : pauses, changements d’acte et cinématiques ne le consomment pas.
+- La commande est remise à zéro à chaque changement d’état (début de partie, pause, changement d’acte, fin) et relâchée d’office si la page perd le focus, passe en arrière-plan ou si le toucher est interrompu.
+- Score : mission terminée 1 000, 100 par seconde restante, 1 000 sans flagrant délit, 200 par **relâchement précis** (dans les 0,24 dernière seconde de l’avertissement, après au moins 0,6 s de maintien, une fois par avertissement). En cas de défaite : 5 points par % de colère, plus les relâchements précis.
+- Médailles : PAS VU, PAS PRIS · ROI DU LOTISSEMENT (10 s restantes) · LA GUERRE DES VOISINS · LE SHORT DE LA DISCORDE (cinématique vue jusqu’au bout) · C’EST DIMANCHE (une partie terminée avec un relâchement précis).
+
+| Action | Clavier | Souris / tactile |
+| --- | --- | --- |
+| Faire comme d’habitude | maintenir Espace | maintenir le bouton ou la scène |
+| Passer le briefing, revanche | Espace ou Entrée | toucher la scène, bouton REVANCHE |
+| Couper le son | M | bouton SON |
+| Réduire secousses et flashs | — | bouton SECOUSSES (écran titre et résultat) |
+| Retour au menu | Échap | bouton RETOUR À L’ARCADE |
+
+### Fins
+
+- **Victoire — « Le short de la discorde »** : cinq plans (l’implosion, l’assaut de la clôture, le short se déchire, le silence de Chuck, le triomphe national) et le gag du boxer avant la fanfare, environ 14 secondes. Sans aucun flagrant délit, un court épilogue s’ajoute (« Tu veux que je mette moins fort ? »).
+- **Trois flagrants délits — « Le dossier Jean-Mi »**.
+- **Chronomètre écoulé — « La sieste de Jean-Mi »** : Jean-Mi a gagné le droit de boire son pastis au calme (illustration pleine page, en lent travelling), jusqu’à ce que Chuck retourne à sa Fuego.
+
+### Architecture
+
+| Rôle | Fichier |
+| --- | --- |
+| Réglages (durées, gains, seuils, barème) | `src/voisinage/config/balance.ts` |
+| Textes | `src/voisinage/config/messages.ts` |
+| Surveillance de Jean-Mi | `src/voisinage/systems/watch.ts` |
+| Colère, chronomètre, actes, flagrants délits | `src/voisinage/systems/duel.ts` |
+| Score, médailles, sauvegarde | `systems/score.ts`, `systems/medals.ts`, `save.ts` |
+| Commande maintenir / relâcher | `src/voisinage/input.ts` |
+| Plan de jeu Phaser | `src/voisinage/scenes/GardenScene.ts` |
+| Cinématiques | `src/voisinage/scenes/cinematics.ts` |
+| Bruitages (Web Audio, tout est synthétisé) | `src/voisinage/sfx.ts` |
+| Interface HTML | `src/voisinage/ui.ts`, `src/styles/voisinage.css` |
+| Machine à états de la page | `src/voisinage/main.ts` |
+
+Les règles ne dépendent pas de l’affichage : `Duel.update(dt, maintenu)` suffit à dérouler une partie, ce que font les tests avec des joueurs simulés (attentif, expert, lent, trop gourmand). `npm test` les lance ; `npm run assets:voisinage` régénère les sprites et `src/voisinage/config/sprites.ts`.
+
+### Illustrations
+
+Les 18 fichiers d’origine de `public/assets/bon-voisinage/` portent les noms convenus ; aucun n’est modifié. S’y ajoutent, pour la fin au chronomètre, `backgrounds/jeanmi_pastis_victory.webp` (la scène complète, en gros plan) et `characters/jeanmi_pastis_victory.webp` (Jean-Mi seul dans sa chaise, détouré et animé dans le plan large). `scripts/build_bon_voisinage_assets.py` en tire les dérivés, à trois échelles (plan large, plan moyen, gros plan) pour que chaque plan s’affiche à 1 texel = 1 pixel de la scène 480×270, sans flou.
+
+- `chuck_unbothered.png` ne montre pas Chuck bras croisés mais une main levée, l’autre sur la hanche : c’est sa pose « innocente ». `chuck_sunglasses.png` sert de pose « en pleine activité » pendant le jeu, et de geste des lunettes dans les cinématiques.
+- `jeanmi_turn.png` et `jeanmi_watch.png` regardent vers la droite ; Chuck étant à gauche, ils sont affichés en miroir.
+- `jeanmi_short_torn.png` contient Jean-Mi **et** un panneau de clôture vu de face. Il n’est jamais posé sur la clôture en perspective du décor : les plans où il apparaît utilisent des cadrages du décor sans cette clôture (`cine_*`), et la clôture y est prolongée par le même panneau, vidé de Jean-Mi (`fence_*`). Le bas de sa jambe pendante est détaché (`leg_*`) pour mouliner autour du genou ; le grillage est reconstitué derrière par décalage d’un nombre entier de mailles.
+- `jeanmi_back.png` est découpé en tronc + deux jambes articulées à la hanche pour l’escalade.
+- `sound_waves.png` a un faux damier incrusté : il est détouré et ses quatre arcs sont séparés. Les autres originaux ont un halo semi-transparent, coupé au seuil.
+- Le **boxer de Chuck** (`characters/boxer_calm.png`, `characters/boxer_dancing.png`) remplace les nains de jardin : tranquille aux actes 1 et 2, il passe en fondu à sa pose de danse dès 80 % de colère, puis danse par transformations continues (balancement, rebonds, rotation calés sur les basses, amplitude selon la colère). Les deux poses partagent la même échelle. Dans la cinématique de victoire il danse derrière chaque plan, continue seul dans le silence après « Bah quoi ? », s’arrête, regarde Chuck, puis repart avec la fanfare. `objects/garden_gnome*.png` restent dans le dépôt mais ne sont plus utilisés.
+- `boxer_dancing.png` a un faux damier clair au lieu d’une vraie transparence, et des traits de mouvement dessinés autour du chien : le script détoure l’image et ne garde que le chien.
+- `victory_reference.png` n’est pas chargée par le jeu : elle a guidé la composition des plans 4 et 5.
+- Le verre de pastis vient de la mission 003 (`olive-storm/objects/pastis_glass.png`).
+- Pas d’illustration pour le dossier de Jean-Mi, sa feuille, la table vue de près, le « ! » ni la feuille morte : petits éléments dessinés en code. Jean-Mi n’a pas de pose souriante debout : son sourire satisfait du « dossier » est joué avec `jeanmi_watch.png`.
+
 ## Périmètre
 
-Trois missions sont jouables : **Opération Cornichon**, **Saucissonator 3000** et **Olive Storm**. Les autres missions, le site arcade complet, la publication sur chuckmaurice.com et l’idée d’un beat’em all sont des évolutions ultérieures, hors de cette initialisation.
+Quatre missions sont jouables : **Opération Cornichon**, **Saucissonator 3000**, **Olive Storm** et **MAURIIIIICE !!!**. Les autres missions, le site arcade complet, la publication sur chuckmaurice.com et l’idée d’un beat’em all sont des évolutions ultérieures, hors de cette initialisation.
 
 ## Droits et crédits
 
