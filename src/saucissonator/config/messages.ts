@@ -12,9 +12,9 @@ export const INTRO_PACE = {
   /** Délai avant la première ligne. */
   start: 300,
   /** Intervalle entre deux lignes. */
-  lineEvery: 1900,
+  lineEvery: 1400,
   /** Temps de lecture laissé après la dernière ligne, avant le « TRANCHEZ ! ». */
-  hold: 2600,
+  hold: 2100,
 } as const;
 
 /** Durée totale du briefing. */
