@@ -3,7 +3,7 @@ import {
   type EndingKind, type Fate, type Phase,
 } from '../config/balance';
 import {
-  CLOCK_DISC, buildSegments, inWindow, insideGlass, launch, stepOlive,
+  buildSegments, inWindow, insideGlass, launch, stepOlive,
   type Contact, type Disc, type Olive, type Segment,
 } from '../physics/world';
 
@@ -92,6 +92,8 @@ export class Mission {
   private boxerWarned = -1;
   private boxerLeapt = -1;
   private hadEntry = false;
+  /** Temps de vol au premier rebond (-1 tant qu'il n'a pas eu lieu). */
+  private bouncedAt = -1;
 
   constructor(readonly layout: Layout = randomLayout()) {
     this.segments = buildSegments(layout.glassX);
@@ -107,7 +109,7 @@ export class Mission {
   }
 
   get obstacles(): { segments: readonly Segment[]; discs: readonly Disc[] } {
-    return { segments: this.segments, discs: [CLOCK_DISC, ...this.settled] };
+    return { segments: this.segments, discs: [...this.settled] };
   }
 
   get canFire(): boolean {
@@ -147,6 +149,7 @@ export class Mission {
     this.current = { angle: a };
     this.shotsLeft--;
     this.hadEntry = false;
+    this.bouncedAt = -1;
     return true;
   }
 
@@ -180,8 +183,11 @@ export class Mission {
 
     const o = this.olive;
     if (o) {
-      const discs = [CLOCK_DISC, ...this.settled];
-      for (const contact of stepOlive(o, this.segments, discs, this.wind, dt, this.layout.glassX)) events.push({ type: 'bounce', contact });
+      const discs = [...this.settled];
+      for (const contact of stepOlive(o, this.segments, discs, this.wind, dt, this.layout.glassX)) {
+        events.push({ type: 'bounce', contact });
+        if (this.bouncedAt < 0) this.bouncedAt = o.t;
+      }
       if (o.entry && !this.hadEntry) events.push({ type: 'enter' });
       this.hadEntry = o.entry !== null;
       const fate = this.fateOf(o);
@@ -200,9 +206,11 @@ export class Mission {
     }
     if (o.y < -12) return 'space';
     // une olive déviée par le métal part vers le fond de la cuisine : la fenêtre est ouverte
-    if (inWindow(o) && (o.touched.has('pan') || o.touched.has('clock'))) return 'window';
+    if (inWindow(o) && o.touched.has('pan')) return 'window';
     if (o.still >= STORM.restTime) return insideGlass(o.x, o.y, this.layout.glassX) ? 'scored' : 'lost';
     if (o.t > STORM.maxFlight || o.y > FLOOR_Y + 60 || o.x > WORLD_W + 12) return 'lost';
+    // après un premier rebond, on lui laisse le temps d'un ricochet vers le verre, pas plus
+    if (this.bouncedAt >= 0 && !o.entry && o.t - this.bouncedAt > STORM.bounceGrace) return 'lost';
     return null;
   }
 
@@ -264,12 +272,13 @@ export class Mission {
     const misses = this.shots.filter((s) => s.fate !== 'scored');
     const last = misses[misses.length - 1];
     if (last?.fate === 'dog') return 'dog';
-    if (misses.some((s) => s.fate === 'window')) return 'diplomatic';
+    // la cinématique de Jean-Mi commence par un ricochet sur la casserole
+    if (misses.some((s) => s.fate === 'window' || s.touched.includes('pan'))) return 'diplomatic';
     if (misses.some((s) => s.fate === 'space')) return 'space';
     if (misses.some((s) => s.fate === 'dog')) return 'dog';
-    // rien de spectaculaire : des tirs en cloche finissent dans le ciel, les autres chez le voisin
+    // rien de spectaculaire : des tirs trop en cloche finissent dans le ciel, les autres chez le voisin
     const steep = misses.reduce((sum, s) => sum + s.angle, 0) / Math.max(1, misses.length);
-    return misses.length > 0 && steep >= 50 ? 'space' : 'diplomatic';
+    return misses.length > 0 && steep >= 66 ? 'space' : 'diplomatic';
   }
 
   /** Part des tirs utilisés qui ont fini dans le verre (0–1). */

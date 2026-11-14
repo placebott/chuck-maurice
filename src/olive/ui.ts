@@ -122,7 +122,7 @@ export class OliveUI {
     this.phaseTag.textContent = `PHASE ${phase}/3 · ${PHASES[phase].name}`;
     this.wind.hidden = windAx === 0;
     // force affichée proportionnelle à l'accélération réelle
-    this.windValue.textContent = `FORCE ${Math.max(1, Math.round(Math.abs(windAx) / 10))}`;
+    this.windValue.textContent = `FORCE ${Math.max(1, Math.round(Math.abs(windAx) / 6))}`;
   }
 
   announce(text: string): void {
