@@ -1,5 +1,5 @@
 import {
-  CLOCK, FLOOR_Y, GLASS, PAN, PIVOT, SPOON_REACH, STORM, WINDOW, WORLD_W, toSpeed,
+  CLOCK, FLOOR_Y, GLASS, PAN, PIVOT, SPOON_REACH, STORM, WINDOW, WORLD_W,
   type Material,
 } from '../config/balance';
 
@@ -51,15 +51,15 @@ export interface Olive {
 const rimY = FLOOR_Y - GLASS.rim;
 const apexY = FLOOR_Y - GLASS.apex;
 
-/** Obstacles fixes de la cuisine. */
-export function buildSegments(): Segment[] {
-  const g = GLASS;
+/** Obstacles fixes de la cuisine, pour un verre centré en `glassX`. */
+export function buildSegments(glassX: number = GLASS.x): Segment[] {
+  const g = { ...GLASS, x: glassX };
   const p = PAN;
   const panTop = FLOOR_Y - p.h;
   return [
     { ax: -40, ay: FLOOR_Y, bx: WORLD_W + 40, by: FLOOR_Y, mat: 'table', id: 'table' },
     { ax: 0, ay: -400, bx: 0, by: FLOOR_Y, mat: 'wall', id: 'wall' },
-    { ax: WORLD_W, ay: -400, bx: WORLD_W, by: FLOOR_Y, mat: 'wall', id: 'wall' },
+    // pas de mur à droite : une olive trop longue quitte la cuisine (sinon le mur la renvoie dans le verre)
     // verre : deux parois en V, un pied
     { ax: g.x - g.half, ay: rimY, bx: g.x, by: apexY, mat: 'glass', id: 'glass' },
     { ax: g.x + g.half, ay: rimY, bx: g.x, by: apexY, mat: 'glass', id: 'glass' },
@@ -74,10 +74,10 @@ export function buildSegments(): Segment[] {
 
 export const CLOCK_DISC: Disc = { x: CLOCK.x, y: CLOCK.y, r: CLOCK.r, mat: 'metal', id: 'clock' };
 
-/** Point de départ et vitesse d'une olive pour un angle (°) et une puissance (0–1) donnés. */
-export function launch(angleDeg: number, power: number): Olive {
+/** Point de départ et vitesse d'une olive pour un angle donné (°). La force du tir est fixe. */
+export function launch(angleDeg: number): Olive {
   const a = (angleDeg * Math.PI) / 180;
-  const speed = toSpeed(power);
+  const speed = STORM.speed;
   return {
     x: PIVOT.x + Math.cos(a) * SPOON_REACH,
     y: PIVOT.y - Math.sin(a) * SPOON_REACH,
@@ -94,10 +94,10 @@ export function launch(angleDeg: number, power: number): Olive {
 }
 
 /** L'olive est-elle à l'intérieur du cône du verre ? */
-export function insideGlass(x: number, y: number): boolean {
+export function insideGlass(x: number, y: number, glassX: number = GLASS.x): boolean {
   if (y <= rimY || y >= apexY) return false;
   const half = (GLASS.half * (apexY - y)) / (apexY - rimY);
-  return Math.abs(x - GLASS.x) < half;
+  return Math.abs(x - glassX) < half;
 }
 
 function collide(o: Olive, cx: number, cy: number, extra: number, mat: Material, id: string, out: Contact[]): void {
@@ -133,7 +133,9 @@ function collide(o: Olive, cx: number, cy: number, extra: number, mat: Material,
  * Avance l'olive d'un pas fixe. `windAx` : accélération horizontale du ventilateur.
  * `discs` : obstacles ronds (horloge, olives déjà dans le verre). Renvoie les rebonds du pas.
  */
-export function stepOlive(o: Olive, segments: readonly Segment[], discs: readonly Disc[], windAx: number, dt: number): Contact[] {
+export function stepOlive(
+  o: Olive, segments: readonly Segment[], discs: readonly Disc[], windAx: number, dt: number, glassX: number = GLASS.x,
+): Contact[] {
   const contacts: Contact[] = [];
   const prevY = o.y;
   o.vx += windAx * dt;
@@ -153,10 +155,12 @@ export function stepOlive(o: Olive, segments: readonly Segment[], discs: readonl
   for (const d of discs) collide(o, d.x, d.y, d.r, d.mat, d.id, contacts);
 
   // franchissement de l'ouverture du verre, par le haut uniquement
-  if (prevY < rimY && o.y >= rimY && Math.abs(o.x - GLASS.x) < GLASS.half) {
-    o.entry = { bounces: o.bounces, offset: Math.abs(o.x - GLASS.x) };
-  } else if (o.entry && o.y < rimY - STORM.radius) {
-    o.entry = null; // ressortie : le rebond dans le verre redevient un rebond tout court
+  const over = Math.abs(o.x - glassX) < GLASS.half;
+  if (!o.entry && prevY < rimY && o.y >= rimY && over) {
+    o.entry = { bounces: o.bounces, offset: Math.abs(o.x - glassX) };
+  } else if (o.entry && o.y < rimY - STORM.radius && !over) {
+    // vraiment ressortie du verre (un simple sursaut au-dessus du bord ne compte pas)
+    o.entry = null;
   }
 
   // une olive posée roule, freine et finit par s'arrêter
@@ -184,10 +188,10 @@ export function inWindow(o: Olive): boolean {
  * ou après `duration` secondes. Elle ne prédit donc pas les rebonds.
  */
 export function previewPath(
-  angleDeg: number, power: number, windAx: number, duration: number,
+  angleDeg: number, windAx: number, duration: number,
   segments: readonly Segment[], discs: readonly Disc[], every = 0.05,
 ): { x: number; y: number }[] {
-  const o = launch(angleDeg, power);
+  const o = launch(angleDeg);
   const pts = [{ x: o.x, y: o.y }];
   let next = every;
   while (o.t < duration) {

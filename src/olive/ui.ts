@@ -34,8 +34,6 @@ export class OliveUI {
   readonly fireBtn = $<HTMLButtonElement>('fire');
   readonly angleUpBtn = $<HTMLButtonElement>('angle-up');
   readonly angleDownBtn = $<HTMLButtonElement>('angle-down');
-  readonly powerUpBtn = $<HTMLButtonElement>('power-up');
-  readonly powerDownBtn = $<HTMLButtonElement>('power-down');
   readonly retryBtn = $<HTMLButtonElement>('retry');
   readonly shareBtn = $<HTMLButtonElement>('share');
   readonly menuBtn = $<HTMLButtonElement>('menu');
@@ -56,11 +54,6 @@ export class OliveUI {
   private yellEl = $('yell');
   private banner = $('banner');
   private barks = $('barks');
-  private gauge = $('gauge');
-  private gaugeFill = $('gauge-fill');
-  private gaugeNeedle = $('gauge-needle');
-  private powerValue = $('power-value');
-  private angleValue = $('angle-value');
   private stats = $('stats');
   private medals = $('medals');
   private medalCount = $('medal-count');
@@ -128,17 +121,8 @@ export class OliveUI {
   setPhase(phase: Phase, windAx: number): void {
     this.phaseTag.textContent = `PHASE ${phase}/3 · ${PHASES[phase].name}`;
     this.wind.hidden = windAx === 0;
-    // force affichée de 1 à 5, proportionnelle à l'accélération réelle
-    this.windValue.textContent = `FORCE ${Math.max(1, Math.round(Math.abs(windAx) / 20))}`;
-  }
-
-  updateAim(angle: number, power: number): void {
-    const pct = Math.round(power * 100);
-    this.gaugeFill.style.width = `${pct}%`;
-    this.gaugeNeedle.style.left = `${pct}%`;
-    this.powerValue.textContent = `${pct} %`;
-    this.angleValue.textContent = `${Math.round(angle)}°`;
-    this.gauge.setAttribute('aria-valuenow', String(pct));
+    // force affichée proportionnelle à l'accélération réelle
+    this.windValue.textContent = `FORCE ${Math.max(1, Math.round(Math.abs(windAx) / 10))}`;
   }
 
   announce(text: string): void {

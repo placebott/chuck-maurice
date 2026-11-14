@@ -205,26 +205,29 @@ Jeu de tir balistique : trois olives à placer dans le verre, cinq tirs, 35 seco
 
 ### Règles
 
-- On vise en tirant vers l’arrière sur la scène (souris ou doigt) puis on relâche ; au clavier, flèches puis Espace. Les pointillés sont calculés par le même modèle que le tir, vent compris, et s’arrêtent au premier contact : ils ne prédisent pas les rebonds.
+- Le joueur ne règle que **l’angle** : la cuillère tire toujours avec la même force. On vise en tirant vers l’arrière sur la scène (souris ou doigt) puis on relâche ; au clavier, flèches haut / bas puis Espace. Aucun angle chiffré n’est affiché, et l’angle de départ change à chaque mission.
+- Seule l’amorce de la trajectoire est tracée (un quart de seconde, moins encore dès la phase 2), avec le même modèle que le tir, vent compris. Le reste s’estime, et se corrige d’un tir à l’autre.
 - Une olive ne compte que si elle franchit l’ouverture du verre par le haut **et** s’immobilise à l’intérieur. Bord, flanc et pied ne rapportent rien.
-- Phase 1 : tir réglementaire. Phase 2 (après la 1ʳᵉ olive) : le ventilateur pousse les olives vers la gauche, toujours avec la même force. Phase 3 (après la 2ᵉ) : le boxer bondit à intervalle fixe sur une trajectoire tracée à l’écran, avec un aboiement d’avertissement ; une olive interceptée est un tir manqué.
+- Phase 1 : tir réglementaire, environ 6° de marge. Phase 2 (après la 1ʳᵉ olive) : le ventilateur, placé derrière Chuck, pousse l’olive plus loin ; la bonne fenêtre d’angle se décale vers le bas et se resserre (5° à moins de 4° selon la force, tirée au sort à chaque mission et constante ensuite). Phase 3 (après la 2ᵉ) : le boxer bondit à intervalle fixe sur une trajectoire tracée à l’écran, avec un aboiement d’avertissement ; une olive interceptée est un tir manqué.
 - Score par olive : 500, plus 300 (tir direct) **ou** 200 (au moins un rebond avant le verre), plus 500 si elle entre au centre. Trois tirs réussis d’affilée : +1000, une seule fois.
-- Défaite quand l’objectif devient hors d’atteinte ou que le chrono tombe. La catastrophe dépend de la partie : **trahison canine** si la dernière olive perdue a été interceptée, **incident diplomatique** si une olive est sortie par la fenêtre après un ricochet sur la casserole ou l’horloge, **incident spatial** si une olive a traversé le plafond ; sinon, selon la puissance moyenne des tirs ratés.
+- Défaite quand l’objectif devient hors d’atteinte ou que le chrono tombe. La catastrophe dépend de la partie : **trahison canine** si la dernière olive perdue a été interceptée, **incident diplomatique** si une olive est sortie par la fenêtre après un ricochet sur la casserole ou l’horloge, **incident spatial** si une olive a traversé le plafond ; sinon, selon que les tirs ratés étaient plutôt en cloche ou plutôt tendus.
+- Une olive trop longue quitte la cuisine par la droite : aucun mur ne la renvoie dans le verre.
 
 | Action | Clavier | Souris / tactile |
 | --- | --- | --- |
-| Viser | ↑ ↓ (angle), ← → (puissance), Maj pour aller plus vite | tirer vers l’arrière sur la scène, ou boutons ANGLE / FORCE |
+| Viser | ↑ ↓ par demi-degré, Maj pour aller quatre fois plus vite | tirer vers l’arrière sur la scène, ou boutons PLUS HAUT / PLUS BAS |
 | Tirer | Espace, Entrée ou F | relâcher, ou bouton FEU ! |
 | Couper le son | M | bouton SON |
 | Retour au menu | Échap | bouton MENU |
 
-La physique (`src/olive/physics/world.ts`) et les règles (`src/olive/systems/mission.ts`) sont séparées de l’affichage et tournent à pas fixe : mêmes conditions initiales, même trajectoire. Gravité, puissance, rebonds, vent, boxer, durée et barème se règlent dans `src/olive/config/balance.ts`. `npm test` couvre les deux ; `npm run assets:olive` régénère les sprites.
+La physique (`src/olive/physics/world.ts`) et les règles (`src/olive/systems/mission.ts`) sont séparées de l’affichage et tournent à pas fixe : mêmes conditions initiales, même trajectoire. Gravité, force du tir, rebonds, vents possibles, longueur de l’amorce, boxer, durée et barème se règlent dans `src/olive/config/balance.ts`. `npm test` couvre les deux ; `npm run assets:olive` régénère les sprites.
 
 ### Illustrations
 
 Les 15 fichiers de `public/assets/olive-storm/` sont tous utilisés, sans modification ; `scripts/build_olive_assets.py` en tire les dérivés du jeu.
 
 - `fan.png` contient le ventilateur **et** son hélice : ils sont séparés pour faire tourner l’hélice.
+- `fan.png` est affiché en miroir, à gauche, pour souffler dans le sens du tir.
 - `window_open.png` est posée sur la fenêtre de la cuisine officielle, avec `jeanmi_garden.png` en arrière-plan.
 - `jeanmi_idle.png` ne tient pas de verre : `pastis_glass.png` est placé dans sa main par le jeu, puis tombe seul.
 - `boxer_intercept.png`, `jeanmi_angry.png`, `olive_splat.png`, `pan.png` et `pastis_glass.png` ont un faux damier incrusté au lieu d’une vraie transparence ; le script les détoure.

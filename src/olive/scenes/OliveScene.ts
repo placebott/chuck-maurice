@@ -8,10 +8,11 @@ export const GAME_H = 270;
 
 const TABLE_Y = 192;
 /** Chuck est placé pour que son poing tendu tombe sur le pivot de la cuillère. */
-const CHUCK = { x: 57, feet: 264 };
+const CHUCK = { x: 93, feet: 264 };
 /** Ancrage du manche dans le sprite de la cuillère. */
 const SPOON_ORIGIN = { x: 0.05, y: 0.5 };
-const FAN = { x: 449, y: FLOOR_Y - 26, hubX: 6, hubY: -37 };
+/** Le ventilateur est derrière Chuck : il souffle vers la droite, dans le sens du tir. */
+const FAN = { x: 30, y: FLOOR_Y - 26, hubX: -6, hubY: -37 };
 const WINDOW_POS = { x: 189, y: 9 };
 const OLD_FEET = { despair: 250 } as const;
 
@@ -76,8 +77,7 @@ export class OliveScene extends Phaser.Scene {
   private extras: Phaser.GameObjects.GameObject[] = [];
 
   private mode: Mode = 'idle';
-  private aimAngle: number = STORM.angleStart;
-  private aimPower: number = STORM.powerStart;
+  private aimAngle: number = STORM.angleStart[0];
   /** La cuillère est armée (une olive attend dans son creux). */
   private armed = true;
   private spoonKick = 0;
@@ -113,7 +113,7 @@ export class OliveScene extends Phaser.Scene {
     this.drawRays();
     this.chuck = this.add.image(CHUCK.x, CHUCK.feet, 'o_chuck_aiming').setOrigin(0.5, 1).setDepth(2);
     this.table = this.add.image(GAME_W / 2, TABLE_Y, 'table').setOrigin(0.5, 0).setDepth(3);
-    this.fan = this.add.image(FAN.x, FAN.y, 'o_fan').setOrigin(0.5, 1).setDepth(3.4);
+    this.fan = this.add.image(FAN.x, FAN.y, 'o_fan').setOrigin(0.5, 1).setDepth(3.4).setFlipX(true);
     this.blades = this.add.image(FAN.x + FAN.hubX, FAN.y + FAN.hubY, 'o_fan_blades').setDepth(3.5).setAlpha(0.9);
     this.pan = this.add.image(PAN.x - 1, FLOOR_Y + 3, 'o_pan').setOrigin(0, 1).setDepth(4);
     this.glass = this.add.image(GLASS.x, FLOOR_Y + 3, 'o_glass').setOrigin(0.5, 1).setDepth(4);
@@ -149,8 +149,8 @@ export class OliveScene extends Phaser.Scene {
       lifespan: 420, tint: [0x9db81f, 0x6f8a12, 0xd8e86a], emitting: false,
     }).setDepth(31);
     this.gust = this.add.particles(0, 0, 'gust', {
-      x: FAN.x - 18, y: { min: FAN.y - 62, max: FAN.y - 12 },
-      speedX: { min: -230, max: -150 }, speedY: { min: -8, max: 8 },
+      x: FAN.x + 18, y: { min: FAN.y - 62, max: FAN.y - 12 },
+      speedX: { min: 150, max: 230 }, speedY: { min: -8, max: 8 },
       alpha: { start: 0.55, end: 0 }, lifespan: 1700, frequency: 70, emitting: false,
     }).setDepth(5.5);
     this.dust = this.add.particles(0, 0, 'smoke', {
@@ -253,8 +253,7 @@ export class OliveScene extends Phaser.Scene {
     this.rays.setVisible(false).setAlpha(1);
     this.alarm.setAlpha(0);
     this.curtain.setAlpha(0).setFillStyle(0x0c0610);
-    this.aimAngle = STORM.angleStart;
-    this.aimPower = STORM.powerStart;
+    this.aimAngle = STORM.angleStart[0];
     this.armed = true;
     this.spoonKick = 0;
     this.fanOn = false;
@@ -300,19 +299,18 @@ export class OliveScene extends Phaser.Scene {
 
   // ------------------------------------------------------------ en jeu
   /** Réglage de visée courant et pointillés de la trajectoire prévisionnelle. */
-  setAim(angle: number, power: number, path: readonly { x: number; y: number }[] | null): void {
+  setAim(angle: number, path: readonly { x: number; y: number }[] | null): void {
     this.aimAngle = angle;
-    this.aimPower = power;
     const g = this.dots;
     g.clear();
     if (!path) return;
     path.forEach((p, i) => {
       if (i === 0) return;
-      const fade = 1 - (i / path.length) * 0.45;
+      const fade = 1 - (i / path.length) * 0.3;
       const x = Math.round(p.x);
       const y = Math.round(p.y);
-      g.fillStyle(0x120a14, 0.9 * fade).fillRect(x - 3, y - 3, 5, 5);
-      g.fillStyle(i % 2 ? 0xffffff : 0xffd23a, fade).fillRect(x - 2, y - 2, 3, 3);
+      g.fillStyle(0x120a14, fade).fillRect(x - 4, y - 4, 7, 7);
+      g.fillStyle(i % 2 ? 0xffffff : 0xffd23a, 1).fillRect(x - 3, y - 3, 5, 5);
     });
   }
 
@@ -718,7 +716,7 @@ export class OliveScene extends Phaser.Scene {
       this.spoon.setPosition(this.chuck.x + 36, this.chuck.y - 166).setAngle(-78 + Math.sin(time / 240) * 3).setDepth(2.2);
       return;
     }
-    const cock = this.armed ? 62 + this.aimPower * 62 : 0;
+    const cock = this.armed ? 96 : 0;
     const angle = -(this.aimAngle + cock) - this.spoonKick * 34;
     const bob = this.mode === 'ending' ? 0 : Math.round(Math.sin(time / 380));
     this.spoon.setPosition(PIVOT.x, PIVOT.y + bob).setAngle(angle);

@@ -113,7 +113,7 @@
 
 @keyframes wind-blow {
   100% {
-    transform: translateX(-0.9cqw);
+    transform: translateX(0.9cqw);
     opacity: 0.3;
   }
 }
@@ -289,20 +289,6 @@
 }
 
 /* ------------------------------------------------------------ commandes */
-.gauge-head .readout {
-  font-weight: normal;
-  font-size: 14px;
-  color: var(--cream);
-  margin-left: 6px;
-}
-
-.gauge-power .gauge-fill {
-  background: linear-gradient(to right, #6f8a12, var(--olive) 45%, var(--yellow) 75%, var(--red));
-  mix-blend-mode: normal;
-  opacity: 1;
-}
-
-.game-olive[data-busy] .gauge-power,
 .game-olive[data-busy] .pad,
 .game-olive[data-busy] .btn-fire {
   opacity: 0.45;
@@ -324,7 +310,7 @@
 
 .pad {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 

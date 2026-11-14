@@ -29,7 +29,8 @@ scene.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 let phase: Phase = 'loading';
 let mission = new Mission();
 let muted = loadSave().muted;
-const aim = { angle: STORM.angleStart as number, power: STORM.powerStart as number };
+/** Seul réglage du joueur : l'angle de tir. La force de la cuillère est fixe. */
+let angle: number = STORM.angleStart[0];
 let lastTickSec = 99;
 let resultReadyAt = 0;
 let lastResult: ResultView | null = null;
@@ -114,12 +115,12 @@ function goTitle(): void {
 
 function resetRound(): void {
   mission = new Mission();
-  aim.angle = STORM.angleStart;
-  aim.power = STORM.powerStart;
+  // départ au hasard : pas de repère chiffré, pas d'angle à apprendre par cœur
+  const [lo, hi] = STORM.angleStart;
+  angle = lo + Math.random() * (hi - lo);
   ui.updateCounts(0, STORM.shots, 0);
   ui.updateTimer(STORM.duration);
   ui.setPhase(1, 0);
-  ui.updateAim(aim.angle, aim.power);
 }
 
 function startIntro(): void {
@@ -167,35 +168,32 @@ function beginPlay(): void {
 // ---------------------------------------------------------------- visée et tir
 /** Recalcule les pointillés avec le modèle physique du tir, vent compris. */
 function refreshAim(): void {
-  ui.updateAim(aim.angle, aim.power);
   if (phase !== 'play' || !mission.canFire) {
-    scene.setAim(aim.angle, aim.power, null);
+    scene.setAim(angle, null);
     return;
   }
+  // seule l'amorce du tir est tracée : au joueur d'estimer le reste
   const { segments, discs } = mission.obstacles;
-  const path = previewPath(aim.angle, aim.power, mission.wind, STORM.preview[mission.phase - 1], segments, discs);
-  scene.setAim(aim.angle, aim.power, path);
+  scene.setAim(angle, previewPath(angle, mission.wind, STORM.preview[mission.phase - 1], segments, discs));
 }
 
-function setAim(angle: number, power: number): void {
-  const a = clamp(angle, STORM.angleMin, STORM.angleMax);
-  const p = clamp(power, 0, 1);
-  if (a === aim.angle && p === aim.power) return;
-  if (Math.round(p * 50) !== Math.round(aim.power * 50) || Math.round(a / 2) !== Math.round(aim.angle / 2)) sfx.ratchet(p);
-  aim.angle = a;
-  aim.power = p;
+function setAngle(next: number): void {
+  const a = clamp(next, STORM.angleMin, STORM.angleMax);
+  if (a === angle) return;
+  if (Math.round(a) !== Math.round(angle)) sfx.ratchet((a - STORM.angleMin) / (STORM.angleMax - STORM.angleMin));
+  angle = a;
   refreshAim();
 }
 
-function nudge(dAngle: number, dPower: number): void {
+function nudge(delta: number): void {
   if (phase !== 'play' || !mission.canFire) return;
-  setAim(aim.angle + dAngle, aim.power + dPower);
+  setAngle(angle + delta);
 }
 
 function fire(): void {
   if (phase !== 'play') return;
-  if (!mission.fire(aim.angle, aim.power)) return;
-  sfx.launchShot(aim.power);
+  if (!mission.fire(angle)) return;
+  sfx.launchShot();
   scene.fireFx();
   ui.setBusy(true);
   ui.updateCounts(mission.scored, mission.shotsLeft, mission.score);
@@ -300,7 +298,7 @@ function finish(kind: EndingKind): void {
   sfx.stopTension();
   ui.setEnded(true);
   ui.setBusy(false);
-  scene.setAim(aim.angle, aim.power, null);
+  scene.setAim(angle, null);
 
   save.plays++;
   if (kind === 'victory') save.wins++;
@@ -443,10 +441,8 @@ function hold(el: HTMLElement, fn: () => void): void {
 
 press(ui.startBtn, startIntro);
 press(ui.fireBtn, fire);
-hold(ui.angleUpBtn, () => nudge(STORM.angleStep * 2, 0));
-hold(ui.angleDownBtn, () => nudge(-STORM.angleStep * 2, 0));
-hold(ui.powerUpBtn, () => nudge(0, STORM.powerStep * 2));
-hold(ui.powerDownBtn, () => nudge(0, -STORM.powerStep * 2));
+hold(ui.angleUpBtn, () => nudge(STORM.angleStep));
+hold(ui.angleDownBtn, () => nudge(-STORM.angleStep));
 press(ui.retryBtn, () => {
   if (performance.now() > resultReadyAt - 450) startIntro();
 });
@@ -456,7 +452,8 @@ ui.shareBtn.addEventListener('click', () => void share());
 
 /**
  * Visée « lance-pierre » : on pose le doigt (ou le curseur) n'importe où sur la scène, on tire vers
- * l'arrière, on relâche. La direction du tir est l'opposé du geste, la puissance sa longueur.
+ * l'arrière, on relâche. La direction du tir est l'opposé du geste ; sa longueur ne change rien,
+ * la cuillère tire toujours avec la même force.
  */
 let drag: { id: number; x: number; y: number; moved: boolean } | null = null;
 
@@ -487,20 +484,19 @@ ui.stage.addEventListener('pointermove', (e) => {
   const p = toLogical(e);
   const pullX = drag.x - p.x;
   const pullY = drag.y - p.y;
-  const len = Math.hypot(pullX, pullY);
-  if (len < 4) return;
-  drag.moved = true;
+  // en dessous du tirage minimal, le geste ne compte pas encore : le relâcher n'envoie rien
+  drag.moved = Math.hypot(pullX, pullY) >= STORM.dragMin;
+  if (!drag.moved) return;
   // y écran vers le bas : tirer vers le bas-gauche vise en haut à droite
-  setAim((Math.atan2(-pullY, pullX) * 180) / Math.PI, len / STORM.dragFull);
+  setAngle((Math.atan2(-pullY, pullX) * 180) / Math.PI);
 });
 
 function release(e: PointerEvent, cancelled: boolean): void {
   if (!drag || e.pointerId !== drag.id) return;
   const moved = drag.moved;
   drag = null;
+  // revenir au point de départ avant de relâcher annule : on peut renoncer sans gaspiller une olive
   if (cancelled || !moved || phase !== 'play') return;
-  // un tirage trop court annule : on peut renoncer sans gaspiller une olive
-  if (aim.power < STORM.dragCancel) return;
   fire();
 }
 ui.stage.addEventListener('pointerup', (e) => release(e, false));
@@ -510,7 +506,7 @@ window.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const target = e.target as HTMLElement | null;
   const onControl = target?.tagName === 'BUTTON' || target?.tagName === 'A';
-  const fast = e.shiftKey ? 3 : 1;
+  const step = STORM.angleStep * (e.shiftKey ? 4 : 1);
   switch (e.code) {
     case 'ArrowUp':
     case 'ArrowDown':
@@ -518,10 +514,8 @@ window.addEventListener('keydown', (e) => {
     case 'ArrowRight':
       if (phase !== 'play') return;
       e.preventDefault();
-      if (e.code === 'ArrowUp') nudge(STORM.angleStep * fast, 0);
-      else if (e.code === 'ArrowDown') nudge(-STORM.angleStep * fast, 0);
-      else if (e.code === 'ArrowRight') nudge(0, STORM.powerStep * fast);
-      else nudge(0, -STORM.powerStep * fast);
+      // haut ou gauche : la cuillère se redresse ; bas ou droite : elle se couche
+      nudge(e.code === 'ArrowUp' || e.code === 'ArrowLeft' ? step : -step);
       break;
     case 'Space':
     case 'Enter':
