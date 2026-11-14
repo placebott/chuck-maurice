@@ -304,13 +304,20 @@ export class OliveScene extends Phaser.Scene {
     const g = this.dots;
     g.clear();
     if (!path) return;
-    path.forEach((p, i) => {
-      if (i === 0) return;
-      const fade = 1 - (i / path.length) * 0.3;
-      const x = Math.round(p.x);
-      const y = Math.round(p.y);
-      g.fillStyle(0x120a14, fade).fillRect(x - 4, y - 4, 7, 7);
-      g.fillStyle(i % 2 ? 0xffffff : 0xffd23a, 1).fillRect(x - 3, y - 3, 5, 5);
+    // gros points bien contrastés, qui s'amenuisent vers le bout : la courbe se lit même sur petit écran
+    const pts = path.slice(1);
+    const dot = (color: number, grow: number) => {
+      g.fillStyle(color, 1);
+      pts.forEach((p, i) => {
+        const r = 4.5 - (i / pts.length) * 2 + grow;
+        g.fillCircle(Math.round(p.x), Math.round(p.y), r);
+      });
+    };
+    dot(0x120a14, 1.5); // liseré sombre
+    dot(0xffffff, 0);
+    g.fillStyle(0xffd23a, 1);
+    pts.forEach((p, i) => {
+      if (i % 2 === 0) g.fillCircle(Math.round(p.x), Math.round(p.y), 4.5 - (i / pts.length) * 2);
     });
   }
 

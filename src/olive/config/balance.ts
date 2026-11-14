@@ -58,8 +58,10 @@ export const STORM = {
   winds: [40, 50, 60],
 
   // ------------------------------------------------------------ phases
-  /** Durée de trajectoire affichée pendant la visée (s), par phase : juste l'amorce du tir. */
-  preview: [0.22, 0.16, 0.16],
+  /** Durée de trajectoire affichée pendant la visée (s), par phase : l'amorce du tir, pas la suite. */
+  preview: [0.36, 0.28, 0.28],
+  /** Intervalle entre deux points de l'amorce (s) : assez serré pour dessiner une courbe. */
+  previewEvery: 0.03,
   /** Phase 3 : le boxer bondit toutes les `period` s ; `warn` s d'avertissement avant chaque saut. */
   boxer: { first: 1.6, period: 3.3, leap: 0.95, warn: 0.75, radius: 14 },
 

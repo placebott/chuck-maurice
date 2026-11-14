@@ -287,13 +287,13 @@ test('la trajectoire prévisionnelle utilise le même modèle que le tir, vent c
     }
     assert.ok(pts.length >= 10);
   }
-  // en jeu, seule l'amorce est montrée : elle s'arrête bien avant le verre
+  // en jeu, seule l'amorce est montrée : assez longue pour se lire, elle s'arrête bien avant le verre
   for (const duration of STORM.preview) {
     const pts = previewPath(BULLSEYE, 0, duration, segs, [CLOCK_DISC]);
     const first = pts[0];
     const last = pts[pts.length - 1];
     const share = (last.x - first.x) / (GLASS.x - first.x);
-    assert.ok(share < 0.35, `amorce trop longue : ${Math.round(share * 100)} % du chemin`);
+    assert.ok(share > 0.25 && share < 0.55, `amorce : ${Math.round(share * 100)} % du chemin`);
   }
 });
 

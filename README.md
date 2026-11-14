@@ -206,7 +206,7 @@ Jeu de tir balistique : trois olives à placer dans le verre, cinq tirs, 35 seco
 ### Règles
 
 - Le joueur ne règle que **l’angle** : la cuillère tire toujours avec la même force. On vise en tirant vers l’arrière sur la scène (souris ou doigt) puis on relâche ; au clavier, flèches haut / bas puis Espace. Aucun angle chiffré n’est affiché, et l’angle de départ change à chaque mission.
-- Seule l’amorce de la trajectoire est tracée (un quart de seconde, moins encore dès la phase 2), avec le même modèle que le tir, vent compris. Le reste s’estime, et se corrige d’un tir à l’autre.
+- Seule l’amorce de la trajectoire est tracée, en gros points (environ un tiers de seconde, un peu moins dès la phase 2), avec le même modèle que le tir, vent compris. Le reste s’estime, et se corrige d’un tir à l’autre.
 - Une olive ne compte que si elle franchit l’ouverture du verre par le haut **et** s’immobilise à l’intérieur. Bord, flanc et pied ne rapportent rien.
 - Phase 1 : tir réglementaire, environ 6° de marge. Phase 2 (après la 1ʳᵉ olive) : le ventilateur, placé derrière Chuck, pousse l’olive plus loin ; la bonne fenêtre d’angle se décale vers le bas et se resserre (5° à moins de 4° selon la force, tirée au sort à chaque mission et constante ensuite). Phase 3 (après la 2ᵉ) : le boxer bondit à intervalle fixe sur une trajectoire tracée à l’écran, avec un aboiement d’avertissement ; une olive interceptée est un tir manqué.
 - Score par olive : 500, plus 300 (tir direct) **ou** 200 (au moins un rebond avant le verre), plus 500 si elle entre au centre. Trois tirs réussis d’affilée : +1000, une seule fois.

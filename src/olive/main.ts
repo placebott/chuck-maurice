@@ -174,7 +174,8 @@ function refreshAim(): void {
   }
   // seule l'amorce du tir est tracée : au joueur d'estimer le reste
   const { segments, discs } = mission.obstacles;
-  scene.setAim(angle, previewPath(angle, mission.wind, STORM.preview[mission.phase - 1], segments, discs));
+  const duration = STORM.preview[mission.phase - 1];
+  scene.setAim(angle, previewPath(angle, mission.wind, duration, segments, discs, STORM.previewEvery));
 }
 
 function setAngle(next: number): void {
