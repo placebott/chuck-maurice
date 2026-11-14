@@ -7,6 +7,14 @@ import { GAME_H, GAME_W, SPOT } from './layout';
 type Size = 'mid' | 'big';
 type Img = Phaser.GameObjects.Image;
 
+interface Dog {
+  x: number;
+  feet: number;
+  spin: number;
+  /** 1 : il danse ; 0 : il s'arrête. */
+  energy: number;
+}
+
 interface TornRig {
   c: Phaser.GameObjects.Container;
   leg: Img;
@@ -157,13 +165,18 @@ export class Director {
     return { c, legL, legR, body };
   }
 
-  /** Le nain de jardin, qui danse quoi qu'il arrive. `pos` peut être animé. */
-  private dancer(size: Size, pos: { x: number; feet: number; spin: number }, depth: number): Img {
-    const g = this.img(`gnome_dancing_${size}`, pos.x, pos.feet, depth).setOrigin(0.5, 1);
+  /**
+   * Le boxer de Chuck, qui danse quoi qu'il arrive. Une seule pose, animée par transformations
+   * continues ; `pos` peut être animé (energy = 0 : il s'arrête).
+   */
+  private boxer(size: Size, pos: Dog, depth: number): Img {
+    const g = this.img(`boxer_dancing_${size}`, pos.x, pos.feet, depth).setOrigin(0.5, 1);
+    const reach = size === 'big' ? 1 : 0.7;
     this.loops.push((t) => {
-      const step = Math.floor(t * 7.5);
-      g.setTexture(step % 2 ? `gnome_dancing_${size}` : `gnome_${size}`).setFlipX(step % 4 > 1);
-      g.setPosition(pos.x, pos.feet - (step % 2 ? 4 : 0)).setAngle(pos.spin);
+      const e = pos.energy * (this.s.reducedMotion ? 0.3 : 1);
+      const beat = (t * Math.PI) / 0.3;
+      g.setPosition(pos.x + Math.sin(beat / 2) * 7 * e * reach, pos.feet - Math.abs(Math.sin(beat)) * 13 * e * reach);
+      g.setAngle(Math.sin(beat / 2) * 14 * e + pos.spin);
     });
     return g;
   }
@@ -176,7 +189,7 @@ export class Director {
   /** « LE SHORT DE LA DISCORDE ». */
   victory(perfect: boolean): void {
     const s = this.s;
-    const T = { implode: 380, assault: 1900, rip: 3550, chuck: 5800, triumph: 8400, end: 10700 };
+    const T = { implode: 380, assault: 1900, rip: 3550, chuck: 5800, dog: 8800, triumph: 11500, end: 13800 };
 
     // ---------- PLAN 1 : l'implosion. Tout s'arrête. Un silence. Puis le cri.
     this.sfx('hush');
@@ -211,6 +224,8 @@ export class Director {
       this.cut('cine_chuck');
       this.say({ kind: 'clear' });
       this.fenceRow('mid', midX, midY, true, 52);
+      // dans le jardin de Chuck, derrière la clôture, le boxer danse
+      this.boxer('mid', { x: 112, feet: 238, spin: 0, energy: 1 }, 51);
       const jm = this.climber(-70, ground + 6, 56);
       const { c, legL, legR } = jm;
       const stop = midX + 78;
@@ -285,7 +300,7 @@ export class Director {
       this.say({ kind: 'clear' });
       this.fenceRow('big', bigX, bigY, false, 52);
       this.torn('big', bigX, bigY, 56);
-      this.dancer('big', { x: 66, feet: 234, spin: 0 }, 57);
+      this.boxer('big', { x: 72, feet: 242, spin: 0, energy: 1 }, 51);
       // arrêt sur image, très bref, sur le moment exact
       this.frozen = true;
       this.sfx('rip');
@@ -308,10 +323,11 @@ export class Director {
     });
 
     // ---------- PLAN 4 : le silence de Chuck.
-    const farX = 292;
+    const farX = 264;
     const farY = 240 - SPRITES.torn_mid.h;
     let rig: TornRig | null = null;
-    const gnome = { x: 436, feet: 236, spin: 0 };
+    const dog: Dog = { x: 414, feet: 266, spin: 0, energy: 1 };
+    let dogImg: Img | null = null;
     let chuck: Img | null = null;
     this.at(T.chuck, () => {
       this.cut('cine_jeanmi');
@@ -321,8 +337,9 @@ export class Director {
       // Jean-Mi continue de s'agiter, au fond
       rig = this.torn('mid', farX, farY, 53);
       rig.power = 0.8;
-      chuck = this.img('chuck_unbothered_cu', 262, 318, 60).setOrigin(1, 1);
-      this.dancer('big', gnome, 61);
+      chuck = this.img('chuck_unbothered_cu', 244, 318, 60).setOrigin(1, 1);
+      // pendant toute la catastrophe, le boxer continue de danser
+      dogImg = this.boxer('big', dog, 61);
       s.gust.start();
       // une feuille traverse l'écran
       const leaf = this.img('leaf', GAME_W + 20, 70, 62).setScale(2);
@@ -340,13 +357,33 @@ export class Director {
     });
     this.at(T.chuck + 1800, () => {
       this.sfx('chuck');
-      this.say({ kind: 'bubble', text: CINE.chuck, who: 'chuck', x: 39, y: 7, ms: 2200 });
+      this.say({ kind: 'bubble', text: CINE.chuck, who: 'chuck', x: 35, y: 7, ms: 1150 });
+    });
+
+    // ---------- LE GAG DU BOXER : la musique est coupée. Lui l'entend encore.
+    this.at(T.dog, () => {
+      this.say({ kind: 'clear' });
+      this.sfx('hush');
+      s.gust.stop();
+      // la caméra se décale légèrement vers le chien
+      this.zoom(272, 152, 1.15, 380, 'Sine.easeInOut');
+    });
+    // il danse tout seul, dans le silence… puis finit par s'arrêter
+    this.at(T.dog + 1750, () => s.tweens.add({ targets: dog, energy: 0, duration: 260 }));
+    // …regarde Chuck d'un air innocent, la langue un peu sortie
+    this.at(T.dog + 2050, () => {
+      dogImg?.setTexture('boxer_calm_big').setFlipX(true);
+      s.tweens.add({ targets: dog, feet: dog.feet - 3, duration: 70, yoyo: true });
     });
 
     // ---------- PLAN 5 : le triomphe national. Même plan : Chuck n'a pas bougé.
     this.at(T.triumph, () => {
       s.gust.stop();
       this.say({ kind: 'clear' });
+      this.zoom(CX, CY, 1, 260);
+      // et il repart de plus belle
+      dogImg?.setTexture('boxer_dancing_big').setFlipX(false);
+      dog.energy = 1.2;
       this.sfx('fanfare');
       s.confetti.start();
       s.burst.explode(220, CX, 250);
@@ -372,8 +409,6 @@ export class Director {
         targets: stereo, y: 300, duration: 300, ease: 'Back.easeOut',
         onComplete: () => this.sfx('thud'),
       });
-      // le nain grimpe sur une enceinte
-      s.tweens.add({ targets: gnome, x: 294, feet: 300 - SPRITES.stereo_cu.h + 8, duration: 300, delay: 250, ease: 'Back.easeOut' });
     });
     this.at(E + 550, () => {
       this.sfx('chuck');
@@ -400,8 +435,9 @@ export class Director {
         }
       }
       // le pas de danse ridicule
-      s.tweens.add({ targets: gnome, spin: 720, duration: 800, ease: 'Cubic.easeOut' });
-      s.tweens.add({ targets: gnome, feet: gnome.feet - 46, duration: 260, yoyo: true, ease: 'Quad.easeOut' });
+      s.tweens.add({ targets: dog, spin: 720, duration: 800, ease: 'Cubic.easeOut' });
+      s.tweens.add({ targets: dog, feet: dog.feet - 46, duration: 260, yoyo: true, ease: 'Quad.easeOut' });
+      dog.energy = 1.6;
     });
     this.at(E + 3050, () => {
       this.sfx('scream-short');

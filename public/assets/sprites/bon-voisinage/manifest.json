@@ -157,29 +157,29 @@
   "w": 192,
   "h": 118
  },
- "gnome": {
-  "w": 19,
-  "h": 30
+ "boxer_calm": {
+  "w": 43,
+  "h": 50
  },
- "gnome_dancing": {
-  "w": 22,
-  "h": 31
- },
- "gnome_mid": {
-  "w": 28,
-  "h": 44
- },
- "gnome_dancing_mid": {
-  "w": 32,
-  "h": 45
- },
- "gnome_big": {
-  "w": 41,
-  "h": 64
- },
- "gnome_dancing_big": {
+ "boxer_dancing": {
   "w": 47,
-  "h": 65
+  "h": 50
+ },
+ "boxer_calm_mid": {
+  "w": 60,
+  "h": 70
+ },
+ "boxer_dancing_mid": {
+  "w": 66,
+  "h": 70
+ },
+ "boxer_calm_big": {
+  "w": 86,
+  "h": 100
+ },
+ "boxer_dancing_big": {
+  "w": 94,
+  "h": 100
  },
  "pastis": {
   "w": 10,

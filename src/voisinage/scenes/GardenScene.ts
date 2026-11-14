@@ -69,7 +69,9 @@ export class GardenScene extends Phaser.Scene {
   chuck!: Phaser.GameObjects.Image;
   jeanmi!: Phaser.GameObjects.Image;
   glass!: Phaser.GameObjects.Image;
-  gnome!: Phaser.GameObjects.Image;
+  /** Le boxer : deux poses superposées, fondues l'une dans l'autre quand il se met à danser. */
+  boxer!: Phaser.GameObjects.Image;
+  boxerDance!: Phaser.GameObjects.Image;
   prop!: Phaser.GameObjects.Image;
   confetti!: Phaser.GameObjects.Particles.ParticleEmitter;
   burst!: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -103,6 +105,8 @@ export class GardenScene extends Phaser.Scene {
   private coughClock = 0;
   private hazeClock = 0;
   private glassDown = false;
+  /** Entrain du boxer : il danse plus fort quand la sono joue vraiment. */
+  private groove = 0.4;
 
   constructor() {
     super('bon-voisinage');
@@ -126,7 +130,8 @@ export class GardenScene extends Phaser.Scene {
     this.flames = this.add.image(0, 0, 'flames').setOrigin(0.5, 1).setDepth(3.1).setVisible(false);
     this.chuck = this.add.image(SPOT.chuck.right, SPOT.chuck.feet, 'chuck_unbothered').setOrigin(1, 1).setDepth(4);
     this.jeanmi = this.add.image(SPOT.jeanmi.x, SPOT.jeanmi.feet, 'jm_back').setOrigin(0.5, 1).setDepth(4);
-    this.gnome = this.add.image(SPOT.gnome.x, SPOT.gnome.feet, 'gnome').setOrigin(0.5, 1).setDepth(4);
+    this.boxer = this.add.image(SPOT.boxer.x, SPOT.boxer.feet, 'boxer_calm').setOrigin(0.5, 1).setDepth(6.5);
+    this.boxerDance = this.add.image(SPOT.boxer.x, SPOT.boxer.feet, 'boxer_dancing').setOrigin(0.5, 1).setDepth(6.5).setAlpha(0);
     this.mark = this.add.image(0, 0, 'mark').setOrigin(0.5, 1).setDepth(8).setVisible(false);
     this.veil = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0xff1a00).setDepth(20).setAlpha(0);
 
@@ -262,7 +267,9 @@ export class GardenScene extends Phaser.Scene {
     this.jeanmi.setTexture('jm_back').setPosition(SPOT.jeanmi.x, SPOT.jeanmi.feet)
       .setScale(1).setAngle(0).setFlipX(false).clearTint().setVisible(true).setDepth(4);
     this.glass.setPosition(SPOT.glass.x, SPOT.glass.y).setAngle(0).setVisible(true).setScale(1);
-    this.gnome.setTexture('gnome').setPosition(SPOT.gnome.x, SPOT.gnome.feet).setAngle(0).setFlipX(false).setScale(1);
+    this.groove = 0.4;
+    this.boxer.setPosition(SPOT.boxer.x, SPOT.boxer.feet).setAngle(0).setFlipX(true).setAlpha(1);
+    this.boxerDance.setPosition(SPOT.boxer.x, SPOT.boxer.feet).setAngle(0).setAlpha(0);
     this.setProp(1);
   }
 
@@ -562,14 +569,41 @@ export class GardenScene extends Phaser.Scene {
       this.glass.x = SPOT.glass.x - slide + jitter;
     }
 
-    // le nain : immobile, puis il remue, puis il danse
-    if (f.act === 3 && f.rage >= 90) {
-      const step = Math.floor(t * 7);
-      this.gnome.setTexture(step % 2 ? 'gnome_dancing' : 'gnome').setFlipX(step % 4 > 1).setAngle(0);
-      this.gnome.y = SPOT.gnome.feet - (step % 2 ? 3 : 0);
-    } else if (f.act === 3 && f.rage >= 84) {
-      this.gnome.setAngle(Math.sin(t * 18) * 9);
+    this.animateBoxer(t, dt);
+  }
+
+  /**
+   * Le boxer. Actes 1 et 2 : tranquille, curieux. Acte 3 : les basses le gagnent, il passe
+   * en fondu à sa pose de danse, et tout le mouvement vient de transformations continues
+   * (balancement, rebonds, rotation), dont l'amplitude suit la colère de Jean-Mi.
+   */
+  private animateBoxer(t: number, dt: number): void {
+    const f = this.f;
+    const spot = SPOT.boxer;
+    let x: number = spot.x;
+    let y: number = spot.feet;
+    let angle = 0;
+    let mix = 0;
+    if (f.act === 3) {
+      const k = clamp((f.rage - 80) / 20, 0, 1);
+      this.groove += ((f.working ? 1 : 0.4) - this.groove) * Math.min(1, dt * 5);
+      // 80 % : il vibre ; 90 % : il danse franchement ; 100 % : frénétique
+      const a = (0.2 + 0.8 * k) * this.groove * (this.reducedMotion ? 0.3 : 1);
+      const beat = (t * Math.PI) / 0.3;
+      x += Math.sin(beat / 2) * 5 * a;
+      y -= Math.abs(Math.sin(beat)) * 9 * a;
+      angle = Math.sin(beat / 2) * 14 * a;
+      mix = clamp((f.rage - 80) / 4, 0, 1);
+    } else if (f.act === 2) {
+      // il regarde la fumée partir chez Jean-Mi, la tête penchée
+      angle = -7 + Math.sin(t * 1.3) * 2;
+    } else {
+      // il observe son maître ; le moteur ne le dérange absolument pas
+      y -= Math.sin(t * 2.4) > 0.7 ? 1 : 0;
     }
+    const flip = f.act === 1;
+    this.boxer.setPosition(x, y).setAngle(angle).setFlipX(flip).setAlpha(1 - mix);
+    this.boxerDance.setPosition(x, y).setAngle(angle).setAlpha(mix);
   }
 
   /** Chuck « fait comme d'habitude » : l'accessoire de l'acte s'anime. */

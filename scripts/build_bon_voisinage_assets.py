@@ -43,7 +43,7 @@ JEANMI_H = 100            # debout ; les poses ramassées sont un peu plus basse
 FUEGO_W = 140
 BBQ_H = 64
 STEREO_H = 74
-GNOME_H = 30
+BOXER_H = 50
 # --- plans de cinématique
 CHUCK_CU = 0.40           # Chuck en plan américain
 JEANMI_CU_H = 250         # gros plan sur Jean-Mi
@@ -269,12 +269,26 @@ save("barbecue", a, BBQ_H / height_of(a))
 a = clean_alpha(load(SRC / "objects/stereo.png"))
 save("stereo", a, STEREO_H / height_of(a))
 save("stereo_cu", a, 0.7)
-g0 = clean_alpha(load(SRC / "objects/garden_gnome.png"))
-g1 = clean_alpha(load(SRC / "objects/garden_gnome_dancing.png"))
-for tag, h in (("", GNOME_H), ("_mid", 44), ("_big", 64)):
-    s = h / height_of(g0)
-    save(f"gnome{tag}", g0, s)
-    save(f"gnome_dancing{tag}", g1, s)
+
+# ---------------------------------------------------------------- le boxer de Chuck
+print("boxer")
+
+
+def boxer(name: str) -> np.ndarray:
+    """Vraie transparence ou faux damier clair, selon le fichier ; on ne garde que le chien."""
+    a = load(SRC / f"characters/{name}.png")
+    a = clean_alpha(a, thr=ALPHA) if (a[..., 3] < 255).any() else key_checker(a, floor=236, spread=10)
+    # les petits traits de mouvement dessinés autour du chien deviendraient du bruit à cette taille :
+    # c'est l'animation qui le fait bouger
+    return max(components(a, join=0, min_area=30), key=lambda c: int((c[2][..., 3] > 0).sum()))[2]
+
+
+calm, dancing = boxer("boxer_calm"), boxer("boxer_dancing")
+# une seule échelle pour les deux poses : le chien ne change pas de taille en se mettant à danser
+for tag, h in (("", BOXER_H), ("_mid", 70), ("_big", 100)):
+    s = h / height_of(calm)
+    save(f"boxer_calm{tag}", calm, s)
+    save(f"boxer_dancing{tag}", dancing, s)
 
 # le verre de pastis de Jean-Mi vient de la mission 003 (même personnage, même verre)
 a = key_checker(load(ROOT / "public/assets/olive-storm/objects/pastis_glass.png"), floor=200, spread=14)
