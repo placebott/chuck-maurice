@@ -27,7 +27,7 @@ Une partie courte de **20 secondes**, drôle, nerveuse et immédiatement rejouab
 | Moins de 70 % | Échec : le bocal résiste |
 | De 70 à 85 % inclus | Victoire parfaite |
 | Plus de 85 % et jusqu’à 95 % inclus | Victoire chaotique |
-| Plus de 95 % | Explosion du bocal et catastrophe dans la cuisine |
+| Plus de 95 % | Explosion immédiate du bocal, sans attendre l’ouverture, et catastrophe dans la cuisine |
 
 Les intervalles ci-dessus sont continus pour éviter un cas indéfini entre 85 et 86 % ; avec une jauge entière, la victoire chaotique correspond à 86–95 %. À l’expiration des 20 secondes, une tentative non résolue se termine en défaite. La vitesse de charge, la décroissance, le score et les médailles seront réglés pendant le développement et les essais.
 

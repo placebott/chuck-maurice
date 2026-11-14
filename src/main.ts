@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import './styles/main.css';
 
-import { BALANCE, scoreFor, type Outcome } from './game/config/balance';
+import { BALANCE, judge, scoreFor, type Outcome } from './game/config/balance';
 import { CHUCK_BARKS, HEADLINES, INTRO_LINES, JAR_BARKS, MESSAGES, pick } from './game/config/messages';
 import { Round } from './game/systems/round';
 import { GAME_H, GAME_W, KitchenScene } from './game/scenes/KitchenScene';
@@ -22,7 +22,6 @@ scene.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 let phase: Phase = 'loading';
 let round = new Round();
 let lockLeft = 0;
-let sessionRounds = 0;
 let lastBarkAt = 0;
 let lastBarkTier = 0;
 let lastTickSec = 99;
@@ -100,24 +99,16 @@ function startIntro(): void {
   phase = 'intro';
   ui.setScreen('intro');
 
-  const long = sessionRounds === 0;
-  sessionRounds++;
-  scene.playIntro(long);
-
-  if (long) {
-    sfx.introRoll();
-    let t = 250;
-    for (const line of INTRO_LINES) {
-      later(() => typeLine(line), t);
-      t += 950;
-    }
-    later(beginPlay, t + 350);
-  } else {
-    const p = ui.addIntroLine();
-    p.textContent = `TENTATIVE N°${sessionRounds}`;
-    sfx.drum();
-    later(beginPlay, 750);
+  // le briefing complet est rejoué à chaque partie, revanches comprises ;
+  // un appui (touche, clic ou toucher) permet de le passer
+  scene.playIntro(true);
+  sfx.introRoll();
+  let t = 250;
+  for (const line of INTRO_LINES) {
+    later(() => typeLine(line), t);
+    t += 950;
   }
+  later(beginPlay, t + 350);
 }
 
 function typeLine(text: string): void {
@@ -152,6 +143,11 @@ function pump(): void {
   round.tap();
   scene.tapFx();
   sfx.tap(round.power);
+  // zone rouge : trop tard pour réfléchir, le bocal explose tout seul
+  if (judge(round.power) === 'explosion') {
+    finish('explosion', round.power);
+    return;
+  }
   if (round.taps % 5 === 0) sfx.grunt(round.power / 100);
   maybeBark();
 }
