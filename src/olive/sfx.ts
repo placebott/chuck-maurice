@@ -8,7 +8,7 @@ import type { Material } from './config/balance';
 export class OliveSfx extends Sfx {
   private lastRatchet = 0;
 
-  /** Armement de la catapulte : un cran de crémaillère, plus aigu quand la puissance monte. */
+  /** Réglage de la catapulte : un cran de crémaillère, plus aigu quand l'angle monte. */
   ratchet(power: number): void {
     const now = performance.now();
     if (now - this.lastRatchet < 45) return;
@@ -18,7 +18,7 @@ export class OliveSfx extends Sfx {
   }
 
   /** Lancement : ressort qui claque, puis sifflement. */
-  launchShot(power: number): void {
+  launchShot(power = 0.6): void {
     this.tone(160 + power * 80, 0.16, 'sawtooth', 0.2, 0, 620 + power * 500);
     this.tone(90, 0.1, 'square', 0.16, 0, 50);
     this.noise(0.22 + power * 0.2, 0.14, 2400 + power * 3000, 500, 0.03);

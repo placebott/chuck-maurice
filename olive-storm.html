@@ -35,7 +35,7 @@
           <div class="timer" id="timer" aria-label="Temps restant"><span id="timer-value">35</span></div>
           <div class="hud hud-right" aria-label="Score"><b id="score">000000</b></div>
           <div class="phase-tag" id="phase-tag" aria-label="Phase actuelle"></div>
-          <div class="wind" id="wind" aria-label="Vent" hidden><span class="wind-arrows" aria-hidden="true">◀◀◀</span> VENT <b id="wind-value"></b></div>
+          <div class="wind" id="wind" aria-label="Vent dans le dos" hidden>VENT ARRIÈRE <b id="wind-value"></b> <span class="wind-arrows" aria-hidden="true">▶▶▶</span></div>
 
           <div class="announce" id="announce" role="status"></div>
           <div class="yell" id="yell" aria-hidden="true"></div>
@@ -77,23 +77,11 @@
 
         <!-- Jeu -->
         <section class="panel panel-play" aria-label="Commandes">
-          <div class="gauge-wrap">
-            <div class="gauge-head">
-              <span>PUISSANCE <b class="readout" id="power-value">50 %</b></span>
-              <span>ANGLE <b class="readout" id="angle-value">45°</b></span>
-            </div>
-            <div class="gauge gauge-power" id="gauge" role="progressbar" aria-label="Puissance de tir" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-              <div class="gauge-fill" id="gauge-fill"></div>
-              <div class="gauge-needle" id="gauge-needle"></div>
-            </div>
-          </div>
-          <p class="hint aim-hint">TIREZ VERS L'ARRIÈRE SUR LA SCÈNE, PUIS RELÂCHEZ <span class="keys">· OU LES FLÈCHES, PUIS ESPACE</span></p>
+          <p class="hint aim-hint">TIREZ VERS L'ARRIÈRE SUR LA SCÈNE POUR RÉGLER L'ANGLE, PUIS RELÂCHEZ <span class="keys">· OU FLÈCHES HAUT / BAS, PUIS ESPACE</span></p>
           <div class="controls controls-fire">
-            <div class="pad" role="group" aria-label="Réglage de la visée">
-              <button class="btn btn-ghost" id="angle-up" type="button" aria-label="Augmenter l'angle">ANGLE +</button>
-              <button class="btn btn-ghost" id="power-up" type="button" aria-label="Augmenter la puissance">FORCE +</button>
-              <button class="btn btn-ghost" id="angle-down" type="button" aria-label="Diminuer l'angle">ANGLE −</button>
-              <button class="btn btn-ghost" id="power-down" type="button" aria-label="Diminuer la puissance">FORCE −</button>
+            <div class="pad" role="group" aria-label="Réglage de l'angle de tir">
+              <button class="btn btn-ghost" id="angle-up" type="button" aria-label="Viser plus haut">PLUS HAUT</button>
+              <button class="btn btn-ghost" id="angle-down" type="button" aria-label="Viser plus bas">PLUS BAS</button>
             </div>
             <button class="btn btn-pump btn-fire" id="fire" type="button">
               FEU !

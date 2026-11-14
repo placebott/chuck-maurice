@@ -1,5 +1,5 @@
 import {
-  FLOOR_Y, GLASS, STORM, clamp,
+  FLOOR_Y, GLASS, STORM, WORLD_W, clamp,
   type EndingKind, type Fate, type Phase,
 } from '../config/balance';
 import {
@@ -11,7 +11,6 @@ export interface ShotRecord {
   /** Rang du tir (0 = premier). */
   index: number;
   angle: number;
-  power: number;
   fate: Fate;
   /** Rebonds avant l'entrée dans le verre (ou avant la perte de l'olive). */
   bounces: number;
@@ -46,9 +45,23 @@ export interface BoxerState {
   y: number;
 }
 
+/** Mise en place d'une mission : fixée au départ, elle ne change plus ensuite. */
+export interface Layout {
+  /** Position horizontale du verre. */
+  glassX: number;
+  /** Accélération du ventilateur, appliquée à partir de la phase 2. */
+  wind: number;
+}
+
+/** Tire au hasard la force du ventilateur parmi STORM.winds. */
+export function randomLayout(random: () => number = Math.random): Layout {
+  const i = Math.min(STORM.winds.length - 1, Math.floor(random() * STORM.winds.length));
+  return { glassX: GLASS.x, wind: STORM.winds[i] };
+}
+
 /** Trajectoire du saut du boxer : une parabole fixe, de la droite vers la gauche, au-dessus du verre. */
 export function boxerPath(k: number): { x: number; y: number } {
-  const x = 492 - 205 * k;
+  const x = 545 - 235 * k;
   const y = 252 - 4 * 132 * k * (1 - k);
   return { x, y };
 }
@@ -71,8 +84,8 @@ export class Mission {
   readonly settled: Disc[] = [];
   ending: EndingKind | null = null;
 
-  private readonly segments: Segment[] = buildSegments();
-  private current: { angle: number; power: number } | null = null;
+  private readonly segments: Segment[];
+  private current: { angle: number } | null = null;
   private acc = 0;
   /** Instant (temps de mission) où le boxer est entré en scène. */
   private boxerSince = 0;
@@ -80,13 +93,17 @@ export class Mission {
   private boxerLeapt = -1;
   private hadEntry = false;
 
+  constructor(readonly layout: Layout = randomLayout()) {
+    this.segments = buildSegments(layout.glassX);
+  }
+
   get elapsed(): number {
     return STORM.duration - this.timeLeft;
   }
 
   /** Accélération horizontale du ventilateur pour la phase en cours. */
   get wind(): number {
-    return this.phase >= 2 ? STORM.wind : 0;
+    return this.phase >= 2 ? this.layout.wind : 0;
   }
 
   get obstacles(): { segments: readonly Segment[]; discs: readonly Disc[] } {
@@ -123,12 +140,11 @@ export class Mission {
     return Math.floor((this.elapsed - this.boxerSince - b.first + b.warn) / b.period);
   }
 
-  fire(angle: number, power: number): boolean {
+  fire(angle: number): boolean {
     if (!this.canFire) return false;
     const a = clamp(angle, STORM.angleMin, STORM.angleMax);
-    const p = clamp(power, 0, 1);
-    this.olive = launch(a, p);
-    this.current = { angle: a, power: p };
+    this.olive = launch(a);
+    this.current = { angle: a };
     this.shotsLeft--;
     this.hadEntry = false;
     return true;
@@ -165,7 +181,7 @@ export class Mission {
     const o = this.olive;
     if (o) {
       const discs = [CLOCK_DISC, ...this.settled];
-      for (const contact of stepOlive(o, this.segments, discs, this.wind, dt)) events.push({ type: 'bounce', contact });
+      for (const contact of stepOlive(o, this.segments, discs, this.wind, dt, this.layout.glassX)) events.push({ type: 'bounce', contact });
       if (o.entry && !this.hadEntry) events.push({ type: 'enter' });
       this.hadEntry = o.entry !== null;
       const fate = this.fateOf(o);
@@ -185,8 +201,8 @@ export class Mission {
     if (o.y < -12) return 'space';
     // une olive déviée par le métal part vers le fond de la cuisine : la fenêtre est ouverte
     if (inWindow(o) && (o.touched.has('pan') || o.touched.has('clock'))) return 'window';
-    if (o.still >= STORM.restTime) return insideGlass(o.x, o.y) ? 'scored' : 'lost';
-    if (o.t > STORM.maxFlight || o.y > FLOOR_Y + 60) return 'lost';
+    if (o.still >= STORM.restTime) return insideGlass(o.x, o.y, this.layout.glassX) ? 'scored' : 'lost';
+    if (o.t > STORM.maxFlight || o.y > FLOOR_Y + 60 || o.x > WORLD_W + 12) return 'lost';
     return null;
   }
 
@@ -217,7 +233,7 @@ export class Mission {
     this.score += total;
 
     const shot: ShotRecord = {
-      index: this.shots.length, angle: aim.angle, power: aim.power, fate, bounces, direct, centered,
+      index: this.shots.length, angle: aim.angle, fate, bounces, direct, centered,
       points, total, touched: [...o.touched],
     };
     this.shots.push(shot);
@@ -251,9 +267,9 @@ export class Mission {
     if (misses.some((s) => s.fate === 'window')) return 'diplomatic';
     if (misses.some((s) => s.fate === 'space')) return 'space';
     if (misses.some((s) => s.fate === 'dog')) return 'dog';
-    // rien de spectaculaire : on tranche sur la façon de tirer
-    const power = misses.reduce((sum, s) => sum + s.power, 0) / Math.max(1, misses.length);
-    return misses.length > 0 && power >= 0.68 ? 'space' : 'diplomatic';
+    // rien de spectaculaire : des tirs en cloche finissent dans le ciel, les autres chez le voisin
+    const steep = misses.reduce((sum, s) => sum + s.angle, 0) / Math.max(1, misses.length);
+    return misses.length > 0 && steep >= 50 ? 'space' : 'diplomatic';
   }
 
   /** Part des tirs utilisés qui ont fini dans le verre (0–1). */

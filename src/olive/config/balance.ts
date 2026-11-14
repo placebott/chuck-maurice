@@ -13,23 +13,18 @@ export const STORM = {
 
   // ------------------------------------------------------------ tir
   /** Accélération de la pesanteur (px/s²). */
-  gravity: 520,
-  /** Vitesse initiale à puissance 0 % et 100 % (px/s). */
-  powerMin: 170,
-  powerMax: 450,
-  /** Angle de tir autorisé (°, 0 = horizontal vers la droite). */
+  gravity: 300,
+  /** Vitesse initiale de l'olive (px/s) : la cuillère tire toujours avec la même force. */
+  speed: 290,
+  /** Angle de tir autorisé (°, 0 = horizontal vers la droite) : c'est le seul réglage du joueur. */
   angleMin: 8,
   angleMax: 82,
-  /** Réglage de départ. */
-  angleStart: 45,
-  powerStart: 0.5,
-  /** Pas des touches directionnelles. */
-  angleStep: 1,
-  powerStep: 0.01,
-  /** Longueur de tirage (px écran logique) qui donne 100 % de puissance à la souris ou au doigt. */
-  dragFull: 85,
-  /** En dessous de cette puissance, relâcher annule le tir au lieu de le déclencher. */
-  dragCancel: 0.06,
+  /** L'angle de départ est tiré au hasard dans cette plage à chaque mission. */
+  angleStart: [18, 30],
+  /** Pas des touches directionnelles (°) ; Maj multiplie par 4. */
+  angleStep: 0.5,
+  /** Tirage minimal (px écran logique) pour qu'un glisser compte comme une visée. */
+  dragMin: 14,
 
   // ------------------------------------------------------------ olive
   radius: 4.5,
@@ -54,11 +49,17 @@ export const STORM = {
     olive: { bounce: 0.2, grip: 0.3 },
   },
 
+  // ------------------------------------------------------------ mise en place
+  /**
+   * La force du ventilateur change d'une mission à l'autre : on ne peut pas apprendre l'angle par cœur.
+   * Elle est fixée au début de la mission et ne bouge plus ensuite. Le ventilateur souffle dans le dos
+   * de Chuck (positif = vers la droite) : l'olive porte plus loin et la bonne fenêtre d'angle rétrécit.
+   */
+  winds: [40, 50, 60],
+
   // ------------------------------------------------------------ phases
-  /** Phase 2 : accélération horizontale due au ventilateur (px/s², négatif = vers la gauche). */
-  wind: -70,
-  /** Durée de trajectoire affichée pendant la visée (s), par phase. */
-  preview: [0.95, 0.6, 0.6],
+  /** Durée de trajectoire affichée pendant la visée (s), par phase : juste l'amorce du tir. */
+  preview: [0.22, 0.16, 0.16],
   /** Phase 3 : le boxer bondit toutes les `period` s ; `warn` s d'avertissement avant chaque saut. */
   boxer: { first: 1.6, period: 3.3, leap: 0.95, warn: 0.75, radius: 14 },
 
@@ -79,12 +80,12 @@ export const FLOOR_Y = 232;
 export const WORLD_W = 480;
 
 /** Poing de Chuck : pivot de la cuillère-catapulte. */
-export const PIVOT = { x: 116, y: 158 };
+export const PIVOT = { x: 152, y: 158 };
 /** Distance du pivot au creux de la cuillère : l'olive part de là. */
 export const SPOON_REACH = 72;
 
 export const GLASS = {
-  x: 404,
+  x: 432,
   /** Hauteur du bord au-dessus de la table. */
   rim: 60,
   /** Demi-largeur de l'ouverture. */
@@ -93,10 +94,9 @@ export const GLASS = {
   apex: 31,
 };
 
-export const PAN = { x: 236, w: 51, h: 27, handle: 28 };
+export const PAN = { x: 286, w: 51, h: 27, handle: 28 };
 export const CLOCK = { x: 315, y: 34, r: 21 };
 /** Ouverture de la fenêtre : une olive qui a ricoché et qui passe par là quitte la cuisine. */
 export const WINDOW = { x0: 156, x1: 222, y0: 24, y1: 92 };
 
-export const toSpeed = (power: number): number => STORM.powerMin + (STORM.powerMax - STORM.powerMin) * power;
 export const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v));
