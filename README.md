@@ -67,7 +67,9 @@ chuck-maurice/
 │       ├── audio/          # Sons ou musiques exportés si nécessaires
 │       ├── fonts/          # Polices avec droits d’utilisation adaptés
 │       ├── ui/             # Éléments graphiques de l’interface
-│       └── sprites/        # Sprites du jeu, générés depuis les originaux (ne pas éditer à la main)
+│       ├── sprites/        # Sprites du jeu, générés depuis les originaux (ne pas éditer à la main)
+│       ├── shared/         # Originaux communs à plusieurs jeux : chuck/, kitchen/ (vides pour l’instant)
+│       └── saucissonator/  # Originaux du 2ᵉ jeu : objects/, characters/, references/
 ├── scripts/
 │   └── build_assets.py     # Détourage, découpe et réduction des originaux vers sprites/
 ├── src/
