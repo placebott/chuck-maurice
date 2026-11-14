@@ -5,7 +5,8 @@ import '../styles/saucissonator.css';
 
 import { CUT, type EndingKind } from './config/balance';
 import {
-  BOXER_BARKS, CHUCK_BARKS, COMBO_TEXT, ENDINGS, GO_TEXT, HEADLINES, INTRO_LINES, VERDICTS, pick,
+  BOXER_BARKS, CHUCK_BARKS, COMBO_TEXT, ENDINGS, GO_TEXT, HEADLINES, INTRO_DURATION, INTRO_LINES, INTRO_PACE,
+  VERDICTS, pick,
 } from './config/messages';
 import { Session, type CutRecord } from './systems/session';
 import { awardMedals, type MissionSummary } from './systems/medals';
@@ -104,15 +105,11 @@ function startIntro(): void {
   ui.setScreen('intro');
 
   // briefing rejoué à chaque mission ; un appui (touche, clic ou toucher) le passe
-  scene.playIntro();
+  scene.playIntro(INTRO_DURATION);
   sfx.introRoll();
-  let t = 250;
-  for (const line of INTRO_LINES) {
-    later(() => typeLine(line), t);
-    t += 950;
-  }
-  later(() => sfx.woof(), 3200);
-  later(beginPlay, t + 350);
+  INTRO_LINES.forEach((line, i) => later(() => typeLine(line), INTRO_PACE.start + i * INTRO_PACE.lineEvery));
+  later(() => sfx.woof(), INTRO_DURATION * 0.55 + 420);
+  later(beginPlay, INTRO_DURATION);
 }
 
 function typeLine(text: string): void {

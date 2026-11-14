@@ -7,6 +7,19 @@ export const INTRO_LINES = [
   'ARME : UN COUTEAU MANIFESTEMENT TROP GRAND.',
 ];
 
+/** Rythme du briefing (ms) : assez lent pour être lu, et toujours passable d'un appui. */
+export const INTRO_PACE = {
+  /** Délai avant la première ligne. */
+  start: 300,
+  /** Intervalle entre deux lignes. */
+  lineEvery: 1400,
+  /** Temps de lecture laissé après la dernière ligne, avant le « TRANCHEZ ! ». */
+  hold: 2100,
+} as const;
+
+/** Durée totale du briefing. */
+export const INTRO_DURATION = INTRO_PACE.start + (INTRO_LINES.length - 1) * INTRO_PACE.lineEvery + INTRO_PACE.hold;
+
 export const GO_TEXT = 'TRANCHEZ !';
 export const COMBO_TEXT = 'MODE CHARCUTERIE TACTIQUE ACTIVÉ';
 
