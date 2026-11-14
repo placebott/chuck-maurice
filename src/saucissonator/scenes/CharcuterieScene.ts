@@ -334,24 +334,24 @@ export class CharcuterieScene extends Phaser.Scene {
     this.mode = 'idle';
   }
 
-  /** Briefing : gros plan sur l'arme, sur la cible, puis sur le suspect. */
-  playIntro(): void {
+  /** Briefing de `duration` ms : gros plan sur l'arme, sur la cible, puis sur le suspect. */
+  playIntro(duration: number): void {
     this.clearEffects();
     this.mode = 'idle';
     if (this.reducedMotion) return;
     const cam = this.cameras.main;
     cam.pan(KNIFE_X + 26, 96, 450, 'Sine.easeInOut');
     cam.zoomTo(1.9, 450, 'Sine.easeInOut');
-    this.time.delayedCall(1500, () => {
+    this.time.delayedCall(duration * 0.3, () => {
       cam.pan(X_CUT + 46, SAU_Y, 420, 'Sine.easeInOut');
       cam.zoomTo(2.3, 420, 'Sine.easeInOut');
     });
-    this.time.delayedCall(2750, () => {
+    this.time.delayedCall(duration * 0.55, () => {
       cam.pan(BOXER_X + 26, 172, 380, 'Sine.easeInOut');
       cam.zoomTo(2.6, 380, 'Sine.easeInOut');
       this.time.delayedCall(420, () => this.boxerHop());
     });
-    this.time.delayedCall(3750, () => {
+    this.time.delayedCall(duration * 0.78, () => {
       cam.pan(GAME_W / 2, GAME_H / 2, 320, 'Sine.easeOut');
       cam.zoomTo(1, 320, 'Sine.easeOut');
     });
