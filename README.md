@@ -12,6 +12,8 @@ Reste à faire avant publication : essais sur de vrais téléphones, réglage de
 
 **Mission 002 — Saucissonator 3000** est jouable sur sa propre page (`saucissonator.html`), accessible depuis l’accueil. Voir « Mission 002 » plus bas.
 
+**Mission 003 — Olive Storm** est jouable sur `olive-storm.html`. Voir « Mission 003 » plus bas.
+
 ## Expérience visée
 
 Une partie courte de **20 secondes**, drôle, nerveuse et immédiatement rejouable, sur ordinateur et smartphone. Une tâche banale est mise en scène comme un combat de fin de jeu : introduction militaire, bocal menaçant, réactions exagérées de Chuck et résultats spectaculaires.
@@ -78,6 +80,7 @@ chuck-maurice/
 ├── src/
 │   ├── main.ts             # Contrôleur d’Opération Cornichon : enchaînement des écrans et entrées
 │   ├── saucissonator/      # Mission 002 : contrôleur, scène, règles, médailles, sauvegarde
+│   ├── olive/              # Mission 003 : contrôleur, scène, physique, règles, médailles, sauvegarde
 │   ├── game/
 │   │   ├── scenes/         # Chargement, titre, partie et résultats
 │   │   ├── entities/       # Chuck, bocal et objets de jeu
@@ -89,7 +92,7 @@ chuck-maurice/
 │   ├── styles/             # Styles, adaptation des écrans, pixel art
 │   └── types/              # Types TypeScript partagés
 ├── docs/                   # Notes de conception et inventaire des assets
-└── tests/                  # Tests des règles et de l’équilibrage (Saucissonator)
+└── tests/                  # Tests des règles, de la physique et de l’équilibrage (missions 002 et 003)
 ```
 
 Les dossiers vides contiennent un fichier `.gitkeep` afin d’être conservés par Git. Ce fichier n’a aucun rôle dans le jeu et peut être retiré lorsqu’un dossier reçoit de vrais fichiers.
@@ -194,9 +197,43 @@ Décor (`kitchen`, `table`), poses de Chuck (`cool`, `rage`, `despair`), moteur 
 - Aucune illustration pour le plancher défoncé, le parpaing de porc (la rondelle épaisse est agrandie), la cuisine tranchée en deux ni les drapeaux de la maquette de victoire : ces effets sont produits par Phaser.
 - La plupart des fichiers ont un faux damier blanc incrusté au lieu d’une vraie transparence ; `knife.png` a un halo sombre. Le script de sprites les détoure.
 
+## Mission 003 — Olive Storm
+
+> 19h46. Il n’y a pas d’olives dans le verre. Chuck refuse de faire trois mètres.
+
+Jeu de tir balistique : trois olives à placer dans le verre, cinq tirs, 35 secondes. Page : `olive-storm.html`, code dans `src/olive/`, sprites dans `public/assets/sprites/olive-storm/`.
+
+### Règles
+
+- On vise en tirant vers l’arrière sur la scène (souris ou doigt) puis on relâche ; au clavier, flèches puis Espace. Les pointillés sont calculés par le même modèle que le tir, vent compris, et s’arrêtent au premier contact : ils ne prédisent pas les rebonds.
+- Une olive ne compte que si elle franchit l’ouverture du verre par le haut **et** s’immobilise à l’intérieur. Bord, flanc et pied ne rapportent rien.
+- Phase 1 : tir réglementaire. Phase 2 (après la 1ʳᵉ olive) : le ventilateur pousse les olives vers la gauche, toujours avec la même force. Phase 3 (après la 2ᵉ) : le boxer bondit à intervalle fixe sur une trajectoire tracée à l’écran, avec un aboiement d’avertissement ; une olive interceptée est un tir manqué.
+- Score par olive : 500, plus 300 (tir direct) **ou** 200 (au moins un rebond avant le verre), plus 500 si elle entre au centre. Trois tirs réussis d’affilée : +1000, une seule fois.
+- Défaite quand l’objectif devient hors d’atteinte ou que le chrono tombe. La catastrophe dépend de la partie : **trahison canine** si la dernière olive perdue a été interceptée, **incident diplomatique** si une olive est sortie par la fenêtre après un ricochet sur la casserole ou l’horloge, **incident spatial** si une olive a traversé le plafond ; sinon, selon la puissance moyenne des tirs ratés.
+
+| Action | Clavier | Souris / tactile |
+| --- | --- | --- |
+| Viser | ↑ ↓ (angle), ← → (puissance), Maj pour aller plus vite | tirer vers l’arrière sur la scène, ou boutons ANGLE / FORCE |
+| Tirer | Espace, Entrée ou F | relâcher, ou bouton FEU ! |
+| Couper le son | M | bouton SON |
+| Retour au menu | Échap | bouton MENU |
+
+La physique (`src/olive/physics/world.ts`) et les règles (`src/olive/systems/mission.ts`) sont séparées de l’affichage et tournent à pas fixe : mêmes conditions initiales, même trajectoire. Gravité, puissance, rebonds, vent, boxer, durée et barème se règlent dans `src/olive/config/balance.ts`. `npm test` couvre les deux ; `npm run assets:olive` régénère les sprites.
+
+### Illustrations
+
+Les 15 fichiers de `public/assets/olive-storm/` sont tous utilisés, sans modification ; `scripts/build_olive_assets.py` en tire les dérivés du jeu.
+
+- `fan.png` contient le ventilateur **et** son hélice : ils sont séparés pour faire tourner l’hélice.
+- `window_open.png` est posée sur la fenêtre de la cuisine officielle, avec `jeanmi_garden.png` en arrière-plan.
+- `jeanmi_idle.png` ne tient pas de verre : `pastis_glass.png` est placé dans sa main par le jeu, puis tombe seul.
+- `boxer_intercept.png`, `jeanmi_angry.png`, `olive_splat.png`, `pan.png` et `pastis_glass.png` ont un faux damier incrusté au lieu d’une vraie transparence ; le script les détoure.
+- Pas d’illustration pour le radar, le projecteur ni le plafond percé : effets Phaser. Le hurlement de Jean-Mi est un son de synthèse, accompagné du texte à l’écran.
+- Réutilisés : la cuisine et le plan de travail, `chuck_despair` (mission 001), `boxer_idle` (mission 002).
+
 ## Périmètre
 
-Deux missions sont jouables : **Opération Cornichon** et **Saucissonator 3000**. Les autres missions, le site arcade complet, la publication sur chuckmaurice.com et l’idée d’un beat’em all sont des évolutions ultérieures, hors de cette initialisation.
+Trois missions sont jouables : **Opération Cornichon**, **Saucissonator 3000** et **Olive Storm**. Les autres missions, le site arcade complet, la publication sur chuckmaurice.com et l’idée d’un beat’em all sont des évolutions ultérieures, hors de cette initialisation.
 
 ## Droits et crédits
 

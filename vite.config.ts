@@ -9,7 +9,7 @@ import { defineConfig, type Plugin } from 'vite';
  * on retire donc les originaux du build pour ne pas les déployer.
  */
 function dropSourceArt(): Plugin {
-  const dirs = ['characters', 'objects', 'backgrounds', 'references', 'shared', 'saucissonator'];
+  const dirs = ['characters', 'objects', 'backgrounds', 'references', 'shared', 'saucissonator', 'olive-storm'];
   let outDir = 'dist';
   return {
     name: 'drop-source-art',
@@ -30,10 +30,11 @@ export default defineConfig({
     target: 'es2022',
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
-      // une page par mission : l'accueil (Opération Cornichon) et Saucissonator 3000
+      // une page par mission : l'accueil (Opération Cornichon), Saucissonator 3000 et Olive Storm
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         saucissonator: fileURLToPath(new URL('./saucissonator.html', import.meta.url)),
+        'olive-storm': fileURLToPath(new URL('./olive-storm.html', import.meta.url)),
       },
       output: { manualChunks: { phaser: ['phaser'] } },
     },

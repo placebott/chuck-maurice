@@ -343,15 +343,18 @@ export class CharcuterieScene extends Phaser.Scene {
     cam.pan(KNIFE_X + 26, 96, 450, 'Sine.easeInOut');
     cam.zoomTo(1.9, 450, 'Sine.easeInOut');
     this.time.delayedCall(duration * 0.3, () => {
+      if (this.mode !== 'idle') return;
       cam.pan(X_CUT + 46, SAU_Y, 420, 'Sine.easeInOut');
       cam.zoomTo(2.3, 420, 'Sine.easeInOut');
     });
     this.time.delayedCall(duration * 0.55, () => {
+      if (this.mode !== 'idle') return;
       cam.pan(BOXER_X + 26, 172, 380, 'Sine.easeInOut');
       cam.zoomTo(2.6, 380, 'Sine.easeInOut');
       this.time.delayedCall(420, () => this.boxerHop());
     });
     this.time.delayedCall(duration * 0.78, () => {
+      if (this.mode !== 'idle') return;
       cam.pan(GAME_W / 2, GAME_H / 2, 320, 'Sine.easeOut');
       cam.zoomTo(1, 320, 'Sine.easeOut');
     });

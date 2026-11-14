@@ -1,0 +1,378 @@
+/*
+ * OLIVE STORM — compléments à main.css (identité, boutons, panneaux et jauge communs).
+ * Tout est limité à .game-olive : rien ici ne s'applique aux deux autres missions.
+ */
+.game-olive {
+  --olive: #9db81f;
+}
+
+/* on vise en tirant sur la scène : le geste ne doit ni faire défiler ni sélectionner */
+.game-olive .stage {
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.game-olive .logo-mission {
+  width: 40cqw;
+}
+
+.game-olive .logo-kicker {
+  font-size: 1.05cqw;
+}
+
+/* ------------------------------------------------------------ incrustations */
+.game-olive .hud {
+  position: absolute;
+  top: 3cqw;
+  display: none;
+  font-size: 2.2cqw;
+  padding: 1.4cqw 1.4cqw 1.1cqw;
+  background: #120a14;
+  color: var(--cream);
+  border: 0.4cqw solid var(--cream);
+  box-shadow: 0.5cqw 0.5cqw 0 #000;
+  white-space: nowrap;
+}
+
+.game-olive .hud b {
+  font-weight: normal;
+  color: var(--yellow);
+}
+
+.game-olive .hud-left {
+  left: 2.5cqw;
+}
+
+.game-olive .hud-right {
+  right: 2.5cqw;
+}
+
+.hud-olive {
+  display: inline-block;
+  width: 2.4cqw;
+  height: 1.9cqw;
+  margin-right: 0.9cqw;
+  vertical-align: -0.2cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle at 72% 40%, #5a3a10 0 14%, transparent 15%), var(--olive);
+  box-shadow: 0 0 0 0.25cqw #2c3a06;
+}
+
+.hud-sep {
+  margin: 0 0.8cqw 0 1.6cqw;
+  font-size: 1.5cqw;
+  color: var(--muted);
+}
+
+.game-olive .hud.is-bump {
+  animation: olive-bump 0.22s steps(4);
+}
+
+@keyframes olive-bump {
+  30% {
+    transform: scale(1.2);
+    border-color: var(--yellow);
+  }
+}
+
+.phase-tag,
+.wind {
+  position: absolute;
+  display: none;
+  font-size: 1.45cqw;
+  line-height: 1.4;
+  padding: 0.8cqw 1cqw 0.6cqw;
+  background: rgba(18, 10, 20, 0.88);
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.phase-tag {
+  left: 2.5cqw;
+  top: 11.2cqw;
+  border-left: 0.5cqw solid var(--olive);
+}
+
+.wind {
+  right: 2.5cqw;
+  top: 11.2cqw;
+  border-right: 0.5cqw solid #7fd4ff;
+  color: #c8f0ff;
+}
+
+.wind b {
+  font-weight: normal;
+  color: #fff;
+}
+
+.wind-arrows {
+  display: inline-block;
+  color: #7fd4ff;
+  animation: wind-blow 0.7s steps(4) infinite;
+}
+
+@keyframes wind-blow {
+  100% {
+    transform: translateX(-0.9cqw);
+    opacity: 0.3;
+  }
+}
+
+#app[data-screen='play']:not([data-ended]) .hud,
+#app[data-screen='play']:not([data-ended]) .phase-tag {
+  display: block;
+}
+
+#app[data-screen='play']:not([data-ended]) .wind:not([hidden]) {
+  display: block;
+}
+
+/* annonce de phase : courte, plaquée sur la scène */
+.announce {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 26%;
+  text-align: center;
+  font-size: 2.5cqw;
+  line-height: 1.5;
+  padding: 1.6cqw 4cqw 1.2cqw;
+  color: #fff;
+  background: linear-gradient(to right, transparent, rgba(18, 10, 20, 0.92) 12% 88%, transparent);
+  opacity: 0;
+  text-shadow: 0.3cqw 0.3cqw 0 #000;
+}
+
+.announce.is-on {
+  animation: announce 2.4s steps(24) both;
+}
+
+@keyframes announce {
+  0% {
+    opacity: 0;
+    transform: translateX(-12cqw);
+  }
+  8%,
+  82% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(12cqw);
+  }
+}
+
+/* compte rendu de chaque tir */
+.game-olive .verdict {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 2.1cqw;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  color: #fff;
+  text-shadow: 0.3cqw 0.3cqw 0 #000, -0.2cqw -0.2cqw 0 #000, 0.3cqw -0.2cqw 0 #000, -0.2cqw 0.3cqw 0 #000;
+  animation: olive-verdict 1.25s steps(12) both;
+}
+
+.game-olive .verdict small {
+  display: block;
+  font-size: 1.45cqw;
+  color: var(--cream);
+}
+
+.game-olive .verdict.is-scored {
+  color: var(--yellow);
+  font-size: 2.6cqw;
+}
+
+.game-olive .verdict.is-miss {
+  color: #ff8d86;
+}
+
+@keyframes olive-verdict {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.6);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  80% {
+    opacity: 1;
+    margin-top: -3.5cqw;
+  }
+  100% {
+    opacity: 0;
+    margin-top: -5cqw;
+  }
+}
+
+.bark-boxer {
+  background: #f0a04a;
+  color: #2a1200;
+}
+
+.bark-jeanmi {
+  background: #fff;
+  color: #7a0a12;
+  font-size: 2.4cqw;
+  animation-duration: 1.6s;
+}
+
+/* MAURIIIIICE !!! */
+.yell {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8%;
+  text-align: center;
+  font-size: 7.4cqw;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: #fff;
+  opacity: 0;
+  text-shadow: 0.6cqw 0.6cqw 0 var(--red), 1.2cqw 1.2cqw 0 #000;
+}
+
+.yell.is-on {
+  animation: yell 1.9s linear both;
+}
+
+@keyframes yell {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1.1) rotate(-2deg);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: scale(1.04) rotate(2deg) translateX(0.6cqw);
+  }
+  30%,
+  50%,
+  70% {
+    transform: scale(1.08) rotate(-2deg) translateX(-0.6cqw);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+.banner.is-victory {
+  top: 74%;
+  color: var(--yellow);
+}
+
+.banner.is-space {
+  color: #9dffc0;
+}
+
+.banner.is-dog {
+  color: #ffc98a;
+}
+
+.banner.is-diplomatic {
+  color: #fff;
+  font-size: 4.6cqw;
+}
+
+/* ------------------------------------------------------------ commandes */
+.gauge-head .readout {
+  font-weight: normal;
+  font-size: 14px;
+  color: var(--cream);
+  margin-left: 6px;
+}
+
+.gauge-power .gauge-fill {
+  background: linear-gradient(to right, #6f8a12, var(--olive) 45%, var(--yellow) 75%, var(--red));
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+.game-olive[data-busy] .gauge-power,
+.game-olive[data-busy] .pad,
+.game-olive[data-busy] .btn-fire {
+  opacity: 0.45;
+}
+
+.aim-hint {
+  margin: -2px 0 0;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .aim-hint .keys {
+    display: none;
+  }
+}
+
+.controls-fire {
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.pad {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pad .btn {
+  padding: 10px 4px 8px;
+  font-size: 9px;
+}
+
+.btn-fire {
+  background: var(--olive);
+  color: #101a00;
+  font-size: clamp(18px, 5.4vw, 30px);
+}
+
+/* ------------------------------------------------------------ résultat */
+.game-olive .result-sub {
+  margin: -4px 0 0;
+  font-size: clamp(8px, 2.2vw, 11px);
+  line-height: 1.7;
+  color: var(--yellow);
+}
+
+.game-olive[data-outcome='space'] .result-score,
+.game-olive[data-outcome='dog'] .result-score,
+.game-olive[data-outcome='diplomatic'] .result-score {
+  color: var(--muted);
+}
+
+.game-olive .medals ul {
+  grid-template-columns: repeat(4, minmax(0, 44px));
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .aim-hint {
+    display: none;
+  }
+  .controls-fire {
+    grid-template-columns: 1fr;
+  }
+  .pad .btn {
+    padding: 6px 2px 5px;
+    font-size: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wind-arrows,
+  .game-olive .hud.is-bump {
+    animation: none;
+  }
+}
