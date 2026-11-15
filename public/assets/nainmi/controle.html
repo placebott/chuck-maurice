@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nain-Mi — contrôle</title>
+<!--
+  Planche de contrôle des Nain-Mi au repos (public/assets/nainmi/<couleur>/idle.png).
+  Produits par scripts/build_nainmi_assets.py depuis public/assets/sources/nainmi_sheet.png.
+  Page autonome : serveur de dev (/assets/nainmi/controle.html) ou fichier local. Les mesures
+  viennent de manifest.json (indisponible en fichier local : le tableau l'indique).
+-->
+<style>
+  :root {
+    --page: #eef0f4;
+    --card: #ffffff;
+    --ink: #1d2330;
+    --muted: #5d6678;
+    --line: #d5dae3;
+    --top: #d6336c;
+    --base: #1f8f4e;
+    --mid: #2a6fdb;
+    --board: #cfd5de;
+    --cell: #e7eaef;
+    --cell-edge: #c2c9d4;
+    --check-a: #cdd2da;
+    --check-b: #f4f6f9;
+    --frame: 160;        /* cadre des PNG */
+    --height: 148;       /* hauteur apparente */
+    --baseline: 154;     /* ligne des pieds */
+    --px: 1px;           /* 1 px image = --px CSS (réglé par « pixels réels ») */
+    --h48: calc(48px * var(--frame) / var(--height));   /* cadre affiché pour 48 px de personnage */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1480px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 17px; margin: 0 0 4px; }
+  p { margin: 0 0 10px; color: var(--muted); }
+  code { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-top: 16px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin-top: 12px; }
+  .bar label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+  .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px dashed; vertical-align: middle; margin-right: 6px; }
+
+  .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+  figure { margin: 0; text-align: center; }
+  figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .box { position: relative; width: var(--s); height: var(--s); }
+  .box img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .checker { background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px; }
+  .grey { background: var(--cell); }
+  .white { background: #fff; outline: 1px solid var(--line); }
+  .black { background: #101318; }
+  .g { position: absolute; pointer-events: none; display: none; }
+  body.guides .g { display: block; }
+  .g.top  { left: 0; right: 0; top: calc(var(--s) * 6 / var(--frame)); border-top: 1px dashed var(--top); }
+  .g.base { left: 0; right: 0; top: calc(var(--s) * var(--baseline) / var(--frame)); border-top: 1px dashed var(--base); }
+  .g.mid  { top: 0; bottom: 0; left: calc(var(--s) * 80 / var(--frame)); border-left: 1px dashed var(--mid); }
+  .g.edge { inset: 0; outline: 1px solid rgba(29, 35, 48, .25); }
+
+  .full { --s: calc(var(--frame) * var(--px)); }
+  .s48 { --s: var(--h48); }
+  .s32 { --s: calc(32px * var(--frame) / var(--height)); }
+  .s64 { --s: calc(64px * var(--frame) / var(--height)); }
+  /* Barre de 48 px posée sur la ligne des pieds des cadres voisins. */
+  .ruler { width: 6px; height: 48px; background: var(--ink); border-radius: 2px; align-self: flex-end; margin-bottom: calc(var(--h48) * (var(--frame) - var(--baseline)) / var(--frame)); }
+  .sizes { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; align-items: end; }
+  .sizes > b { font-size: 13px; color: var(--muted); font-weight: 600; padding-bottom: 6px; }
+
+  /* Alignement : tous les cadres côte à côte, mêmes lignes de référence sur toute la rangée. */
+  .lineup { position: relative; display: flex; gap: 0; padding: 0; width: max-content; }
+  .lineup .box { --s: var(--h48); }
+  .lineup-wrap { overflow-x: auto; padding: 4px 0 6px; }
+  .lineup .rule { position: absolute; left: 0; right: 0; border-top: 1px dashed; pointer-events: none; }
+  .stack { position: relative; --s: min(320px, calc(100vw - 72px)); width: var(--s); height: var(--s); }
+  .stack img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .2; }
+  .stack-wrap { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+
+  /* Plateau gris clair */
+  .board { display: inline-grid; grid-template-columns: repeat(7, 58px); grid-auto-rows: 58px; gap: 4px; padding: 10px; background: var(--board); border-radius: 14px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .06); }
+  .cell { position: relative; background: var(--cell); border-radius: 8px; box-shadow: inset 0 0 0 1px var(--cell-edge); overflow: visible; }
+  .cell .box { position: absolute; --s: var(--h48); left: calc(50% - var(--s) / 2); top: calc(58px - 4px - var(--s) * var(--baseline) / var(--frame)); }
+  .board-wrap { overflow-x: auto; }
+  .board .g { display: none !important; }   /* simulation : pas de lignes de référence */
+
+  table { border-collapse: collapse; font-size: 13px; width: 100%; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .note { font-size: 13px; }
+</style>
+</head>
+<body class="guides">
+<main>
+  <h1>Nain-Mi — poses au repos</h1>
+  <p>Planche de contrôle des 8 sprites extraits de <code>public/assets/sources/nainmi_sheet.png</code> par <code>scripts/build_nainmi_assets.py</code>.
+     Cadre transparent 160 × 160, personnage de 148 px de haut, bas des semelles sur la ligne y = 154, centré à x = 80.</p>
+  <div class="bar">
+    <label><input type="checkbox" id="guides" checked> Lignes de référence</label>
+    <label><input type="checkbox" id="realpx"> Pixels réels (1 px image = 1 px écran)</label>
+    <span class="legend">
+      <span><i style="color: var(--top)"></i>haut du crâne (y = 6)</span>
+      <span><i style="color: var(--base)"></i>ligne des pieds (y = 154)</span>
+      <span><i style="color: var(--mid)"></i>axe central (x = 80)</span>
+    </span>
+  </div>
+
+  <section>
+    <h2>1. Cadres 160 × 160 sur damier</h2>
+    <p id="dpr-note">Damier = transparence. Aucun pixel du fond bleu nuit ne doit rester, ni liseré sombre au bord.</p>
+    <div class="row" id="full"></div>
+  </section>
+
+  <section>
+    <h2>2. Personnages à 48 px CSS de hauteur</h2>
+    <p>Le cadre est affiché à 48 × 160 / 148 ≈ 51,9 px pour que le personnage mesure 48 px. La barre noire mesure 48 px. <span id="dpr-48"></span></p>
+    <div class="sizes">
+      <b>Damier</b><div class="row" id="r48-checker"></div>
+      <b>Gris clair</b><div class="row" id="r48-grey"></div>
+      <b>Blanc</b><div class="row" id="r48-white"></div>
+      <b>Noir</b><div class="row" id="r48-black"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Simulation sur plateau gris clair</h2>
+    <p>Cases de 58 px, personnages à 48 px, pieds à 4 px du bas de la case.</p>
+    <div class="board-wrap"><div class="board" id="board"></div></div>
+  </section>
+
+  <section>
+    <h2>4. Tailles et alignements</h2>
+    <p>Les 8 cadres collés, à 48 px : le haut du crâne et les pieds doivent tomber sur les mêmes lignes. À droite, superposition des 8 personnages (opacité 20 %) : un contour net = mêmes proportions et même placement.</p>
+    <div class="stack-wrap">
+      <div>
+        <div class="lineup-wrap"><div class="lineup" id="lineup"></div></div>
+        <div class="sizes" style="margin-top: 18px">
+          <b>32 px</b><div class="row" id="r32"></div>
+          <b>48 px</b><div class="row" id="r48b"></div>
+          <b>64 px</b><div class="row" id="r64"></div>
+        </div>
+      </div>
+      <figure>
+        <div class="stack checker" id="stack"><i class="g top"></i><i class="g base"></i><i class="g mid"></i></div>
+        <figcaption>superposition, cadre agrandi × 2</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Mesures</h2>
+    <p>Lues dans <code>manifest.json</code>. « Liseré » : écart de luminosité moyen entre les pixels de bord semi-transparents et l'intérieur voisin (négatif = bord plus sombre ; au-delà de −0,08 un halo se verrait).</p>
+    <div class="table-wrap"><table id="measures"><thead><tr>
+      <th>Personnage</th><th>Source (px)</th><th>Position source</th><th>Échelle</th><th>Boîte dans le cadre</th>
+      <th>Centre x</th><th>Centre de masse x</th><th>Trous transparents</th><th>Liseré</th>
+    </tr></thead><tbody></tbody></table></div>
+    <p class="note" id="measures-note"></p>
+  </section>
+</main>
+<script>
+  const NAINMI = [
+    ['red', 'rouge', '#e8262b'], ['blue', 'bleu', '#1a73f0'], ['yellow', 'jaune', '#ffd21f'], ['green', 'vert', '#3ccf2a'],
+    ['purple', 'violet', '#9a3df0'], ['orange', 'orange', '#ff7a12'], ['cyan', 'cyan', '#22d3f0'], ['pink', 'rose', '#f45aa0'],
+  ];
+
+  function frame(id, name, cls, bg, caption) {
+    const fig = document.createElement('figure');
+    fig.className = cls;
+    fig.innerHTML = `<div class="box ${bg}"><img src="${id}/idle.png" alt="Nain-Mi ${name}">`
+      + '<i class="g top"></i><i class="g base"></i><i class="g mid"></i><i class="g edge"></i></div>'
+      + (caption ? `<figcaption>${caption}</figcaption>` : '');
+    return fig;
+  }
+  const ruler = () => Object.assign(document.createElement('div'), { className: 'ruler', title: '48 px' });
+
+  const full = document.getElementById('full');
+  for (const [id, name] of NAINMI) full.append(frame(id, name, 'full', 'checker', `${name} · <code>${id}/idle.png</code>`));
+
+  for (const bg of ['checker', 'grey', 'white', 'black']) {
+    const row = document.getElementById('r48-' + bg);
+    row.append(ruler());
+    for (const [id, name] of NAINMI) row.append(frame(id, name, 's48', bg));
+  }
+  for (const [rowId, cls] of [['r32', 's32'], ['r48b', 's48'], ['r64', 's64']]) {
+    const row = document.getElementById(rowId);
+    for (const [id, name] of NAINMI) row.append(frame(id, name, cls, 'checker'));
+  }
+
+  const lineup = document.getElementById('lineup');
+  for (const [id, name] of NAINMI) {
+    const b = frame(id, name, '', 'checker').firstElementChild;
+    b.querySelectorAll('.g').forEach((g) => g.classList.contains('edge') || g.remove());
+    lineup.append(b);
+  }
+  for (const [y, color] of [[6, 'var(--top)'], [154, 'var(--base)']]) {
+    const r = document.createElement('i');
+    r.className = 'rule g';
+    r.style.cssText = `top: calc(var(--h48) * ${y} / 160); color: ${color}; border-color: ${color};`;
+    lineup.append(r);
+  }
+
+  const stack = document.getElementById('stack');
+  for (const [id, name] of NAINMI) {
+    const img = new Image();
+    img.src = `${id}/idle.png`;
+    img.alt = '';
+    stack.prepend(img);
+  }
+
+  // Plateau : 7 x 3, une file mélangée, quelques cases vides.
+  const layout = 'rbyg.pocirbyg.poc.ibrgypo'.slice(0, 21);
+  const byKey = { r: 'red', b: 'blue', y: 'yellow', g: 'green', p: 'purple', o: 'orange', c: 'cyan', i: 'pink' };
+  const board = document.getElementById('board');
+  const nameOf = Object.fromEntries(NAINMI.map(([id, name]) => [id, name]));
+  for (const k of layout) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    if (byKey[k]) {
+      const f = frame(byKey[k], nameOf[byKey[k]], '', '');
+      cell.append(f.firstElementChild);
+    }
+    board.append(cell);
+  }
+
+  const dpr = window.devicePixelRatio || 1;
+  document.getElementById('dpr-48').textContent =
+    `Sur cet écran (densité ${dpr}), 48 px CSS = ${Math.round(48 * dpr)} px physiques ; source : 148 px, ` +
+    (48 * dpr <= 148 ? 'réduite, donc nette.' : `agrandie × ${(48 * dpr / 148).toFixed(2)}, donc un peu floue.`);
+
+  const setReal = (on) => document.documentElement.style.setProperty('--px', on ? `${1 / dpr}px` : '1px');
+  document.getElementById('realpx').addEventListener('change', (e) => setReal(e.target.checked));
+  document.getElementById('guides').addEventListener('change', (e) => document.body.classList.toggle('guides', e.target.checked));
+  if (dpr === 1) document.getElementById('realpx').closest('label').title = 'Écran de densité 1 : déjà en pixels réels.';
+
+  const tbody = document.querySelector('#measures tbody');
+  const note = document.getElementById('measures-note');
+  fetch('manifest.json').then((r) => r.json()).then((m) => {
+    for (const [id, name, sw] of NAINMI) {
+      const c = m.characters[id];
+      if (!c) continue;
+      const [sx0, sy0, sx1, sy1] = c.sourceBox;
+      const [bx0, by0, bx1, by1] = c.bbox;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><span class="swatch" style="background:${sw}"></span>${name}</td>`
+        + `<td>${sx1 - sx0} × ${sy1 - sy0}</td><td>(${sx0}, ${sy0})</td><td>${c.scale.toFixed(3)}</td>`
+        + `<td>${bx1 - bx0} × ${by1 - by0} en (${bx0}, ${by0})</td><td>${c.centerX}</td><td>${c.massCenterX}</td>`
+        + `<td>${c.holesKept.length ? c.holesKept.map((h) => `${h.area} px`).join(', ') : '—'}</td>`
+        + `<td>${c.fringe > 0 ? '+' : ''}${c.fringe.toFixed(3)}</td>`;
+      tbody.append(tr);
+    }
+    note.textContent = `Cadre ${m.frame} × ${m.frame}, hauteur ${m.height} px, ligne des pieds y = ${m.baseline}. Source : ${m.source}.`;
+  }).catch(() => {
+    note.textContent = 'manifest.json illisible ici (page ouverte en fichier local ?) : ouvrir la page par le serveur de dev pour le tableau.';
+  });
+</script>
+</body>
+</html>

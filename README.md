@@ -446,6 +446,16 @@ Le moteur n’importe ni Phaser ni le DOM et ne manipule que des cases entières
   - Recommencer ;
   - la défaite.
 
+### Sprites des Nain-Mi
+
+Les 8 Nain-Mi au repos (rouge, bleu, jaune, vert, violet, orange, cyan, rose) sont tirés de la planche `public/assets/sources/nainmi_sheet.png` :
+
+```bash
+npm run assets:nainmi
+```
+
+Le script écrit `public/assets/nainmi/<couleur>/idle.png` (RGBA 160 × 160, personnage de 148 px de haut, pieds sur la ligne y = 154) et `manifest.json`. Planche de contrôle : `/assets/nainmi/controle.html` sur le serveur de dev. Méthode, mesures et défauts connus : [docs/nainmi-extraction.md](docs/nainmi-extraction.md). Ces sprites ne sont pas encore branchés sur le jeu.
+
 ### Points restant à corriger ou à vérifier
 
 - **H5** (une autre couleur bloque-t-elle ?) et **H3** (plusieurs personnages recouverts d’un coup) : à trancher sur une vidéo qui montre ces situations.

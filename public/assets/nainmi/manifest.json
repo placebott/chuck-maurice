@@ -1,0 +1,219 @@
+{
+  "source": "public/assets/sources/nainmi_sheet.png",
+  "frame": 160,
+  "height": 148,
+  "baseline": 154,
+  "pose": "idle",
+  "characters": {
+    "red": {
+      "name": "rouge",
+      "file": "red/idle.png",
+      "sourceBox": [
+        147,
+        108,
+        290,
+        302
+      ],
+      "contactLine": 301,
+      "scale": 0.7629,
+      "bbox": [
+        25,
+        6,
+        135,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 80.08,
+      "holesKept": [],
+      "holesFilled": 2,
+      "fringe": 0.0528,
+      "touchesWindow": []
+    },
+    "blue": {
+      "name": "bleu",
+      "file": "blue/idle.png",
+      "sourceBox": [
+        313,
+        108,
+        455,
+        302
+      ],
+      "contactLine": 301,
+      "scale": 0.7629,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 80.04,
+      "holesKept": [],
+      "holesFilled": 10,
+      "fringe": -0.0138,
+      "touchesWindow": []
+    },
+    "yellow": {
+      "name": "jaune",
+      "file": "yellow/idle.png",
+      "sourceBox": [
+        479,
+        108,
+        619,
+        302
+      ],
+      "contactLine": 301,
+      "scale": 0.7629,
+      "bbox": [
+        27,
+        6,
+        133,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.96,
+      "holesKept": [
+        {
+          "x": 550,
+          "y": 279,
+          "area": 119
+        }
+      ],
+      "holesFilled": 0,
+      "fringe": -0.0364,
+      "touchesWindow": []
+    },
+    "green": {
+      "name": "vert",
+      "file": "green/idle.png",
+      "sourceBox": [
+        645,
+        109,
+        784,
+        302
+      ],
+      "contactLine": 301,
+      "scale": 0.7668,
+      "bbox": [
+        27,
+        6,
+        133,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.36,
+      "holesKept": [],
+      "holesFilled": 1,
+      "fringe": -0.0163,
+      "touchesWindow": []
+    },
+    "purple": {
+      "name": "violet",
+      "file": "purple/idle.png",
+      "sourceBox": [
+        809,
+        108,
+        949,
+        302
+      ],
+      "contactLine": 300,
+      "scale": 0.7629,
+      "bbox": [
+        27,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.5,
+      "massCenterX": 79.66,
+      "holesKept": [],
+      "holesFilled": 0,
+      "fringe": 0.0063,
+      "touchesWindow": []
+    },
+    "orange": {
+      "name": "orange",
+      "file": "orange/idle.png",
+      "sourceBox": [
+        981,
+        108,
+        1125,
+        302
+      ],
+      "contactLine": 301,
+      "scale": 0.7629,
+      "bbox": [
+        25,
+        6,
+        135,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.8,
+      "holesKept": [],
+      "holesFilled": 0,
+      "fringe": -0.0213,
+      "touchesWindow": []
+    },
+    "cyan": {
+      "name": "cyan",
+      "file": "cyan/idle.png",
+      "sourceBox": [
+        1158,
+        108,
+        1302,
+        302
+      ],
+      "contactLine": 301,
+      "scale": 0.7629,
+      "bbox": [
+        25,
+        6,
+        135,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.61,
+      "holesKept": [
+        {
+          "x": 1237,
+          "y": 270,
+          "area": 56
+        }
+      ],
+      "holesFilled": 3,
+      "fringe": -0.0326,
+      "touchesWindow": []
+    },
+    "pink": {
+      "name": "rose",
+      "file": "pink/idle.png",
+      "sourceBox": [
+        1336,
+        108,
+        1482,
+        302
+      ],
+      "contactLine": 301,
+      "scale": 0.7629,
+      "bbox": [
+        24,
+        6,
+        136,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.44,
+      "holesKept": [
+        {
+          "x": 1410,
+          "y": 278,
+          "area": 112
+        }
+      ],
+      "holesFilled": 0,
+      "fringe": -0.013,
+      "touchesWindow": []
+    }
+  }
+}
