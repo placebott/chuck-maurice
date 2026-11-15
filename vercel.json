@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/essai-gd-315be9e615", "destination": "/essai-gd-315be9e615/", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/essai-gd-315be9e615/(.*)",
