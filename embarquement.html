@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#151b30" />
+    <meta name="robots" content="noindex" />
+    <title>Embarquement — prototype</title>
+    <meta name="description" content="Prototype de puzzle : glisser les pièces colorées sous les personnages de leur couleur." />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="bar">
+        <div class="level-badge" aria-label="Niveau"><small>Niveau</small><b id="level-number">–</b></div>
+        <div class="clock" id="clock" role="timer" aria-label="Temps restant">--:--</div>
+        <div class="actions">
+          <button class="icon-btn" id="restart" type="button" aria-label="Recommencer" title="Recommencer (R)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.6 4.7" /><path d="M4 4v5h5" /></svg>
+          </button>
+          <button class="icon-btn" id="pause" type="button" aria-label="Pause" title="Pause (P)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="stage">
+        <div class="board" id="board" aria-label="Grille de jeu : glisser une pièce sous les personnages de sa couleur"></div>
+
+        <div class="overlay" id="overlay" hidden>
+          <div class="card" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
+            <p class="card-title" id="overlay-title"></p>
+            <p class="card-detail" id="overlay-detail"></p>
+            <div class="card-actions">
+              <button class="btn btn-main" id="overlay-main" type="button"></button>
+              <button class="btn" id="overlay-alt" type="button" hidden></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="error" id="error" role="alert" hidden></div>
+      </main>
+
+      <footer class="foot">
+        <span class="level-name" id="level-name"></span>
+        <span class="people">À embarquer <b id="people-left">0</b></span>
+        <button class="btn btn-small" id="toggle-rules" type="button" aria-expanded="false" aria-controls="rules">Hypothèses</button>
+        <button class="btn btn-small" id="toggle-debug" type="button" aria-expanded="false" aria-controls="debug">Debug</button>
+      </footer>
+
+      <aside class="sheet" id="rules" aria-labelledby="rules-title" hidden>
+        <div class="sheet-head">
+          <h2 id="rules-title">Hypothèses de règles</h2>
+          <button class="btn btn-ghost" data-close type="button" aria-label="Fermer le panneau">✕</button>
+        </div>
+        <p class="sheet-intro">
+          Valeurs par défaut tirées de la vidéo de référence, avec leur niveau de preuve. Chaque changement relance le
+          niveau ; les réglages qui diffèrent du niveau sont repris dans l'adresse de la page.
+        </p>
+        <form class="rules-form" id="rules-form"></form>
+        <div class="rules-notes" id="rules-notes" aria-live="polite"></div>
+        <button class="btn" id="rules-reset" type="button">Revenir aux règles du niveau</button>
+      </aside>
+
+      <aside class="sheet" id="debug" aria-labelledby="debug-title" hidden>
+        <div class="sheet-head">
+          <h2 id="debug-title">Débogage</h2>
+          <button class="btn btn-ghost" data-close type="button" aria-label="Fermer le panneau">✕</button>
+        </div>
+        <div class="dbg-controls">
+          <label><input type="checkbox" id="dbg-timer-off" /> Chronomètre désactivé</label>
+          <label><input type="checkbox" id="dbg-grid" checked /> Coordonnées et cases occupées</label>
+          <button class="btn btn-small" id="dbg-reload" type="button">Recharger le niveau</button>
+        </div>
+        <section class="dbg-section">
+          <h3>Pièce sélectionnée</h3>
+          <div id="dbg-piece" class="dbg-piece">Touchez une pièce pour la sélectionner.</div>
+          <div class="nudge" role="group" aria-label="Déplacer la pièce sélectionnée d'une case (flèches du clavier)">
+            <button class="btn btn-small" data-nudge="0,-1" type="button" aria-label="Vers le haut">↑</button>
+            <button class="btn btn-small" data-nudge="-1,0" type="button" aria-label="Vers la gauche">←</button>
+            <button class="btn btn-small" data-nudge="1,0" type="button" aria-label="Vers la droite">→</button>
+            <button class="btn btn-small" data-nudge="0,1" type="button" aria-label="Vers le bas">↓</button>
+          </div>
+        </section>
+        <section class="dbg-section">
+          <h3>Distributeurs</h3>
+          <div id="dbg-feeders"></div>
+        </section>
+        <section class="dbg-section">
+          <h3>Journal</h3>
+          <ol class="dbg-log" id="dbg-log"></ol>
+        </section>
+      </aside>
+    </div>
+    <script type="module" src="/src/embarquement/main.ts"></script>
+  </body>
+</html>

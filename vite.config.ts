@@ -36,6 +36,8 @@ export default defineConfig({
         saucissonator: fileURLToPath(new URL('./saucissonator.html', import.meta.url)),
         'olive-storm': fileURLToPath(new URL('./olive-storm.html', import.meta.url)),
         mauriiiiice: fileURLToPath(new URL('./mauriiiiice.html', import.meta.url)),
+        // prototype de puzzle, page isolée (non liée depuis l'accueil)
+        embarquement: fileURLToPath(new URL('./embarquement.html', import.meta.url)),
       },
       output: { manualChunks: { phaser: ['phaser'] } },
     },

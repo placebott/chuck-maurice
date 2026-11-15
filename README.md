@@ -16,6 +16,8 @@ Reste à faire avant publication : essais sur de vrais téléphones, réglage de
 
 **Mission 004 — MAURIIIIICE !!! (Opération Bon Voisinage)** est jouable sur `mauriiiiice.html`. Voir « Mission 004 » plus bas.
 
+**Prototype — Embarquement** : un puzzle de glisser-déposer, hors univers Chuck Maurice, sur sa propre page (`embarquement.html`, non liée depuis l’accueil), avec distributeurs, chronomètre et mode DEBUG. Voir « Prototype — Embarquement » plus bas.
+
 ## Expérience visée
 
 Une partie courte de **20 secondes**, drôle, nerveuse et immédiatement rejouable, sur ordinateur et smartphone. Une tâche banale est mise en scène comme un combat de fin de jeu : introduction militaire, bocal menaçant, réactions exagérées de Chuck et résultats spectaculaires.
@@ -87,6 +89,7 @@ chuck-maurice/
 │   ├── saucissonator/      # Mission 002 : contrôleur, scène, règles, médailles, sauvegarde
 │   ├── olive/              # Mission 003 : contrôleur, scène, physique, règles, médailles, sauvegarde
 │   ├── voisinage/          # Mission 004 : contrôleur, entrée, scène, cinématiques, règles, médailles, sauvegarde
+│   ├── embarquement/       # Prototype de puzzle : moteur logique pur, affichage Phaser, niveaux JSON
 │   ├── game/
 │   │   ├── scenes/         # Chargement, titre, partie et résultats
 │   │   ├── entities/       # Chuck, bocal et objets de jeu
@@ -97,8 +100,8 @@ chuck-maurice/
 │   ├── storage/            # Sauvegarde locale et gestion des erreurs
 │   ├── styles/             # Styles, adaptation des écrans, pixel art
 │   └── types/              # Types TypeScript partagés
-├── docs/                   # Notes de conception et inventaire des assets
-└── tests/                  # Tests des règles, de la physique et de l’équilibrage (missions 002, 003 et 004)
+├── docs/                   # Notes de conception (dont level43-observations.md et level43-fidelity.md)
+└── tests/                  # Tests des règles, de la physique et de l’équilibrage (missions 002, 003 et 004, prototype Embarquement)
 ```
 
 Les dossiers vides contiennent un fichier `.gitkeep` afin d’être conservés par Git. Ce fichier n’a aucun rôle dans le jeu et peut être retiré lorsqu’un dossier reçoit de vrais fichiers.
@@ -304,6 +307,152 @@ Les 18 fichiers d’origine de `public/assets/bon-voisinage/` portent les noms c
 - `victory_reference.png` n’est pas chargée par le jeu : elle a guidé la composition des plans 4 et 5.
 - Le verre de pastis vient de la mission 003 (`olive-storm/objects/pastis_glass.png`).
 - Pas d’illustration pour le dossier de Jean-Mi, sa feuille, la table vue de près, le « ! » ni la feuille morte : petits éléments dessinés en code. Jean-Mi n’a pas de pose souriante debout : son sourire satisfait du « dossier » est joué avec `jeanmi_watch.png`.
+
+## Prototype — Embarquement (puzzle)
+
+> Prototype de mécanique, sans rapport avec l’univers Chuck Maurice. Page `embarquement.html` (non liée depuis l’accueil, `noindex`), code dans `src/embarquement/`.
+
+Puzzle à glisser-déposer dont les mécaniques reproduisent celles observées dans une vidéo de *Drop Away: Color Puzzle* : des pièces-bacs colorées glissent sous les personnages de leur couleur pour les embarquer, et des distributeurs, hors de la grille, alimentent la partie. Le niveau livré, *Heure de pointe* (n° 1), est **original** : le niveau 43 de la vidéo n’est pas reproduit, et aucun graphisme n’est repris (tout est dessiné en code). Pas de bonus, de monnaie ni de menu.
+
+### Lancer
+
+```bash
+npm run dev        # puis ouvrir http://localhost:5173/embarquement.html
+npm test           # tests de logique (node:test), toutes missions comprises
+npm run test:e2e   # bout en bout dans Chrome : souris, tactile, partie complète, pause, défaite
+```
+
+Options d’adresse : `?level=demo` (ancien niveau 6 × 7), `?debug` (panneau de débogage ouvert), `?rules` (panneau des hypothèses ouvert), et toute hypothèse, par exemple `?charactersBlock=none`.
+
+### Jouer
+
+- **Glisser** une pièce au doigt ou à la souris. Elle garde le point par lequel on la tient et avance case par case, sur la grille seulement, sans jamais traverser une pièce ni un personnage d’une autre couleur, même si le doigt saute plusieurs cases. Elle suit le doigt dans sa case, puis se cale sur la grille au lâcher.
+- Une pièce qui **recouvre** un personnage de sa couleur l’embarque aussitôt, même en plein glisser. Son **compteur** (coin bas-droit) baisse d’une unité ; à zéro, elle disparaît et libère ses cases.
+- Un **distributeur** sert la pièce posée sur sa case d’entrée (liseré clair) tant que sa tête de file est de la couleur de la pièce. Il affiche sa tête de file et le nombre restant.
+- **Victoire** : toutes les pièces ont disparu et les distributeurs sont vides. **Défaite** : le chronomètre atteint 00:00. Il démarre au premier déplacement.
+- Barre du haut : numéro du niveau, chronomètre, **Recommencer** (R), **Pause** (P). Barre du bas : personnages restants, **Hypothèses**, **Debug**.
+
+### Débogage
+
+Le panneau **Debug** propose :
+- l’affichage des coordonnées de chaque case et des cases occupées ;
+- la pièce sélectionnée (dernière touchée) : ancre, cases, compteur restant ;
+- son déplacement manuel case par case, avec les boutons ou les flèches du clavier ;
+- la file de chaque distributeur, tête en premier, avec la mention « séquence non vérifiée » si le JSON la marque ainsi ;
+- la désactivation du chronomètre, le rechargement du niveau et un journal des actions.
+
+### Hypothèses de règles
+
+Rien n’est présenté comme règle d’origine sans preuve. Chaque règle porte un niveau de preuve tiré de la vidéo :
+- **observé** : vu plusieurs fois sans ambiguïté ;
+- **probable** : cohérent avec tout ce qui est visible ;
+- **non vérifié** : aucune séquence ne tranche.
+
+Détail et références temporelles : [docs/level43-observations.md](docs/level43-observations.md). Rapport de conformité : [docs/level43-fidelity.md](docs/level43-fidelity.md).
+
+| | Réglage | Par défaut | Preuve | Variantes |
+| --- | --- | --- | --- | --- |
+| H1 | `contact` | `overlap` : la pièce recouvre le personnage | observé | `side`, `side-or-corner` |
+| H2 | `collectOn` | `step` : à chaque case franchie, et au lâcher | observé | `release` |
+| H3 | `collectLimit` | `all` : tous les personnages recouverts, dans la limite des places | non vérifié | `one` |
+| H4 | `capacity` | `cells` pour une pièce sans `capacity` dans le JSON (les compteurs observés ne suivent pas la taille : un niveau fidèle les fixe) | observé | 1 à 4 |
+| H5 | `charactersBlock` | `other-colors` : un personnage arrête les pièces d’une autre couleur | non vérifié | `all`, `none` |
+| H6 | `whenFull` | `remove` | observé | `stay` |
+| H7 | `win` | `both` : tout le monde embarqué et toutes les pièces disparues | observé | `all-collected`, `all-removed` |
+| H8 | `movement` | `free` | observé | `axis-lock` |
+| H9 | `feederBatch` | `while-matching` : un par un tant que la tête correspond | observé | `one` |
+| H10 | `timerStart` | `first-move` | probable | `immediate` |
+
+Ordre d’application : valeurs par défaut (`src/embarquement/engine/rules.ts`) ← champ `"rules"` du niveau ← adresse de la page ← panneau **Hypothèses**. Une combinaison incohérente est refusée avec son explication, sans toucher à la partie en cours.
+
+### Niveaux JSON
+
+Un niveau par fichier dans `src/embarquement/levels/`, inscrit dans `levels/index.ts`. Le fichier est entièrement vérifié au chargement, et toutes les erreurs s’affichent d’un coup dans la page. Aucune règle propre à un niveau n’est codée dans le moteur.
+
+```json
+{
+  "id": "heure-de-pointe",
+  "name": "Heure de pointe",
+  "number": 1,
+  "width": 7,
+  "height": 8,
+  "timerSeconds": 180,
+  "colors": ["red", "orange", "yellow", "green", "cyan", "blue", "purple"],
+  "pieces": [
+    { "id": "rouge", "color": "red", "x": 0, "y": 6, "shape": ["##.", ".##"], "capacity": 3 }
+  ],
+  "characters": [
+    { "color": "red", "x": 1, "y": 0 }
+  ],
+  "feeders": [
+    { "id": "gauche", "side": "left", "index": 2, "queue": ["blue", "blue", "red", "purple"], "unverified": false }
+  ],
+  "rules": { "charactersBlock": "other-colors" }
+}
+```
+
+- `x`, `y` : colonne et ligne (0 en haut à gauche) du coin du dessin `shape`, où `#` est une case pleine et `.` une case vide. La forme doit être d’un seul tenant.
+- `capacity` : valeur de départ du compteur. `timerSeconds` absent : pas de chronomètre.
+- `feeders` : `side` vaut `top`, `bottom`, `left` ou `right` ; `index` est la colonne (haut, bas) ou la ligne (gauche, droite) de la case d’entrée. `queue` liste les couleurs dans l’ordre de sortie. `unverified` (facultatif) marque une séquence supposée.
+- Couleurs affichées : `red`, `orange`, `yellow`, `lime`, `green`, `cyan`, `blue`, `purple`, `pink` (`view/palette.ts`) ; une couleur inconnue s’affiche en gris.
+- Le panneau **Hypothèses** signale les niveaux devenus impossibles sous les règles choisies (moins de places que de personnages d’une couleur, par exemple).
+
+### Architecture
+
+| Rôle | Fichier |
+| --- | --- |
+| Types, état, événements | `src/embarquement/engine/types.ts` |
+| Hypothèses : valeurs, preuves, incompatibilités | `src/embarquement/engine/rules.ts` |
+| Lecture et validation des niveaux JSON | `src/embarquement/engine/level.ts` |
+| Moteur : grille, collisions, glissement, collecte, distributeurs, chronomètre, pause, victoire, défaite | `src/embarquement/engine/engine.ts` |
+| Solveur (conception et tests, non chargé par le jeu) | `src/embarquement/engine/solver.ts` |
+| Données des niveaux | `src/embarquement/levels/*.json` |
+| Scène Phaser : dessin, glisser, animations, couche DEBUG | `src/embarquement/view/BoardScene.ts` |
+| Mise en page, suivi du doigt, format du temps (calculs purs) | `src/embarquement/view/geometry.ts` |
+| Souris et tactile (Pointer Events, pointeur capturé) | `src/embarquement/view/pointer.ts` |
+| Teintes | `src/embarquement/view/palette.ts` |
+| Page : niveau, règles, panneaux, écrans de fin | `src/embarquement/main.ts`, `embarquement.html`, `src/styles/embarquement.css` |
+
+Le moteur n’importe ni Phaser ni le DOM et ne manipule que des cases entières. Le temps lui est fourni par `tick(ms)`, donc tout est déterministe et testable sous Node. La scène lui transmet les gestes (`grab`, `dragTo`, `release`), fait avancer son chronomètre et anime les événements qu’il renvoie : `collected`, `full`, `removed`, `clock-started`, `won`, `lost`. Le canevas est dessiné à la densité réelle de l’écran et redessiné à chaque changement de taille, sans interrompre un glisser.
+
+### Tests
+
+- `npm test` (`tests/embarquement.test.ts`, 42 tests) couvre les 13 points demandés :
+  1. placement initial ;
+  2. absence de chevauchement ;
+  3. limites de la grille ;
+  4. blocage par une pièce ;
+  5. non-traversée lors d’un glissement rapide ;
+  6. collecte compatible ;
+  7. autre couleur ;
+  8. compteur ;
+  9. retrait ;
+  10. files des distributeurs ;
+  11. victoire ;
+  12. défaite par le chronomètre ;
+  13. réinitialisation.
+- Il couvre aussi :
+  - chaque hypothèse ;
+  - la protection contre les doubles collectes ;
+  - des milliers de gestes aléatoires sans incohérence ;
+  - la résolution du niveau 1 avec de vrais gestes, sous les règles par défaut et sous chaque variante.
+- `npm run test:e2e` (`tests/e2e/embarquement.e2e.mjs`, 8 scénarios) démarre Vite et pilote Chrome sans interface par le protocole DevTools : Playwright n’est pas installé, et ce test n’ajoute aucune dépendance. Il vérifie :
+  - le chargement sans erreur ;
+  - un glisser à la souris et un glisser tactile ;
+  - le blocage ;
+  - la pause ;
+  - le mode DEBUG ;
+  - une partie complète jouée à la souris jusqu’à « Niveau réussi ! » ;
+  - Recommencer ;
+  - la défaite.
+
+### Points restant à corriger ou à vérifier
+
+- **H5** (une autre couleur bloque-t-elle ?) et **H3** (plusieurs personnages recouverts d’un coup) : à trancher sur une vidéo qui montre ces situations.
+- Comportement d’un distributeur face à une pièce qui a moins de places que de personnages de sa couleur en file : non filmé.
+- Défaite à 00:00 : non filmée ; l’écran actuel est une supposition.
+- Sur un téléphone de 375 px de large, les cases font 37 px CSS : jouable, un peu juste au doigt. On pourrait affiner les cabines des distributeurs latéraux.
+- Essais sur de vrais téléphones (iOS et Android) à faire. Les tests tactiles passent par l’émulation de Chrome.
 
 ## Périmètre
 
