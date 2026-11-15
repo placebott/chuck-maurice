@@ -11,9 +11,9 @@
     <meta name="robots" content="noindex" />
     <title>Chuck Maurice — Le Grand Débarras</title>
     <meta name="description" content="Chuck Maurice — Le Grand Débarras, niveau 43 : glisser les pièces colorées sous les personnages de leur couleur." />
-    <script type="module" crossorigin src="./assets/index-BrMwE0x2.js"></script>
+    <script type="module" crossorigin src="./assets/index-Q_36kJ4h.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/phaser-DXXWZowi.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-DOFGli8a.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-CrliOjJ9.css">
   </head>
   <body>
     <div class="app" id="app">
@@ -81,6 +81,13 @@
           </button>
         </div>
         <div class="win-controls" id="win-controls" hidden>
+          <button class="round-btn" id="victory-again" type="button" aria-label="Rejouer ce niveau" title="Rejouer ce niveau" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.6-5.7" /><path d="M20 4v5h-5" /></svg>
+          </button>
+          <button class="big-btn" id="victory-next" type="button" hidden>
+            <span id="victory-next-label">Niveau suivant</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" /></svg>
+          </button>
           <button class="big-btn" id="victory-replay" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" /></svg>
             <span id="victory-replay-label">Rejouer le niveau 43</span>
@@ -112,6 +119,15 @@
           <h2 id="debug-title">Débogage</h2>
           <button class="btn btn-ghost" data-close type="button" aria-label="Fermer le panneau">✕</button>
         </div>
+        <section class="dbg-section">
+          <h3>Niveaux</h3>
+          <div class="dbg-buttons">
+            <button class="btn btn-small" id="dbg-level-prev" type="button">◀ Précédent</button>
+            <select id="dbg-level" aria-label="Niveau à ouvrir"></select>
+            <button class="btn btn-small" id="dbg-level-next" type="button">Suivant ▶</button>
+          </div>
+          <p class="dbg-note" id="dbg-level-note"></p>
+        </section>
         <div class="dbg-controls">
           <label><input type="checkbox" id="dbg-timer-off" /> Chronomètre désactivé</label>
           <label><input type="checkbox" id="dbg-grid" checked /> Coordonnées et cases occupées</label>
@@ -177,6 +193,7 @@
         </section>
       </aside>
     </div>
+    <div class="fx-layer" id="fx-layer" aria-hidden="true"></div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
         <linearGradient id="star-fill" x1="0" y1="0" x2="0" y2="1">
