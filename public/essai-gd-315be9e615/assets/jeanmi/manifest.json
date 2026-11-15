@@ -1,0 +1,27 @@
+{
+  "width": 786,
+  "height": 600,
+  "eyes": {
+    "x": 0.5122,
+    "y": 0.3502
+  },
+  "files": {
+    "calme": "calme.webp",
+    "inquiet": "inquiet.webp",
+    "agace": "agace.webp",
+    "furieux": "furieux.webp",
+    "aneanti": "aneanti.webp",
+    "rage": "rage.webp"
+  },
+  "rive": {
+    "file": "jeanmi_animations.riv",
+    "artboard": "Artboard 1",
+    "stateMachine": "RageExplosion",
+    "frame": {
+      "left": -0.0575,
+      "top": -0.0254,
+      "width": 1.1487,
+      "height": 1.0352
+    }
+  }
+}

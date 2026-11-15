@@ -1,0 +1,271 @@
+{
+  "source": "public/assets/sources/nainmi_palette.png",
+  "frame": 160,
+  "height": 148,
+  "baseline": 154,
+  "pose": "idle",
+  "characters": {
+    "green": {
+      "name": "vert",
+      "file": "green/idle.png",
+      "sourceBox": [
+        139,
+        47,
+        377,
+        376
+      ],
+      "hue": 150,
+      "scale": 0.4498,
+      "bbox": [
+        26,
+        6,
+        133,
+        154
+      ],
+      "centerX": 79.5,
+      "massCenterX": 79.63,
+      "fringe": 0.0051,
+      "poses": {
+        "idle": "green/idle.png",
+        "wait": "green/wait.png",
+        "panic": "green/panic.png",
+        "suction": "green/suction.png"
+      }
+    },
+    "lime": {
+      "name": "vert clair",
+      "file": "lime/idle.png",
+      "sourceBox": [
+        523,
+        47,
+        761,
+        376
+      ],
+      "hue": 97,
+      "scale": 0.4498,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.75,
+      "fringe": -0.0256,
+      "poses": {
+        "idle": "lime/idle.png",
+        "wait": "lime/wait.png",
+        "panic": "lime/panic.png",
+        "suction": "lime/suction.png"
+      }
+    },
+    "blue": {
+      "name": "bleu",
+      "file": "blue/idle.png",
+      "sourceBox": [
+        908,
+        47,
+        1146,
+        376
+      ],
+      "hue": 217,
+      "scale": 0.4498,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.74,
+      "fringe": -0.0007,
+      "poses": {
+        "idle": "blue/idle.png",
+        "wait": "blue/wait.png",
+        "panic": "blue/panic.png",
+        "suction": "blue/suction.png"
+      }
+    },
+    "cyan": {
+      "name": "cyan",
+      "file": "cyan/idle.png",
+      "sourceBox": [
+        139,
+        444,
+        377,
+        771
+      ],
+      "hue": 186,
+      "scale": 0.4526,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.78,
+      "fringe": -0.0151,
+      "poses": {
+        "idle": "cyan/idle.png",
+        "wait": "cyan/wait.png",
+        "panic": "cyan/panic.png",
+        "suction": "cyan/suction.png"
+      }
+    },
+    "yellow": {
+      "name": "jaune",
+      "file": "yellow/idle.png",
+      "sourceBox": [
+        523,
+        445,
+        761,
+        771
+      ],
+      "hue": 44,
+      "scale": 0.454,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.8,
+      "fringe": -0.0238,
+      "poses": {
+        "idle": "yellow/idle.png",
+        "wait": "yellow/wait.png",
+        "panic": "yellow/panic.png",
+        "suction": "yellow/suction.png"
+      }
+    },
+    "orange": {
+      "name": "orange",
+      "file": "orange/idle.png",
+      "sourceBox": [
+        908,
+        444,
+        1146,
+        771
+      ],
+      "hue": 24,
+      "scale": 0.4526,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.79,
+      "fringe": -0.0071,
+      "poses": {
+        "idle": "orange/idle.png",
+        "wait": "orange/wait.png",
+        "panic": "orange/panic.png",
+        "suction": "orange/suction.png"
+      }
+    },
+    "red": {
+      "name": "rouge",
+      "file": "red/idle.png",
+      "sourceBox": [
+        139,
+        840,
+        376,
+        1168
+      ],
+      "hue": 353,
+      "scale": 0.4512,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.88,
+      "fringe": 0.0031,
+      "poses": {
+        "idle": "red/idle.png",
+        "wait": "red/wait.png",
+        "panic": "red/panic.png",
+        "suction": "red/suction.png"
+      }
+    },
+    "pink": {
+      "name": "rose",
+      "file": "pink/idle.png",
+      "sourceBox": [
+        523,
+        840,
+        761,
+        1168
+      ],
+      "hue": 331,
+      "scale": 0.4512,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.71,
+      "fringe": -0.0108,
+      "poses": {
+        "idle": "pink/idle.png",
+        "wait": "pink/wait.png",
+        "panic": "pink/panic.png",
+        "suction": "pink/suction.png"
+      }
+    },
+    "purple": {
+      "name": "violet",
+      "file": "purple/idle.png",
+      "sourceBox": [
+        908,
+        840,
+        1146,
+        1168
+      ],
+      "hue": 274,
+      "scale": 0.4512,
+      "bbox": [
+        26,
+        6,
+        134,
+        154
+      ],
+      "centerX": 80.0,
+      "massCenterX": 79.72,
+      "fringe": -0.0028,
+      "poses": {
+        "idle": "purple/idle.png",
+        "wait": "purple/wait.png",
+        "panic": "purple/panic.png",
+        "suction": "purple/suction.png"
+      }
+    }
+  },
+  "neutral": {
+    "file": "neutral/idle.png",
+    "source": "red",
+    "mode": "LA",
+    "luminance": [
+      0.4401,
+      0.9579
+    ],
+    "bodyLevel": 0.94,
+    "gamma": 0.75,
+    "bodyPercentile": 60,
+    "highlightPercentile": 99.5,
+    "poses": {
+      "idle": "neutral/idle.png",
+      "wait": "neutral/wait.png",
+      "panic": "neutral/panic.png",
+      "suction": "neutral/suction.png"
+    }
+  }
+}
