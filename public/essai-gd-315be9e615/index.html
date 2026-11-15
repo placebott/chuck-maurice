@@ -4,16 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
     <meta name="theme-color" content="#1d4596" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Grand Débarras" />
     <meta name="robots" content="noindex" />
     <title>Chuck Maurice — Le Grand Débarras</title>
     <meta name="description" content="Chuck Maurice — Le Grand Débarras, niveau 43 : glisser les pièces colorées sous les personnages de leur couleur." />
-    <script type="module" crossorigin src="./assets/index-BPx3bcT7.js"></script>
+    <script type="module" crossorigin src="./assets/index-BrMwE0x2.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/phaser-DXXWZowi.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-CB6sQpCm.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-DOFGli8a.css">
   </head>
   <body>
     <div class="app" id="app">
-      <header class="hud">
+      <header class="topbar">
         <div class="brand" role="img" aria-label="Chuck Maurice — Le Grand Débarras">
           <span class="brand-title"><span class="brand-chuck">CHUCK</span><span class="brand-maurice">MAURICE</span></span>
           <span class="brand-flag" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -24,7 +28,9 @@
           <p class="plate-title">NIVEAU <b id="level-number">–</b></p>
           <p class="clock" id="clock" role="timer" aria-label="Temps restant">--:--</p>
         </div>
+      </header>
 
+      <div class="hud" id="hud">
         <div class="counter" role="status" aria-label="Personnages capturés">
           <img class="counter-icon" src="assets/nainmi/red/idle.png" alt="" width="40" height="40" />
           <p class="counter-text"><b id="captured">0</b>&nbsp;/&nbsp;<span id="goal">0</span></p>
@@ -35,7 +41,7 @@
           <img id="jeanmi-img" src="assets/jeanmi/calme.webp" alt="Jean-Mi, calme" width="786" height="600" decoding="async" fetchpriority="high" />
           <canvas id="jeanmi-rive" hidden aria-hidden="true"></canvas>
         </div>
-      </header>
+      </div>
 
       <main class="stage">
         <div class="board" id="board" aria-label="Grille de jeu : glisser une pièce sous les personnages de sa couleur"></div>
@@ -65,7 +71,7 @@
         <div class="error" id="error" role="alert" hidden></div>
       </main>
 
-      <footer class="controls">
+      <footer class="controls" id="controls">
         <div class="play-controls" id="play-controls">
           <button class="round-btn" id="restart" type="button" aria-label="Recommencer" title="Recommencer (R)">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.6-5.7" /><path d="M20 4v5h-5" /></svg>
