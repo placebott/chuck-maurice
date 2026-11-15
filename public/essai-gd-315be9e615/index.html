@@ -11,9 +11,9 @@
     <meta name="robots" content="noindex" />
     <title>Chuck Maurice — Le Grand Débarras</title>
     <meta name="description" content="Chuck Maurice — Le Grand Débarras, niveau 43 : glisser les pièces colorées sous les personnages de leur couleur." />
-    <script type="module" crossorigin src="./assets/index-BsaAKI1y.js"></script>
+    <script type="module" crossorigin src="./assets/index-CtrmLWxs.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/phaser-DXXWZowi.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-BTjJjZLo.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-DIKhKsDg.css">
   </head>
   <body>
     <div class="app" id="app">
@@ -24,10 +24,12 @@
           <span class="brand-plank">LE GRAND<br />DÉBARRAS</span>
         </div>
 
-        <div class="plate">
-          <p class="plate-title">NIVEAU <b id="level-number">–</b></p>
-          <p class="clock" id="clock" role="timer" aria-label="Temps restant">--:--</p>
-        </div>
+        <button class="plate" id="plate" type="button" aria-expanded="false" aria-controls="goals" title="Objectifs du niveau">
+          <span class="plate-title">NIVEAU <b id="level-number">–</b></span>
+          <span class="clock" id="clock" role="timer" aria-label="Temps">--:--</span>
+          <span class="plate-moves" aria-label="Coups joués"><b id="moves">0</b><small>coups</small></span>
+        </button>
+        <div class="goals" id="goals" role="status" hidden></div>
       </header>
 
       <div class="hud" id="hud">
@@ -48,13 +50,17 @@
 
         <section class="victory" id="victory" hidden aria-labelledby="victory-title" aria-live="assertive">
           <div class="victory-rays" aria-hidden="true"></div>
-          <div class="victory-stars" aria-hidden="true">
-            <svg viewBox="0 0 100 96"><use href="#star" /></svg>
-            <svg viewBox="0 0 100 96"><use href="#star" /></svg>
-            <svg viewBox="0 0 100 96"><use href="#star" /></svg>
+          <div class="victory-stars" id="victory-stars" role="img" aria-label="">
+            <svg viewBox="0 0 100 96" aria-hidden="true"><use href="#star" /></svg>
+            <svg viewBox="0 0 100 96" aria-hidden="true"><use href="#star" /></svg>
+            <svg viewBox="0 0 100 96" aria-hidden="true"><use href="#star" /></svg>
           </div>
           <h2 class="victory-title" id="victory-title"><span>NIVEAU</span><span class="ribbon">RÉUSSI&nbsp;!</span></h2>
-          <p class="victory-detail" id="victory-detail"></p>
+          <div class="victory-detail" id="victory-detail">
+            <p class="stat" id="stat-time"></p>
+            <p class="stat" id="stat-moves"></p>
+            <p class="victory-record" id="victory-record"></p>
+          </div>
         </section>
 
         <div class="overlay" id="overlay" hidden>
@@ -154,6 +160,20 @@
           <div class="swatches" id="dbg-trial-colors" role="radiogroup" aria-label="Couleur du nain d’essai"></div>
           <label class="dbg-check"><input type="checkbox" id="dbg-pose-all" /> Tous les nains dans cette pose</label>
           <p class="dbg-note" id="dbg-trial-note" aria-live="polite"></p>
+        </section>
+        <section class="dbg-section">
+          <h3>Calibrage des objectifs</h3>
+          <p class="dbg-note">Tentatives enregistrées sur cet appareil (aucune donnée personnelle). Exportez le fichier et envoyez-le ; importez ceux des autres testeurs pour tout comparer.</p>
+          <label class="dbg-check">Surnom du testeur (facultatif) <input type="text" id="dbg-tester" maxlength="24" autocomplete="off" /></label>
+          <div class="calib" id="dbg-calib"></div>
+          <div class="dbg-buttons">
+            <button class="btn btn-small" id="dbg-calib-export" type="button">Exporter (JSON)</button>
+            <button class="btn btn-small" id="dbg-calib-copy" type="button">Copier</button>
+            <label class="btn btn-small calib-import">Importer… <input type="file" id="dbg-calib-import" accept="application/json,.json" hidden /></label>
+            <button class="btn btn-small" id="dbg-calib-clear" type="button">Effacer le journal</button>
+            <button class="btn btn-small" id="dbg-records-clear" type="button">Effacer les records</button>
+          </div>
+          <p class="dbg-note" id="dbg-calib-note" aria-live="polite"></p>
         </section>
         <section class="dbg-section">
           <h3>Captures — PLOP 2.0</h3>
