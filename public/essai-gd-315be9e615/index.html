@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#173a8c" />
+    <meta name="robots" content="noindex" />
+    <title>Chuck Maurice — Le Grand Débarras</title>
+    <meta name="description" content="Chuck Maurice — Le Grand Débarras, niveau 43 : glisser les pièces colorées sous les personnages de leur couleur." />
+    <script type="module" crossorigin src="./assets/index-Cb6TANI9.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/phaser-DXXWZowi.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-NbSanTCW.css">
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="hud">
+        <div class="brand" role="img" aria-label="Chuck Maurice — Le Grand Débarras">
+          <span class="brand-title"><span class="brand-chuck">CHUCK</span><span class="brand-maurice">MAURICE</span></span>
+          <span class="brand-flag" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-plank">LE GRAND<br />DÉBARRAS</span>
+        </div>
+
+        <div class="plate">
+          <p class="plate-title">NIVEAU <b id="level-number">–</b></p>
+          <p class="clock" id="clock" role="timer" aria-label="Temps restant">--:--</p>
+        </div>
+
+        <div class="counter" role="status" aria-label="Personnages capturés">
+          <img class="counter-icon" src="assets/nainmi/red/idle.png" alt="" width="40" height="40" />
+          <p class="counter-text"><b id="captured">0</b>&nbsp;/&nbsp;<span id="goal">0</span></p>
+          <span class="counter-bar" aria-hidden="true"><i id="counter-fill"></i></span>
+        </div>
+
+        <div class="jeanmi" id="jeanmi" data-expression="calme" aria-live="polite">
+          <img id="jeanmi-img" src="assets/jeanmi/calme.webp" alt="Jean-Mi, calme" width="786" height="600" decoding="async" fetchpriority="high" />
+          <canvas id="jeanmi-rive" hidden aria-hidden="true"></canvas>
+        </div>
+      </header>
+
+      <main class="stage">
+        <div class="board" id="board" aria-label="Grille de jeu : glisser une pièce sous les personnages de sa couleur"></div>
+
+        <section class="victory" id="victory" hidden aria-labelledby="victory-title" aria-live="assertive">
+          <div class="victory-rays" aria-hidden="true"></div>
+          <div class="victory-stars" aria-hidden="true">
+            <svg viewBox="0 0 100 96"><use href="#star" /></svg>
+            <svg viewBox="0 0 100 96"><use href="#star" /></svg>
+            <svg viewBox="0 0 100 96"><use href="#star" /></svg>
+          </div>
+          <h2 class="victory-title" id="victory-title"><span>NIVEAU</span><span class="ribbon">RÉUSSI&nbsp;!</span></h2>
+          <p class="victory-detail" id="victory-detail"></p>
+        </section>
+
+        <div class="overlay" id="overlay" hidden>
+          <div class="card" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
+            <p class="card-title" id="overlay-title"></p>
+            <p class="card-detail" id="overlay-detail"></p>
+            <div class="card-actions">
+              <button class="btn btn-main" id="overlay-main" type="button"></button>
+              <button class="btn" id="overlay-alt" type="button" hidden></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="error" id="error" role="alert" hidden></div>
+      </main>
+
+      <footer class="controls">
+        <div class="play-controls" id="play-controls">
+          <button class="round-btn" id="restart" type="button" aria-label="Recommencer" title="Recommencer (R)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.6-5.7" /><path d="M20 4v5h-5" /></svg>
+          </button>
+          <button class="round-btn" id="pause" type="button" aria-label="Pause" title="Pause (P)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12" /></svg>
+          </button>
+        </div>
+        <div class="win-controls" id="win-controls" hidden>
+          <button class="big-btn" id="victory-replay" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" /></svg>
+            <span id="victory-replay-label">Rejouer le niveau 43</span>
+          </button>
+        </div>
+        <div class="dev-tools" id="dev-tools" hidden>
+          <span class="level-name" id="level-name"></span>
+          <button class="btn btn-small" id="toggle-rules" type="button" aria-expanded="false" aria-controls="rules">Hypothèses</button>
+          <button class="btn btn-small" id="toggle-debug" type="button" aria-expanded="false" aria-controls="debug">Debug</button>
+        </div>
+      </footer>
+
+      <aside class="sheet" id="rules" aria-labelledby="rules-title" hidden>
+        <div class="sheet-head">
+          <h2 id="rules-title">Hypothèses de règles</h2>
+          <button class="btn btn-ghost" data-close type="button" aria-label="Fermer le panneau">✕</button>
+        </div>
+        <p class="sheet-intro">
+          Valeurs par défaut tirées de la vidéo de référence, avec leur niveau de preuve. Chaque changement relance le
+          niveau ; les réglages qui diffèrent du niveau sont repris dans l'adresse de la page.
+        </p>
+        <form class="rules-form" id="rules-form"></form>
+        <div class="rules-notes" id="rules-notes" aria-live="polite"></div>
+        <button class="btn" id="rules-reset" type="button">Revenir aux règles du niveau</button>
+      </aside>
+
+      <aside class="sheet" id="debug" aria-labelledby="debug-title" hidden>
+        <div class="sheet-head">
+          <h2 id="debug-title">Débogage</h2>
+          <button class="btn btn-ghost" data-close type="button" aria-label="Fermer le panneau">✕</button>
+        </div>
+        <div class="dbg-controls">
+          <label><input type="checkbox" id="dbg-timer-off" /> Chronomètre désactivé</label>
+          <label><input type="checkbox" id="dbg-grid" checked /> Coordonnées et cases occupées</label>
+          <button class="btn btn-small" id="dbg-reload" type="button">Recharger le niveau</button>
+        </div>
+        <section class="dbg-section">
+          <h3>Nains — essai de rendu</h3>
+          <div class="seg" role="radiogroup" aria-label="Rendu des nains">
+            <label><input type="radio" name="dbg-nains" id="dbg-nains-png" value="png" checked /> PNG d’origine</label>
+            <label><input type="radio" name="dbg-nains" id="dbg-nains-tint" value="tint" /> Texture recolorée</label>
+          </div>
+          <p class="dbg-note" id="dbg-nains-note" aria-live="polite"></p>
+          <button class="btn btn-small" id="dbg-preview" type="button">Aperçu des couleurs</button>
+        </section>
+        <section class="dbg-section">
+          <h3>Poses — essai</h3>
+          <label class="dbg-check"><input type="checkbox" id="dbg-trial" /> Nain d’essai (case libre + taille tête de file)</label>
+          <div class="seg seg-wrap" role="radiogroup" aria-label="Pose du nain d’essai">
+            <label><input type="radio" name="dbg-pose" id="dbg-pose-idle" value="idle" checked /> Repos</label>
+            <label><input type="radio" name="dbg-pose" id="dbg-pose-wait" value="wait" /> Attente</label>
+            <label><input type="radio" name="dbg-pose" id="dbg-pose-panic" value="panic" /> Panique</label>
+            <label><input type="radio" name="dbg-pose" id="dbg-pose-suction" value="suction" /> Aspiration</label>
+          </div>
+          <div class="swatches" id="dbg-trial-colors" role="radiogroup" aria-label="Couleur du nain d’essai"></div>
+          <label class="dbg-check"><input type="checkbox" id="dbg-pose-all" /> Tous les nains dans cette pose</label>
+          <p class="dbg-note" id="dbg-trial-note" aria-live="polite"></p>
+        </section>
+        <section class="dbg-section">
+          <h3>Pièce sélectionnée</h3>
+          <div id="dbg-piece" class="dbg-piece">Touchez une pièce pour la sélectionner.</div>
+          <div class="nudge" role="group" aria-label="Déplacer la pièce sélectionnée d'une case (flèches du clavier)">
+            <button class="btn btn-small" data-nudge="0,-1" type="button" aria-label="Vers le haut">↑</button>
+            <button class="btn btn-small" data-nudge="-1,0" type="button" aria-label="Vers la gauche">←</button>
+            <button class="btn btn-small" data-nudge="1,0" type="button" aria-label="Vers la droite">→</button>
+            <button class="btn btn-small" data-nudge="0,1" type="button" aria-label="Vers le bas">↓</button>
+          </div>
+        </section>
+        <section class="dbg-section">
+          <h3>Distributeurs</h3>
+          <div id="dbg-feeders"></div>
+        </section>
+        <section class="dbg-section">
+          <h3>Journal</h3>
+          <ol class="dbg-log" id="dbg-log"></ol>
+        </section>
+      </aside>
+    </div>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="star-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff6a8" />
+          <stop offset="0.45" stop-color="#ffd23a" />
+          <stop offset="1" stop-color="#f29a0c" />
+        </linearGradient>
+        <symbol id="star" viewBox="0 0 100 96">
+          <path d="M50 4l13.4 27.6 30.4 4.3-22 21.3 5.3 30.2L50 73 22.9 87.4l5.3-30.2-22-21.3 30.4-4.3z" fill="url(#star-fill)" stroke="#141a3a" stroke-width="6" stroke-linejoin="round" />
+          <path d="M50 16l9 18.6" stroke="#fffbe0" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.8" />
+        </symbol>
+      </defs>
+    </svg>
+  </body>
+</html>
