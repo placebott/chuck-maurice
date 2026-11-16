@@ -1,0 +1,90 @@
+{
+  "width": 543,
+  "height": 900,
+  "frames": {
+    "idle": "idle.webp",
+    "glasses-01": "glasses-01.webp",
+    "glasses-02": "glasses-02.webp",
+    "glasses-03": "glasses-03.webp",
+    "glasses-04": "glasses-04.webp",
+    "glasses-05": "glasses-05.webp",
+    "biceps-01": "biceps-01.webp",
+    "biceps-02": "biceps-02.webp",
+    "biceps-03": "biceps-03.webp",
+    "biceps-04": "biceps-04.webp",
+    "biceps-05": "biceps-05.webp",
+    "biceps-06": "biceps-06.webp"
+  },
+  "anchor": {
+    "x": 285.7,
+    "y": 895.9
+  },
+  "headTop": 7.1,
+  "shifts": {
+    "idle": [
+      0,
+      0
+    ],
+    "glasses-01": [
+      -2,
+      1
+    ],
+    "glasses-02": [
+      0,
+      1
+    ],
+    "glasses-03": [
+      0,
+      0
+    ],
+    "glasses-04": [
+      0,
+      -1
+    ],
+    "glasses-05": [
+      0,
+      -1
+    ],
+    "biceps-01": [
+      0,
+      -2
+    ],
+    "biceps-02": [
+      -2,
+      1
+    ],
+    "biceps-03": [
+      0,
+      1
+    ],
+    "biceps-04": [
+      0,
+      0
+    ],
+    "biceps-05": [
+      0,
+      2
+    ],
+    "biceps-06": [
+      -2,
+      1
+    ]
+  },
+  "keyed": [
+    "biceps-01"
+  ],
+  "sources": {
+    "idle": "chuck_master_idle.png",
+    "glasses-01": "chuck_glasses_01.png",
+    "glasses-02": "chuck_glasses_02.png",
+    "glasses-03": "chuck_glasses_03.png",
+    "glasses-04": "chuck_glasses_04.png",
+    "glasses-05": "chuck_glasses_05.png",
+    "biceps-01": "chuck_biceps_01.png",
+    "biceps-02": "chuck_biceps_02.png",
+    "biceps-03": "chuck_biceps_03.png",
+    "biceps-04": "chuck_biceps_04.png",
+    "biceps-05": "chuck_biceps_05.png",
+    "biceps-06": "chuck_biceps_06.png"
+  }
+}
