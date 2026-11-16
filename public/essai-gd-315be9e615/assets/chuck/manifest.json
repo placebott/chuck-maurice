@@ -1,5 +1,5 @@
 {
-  "width": 543,
+  "width": 610,
   "height": 900,
   "frames": {
     "idle": "idle.webp",
@@ -13,13 +13,21 @@
     "biceps-03": "biceps-03.webp",
     "biceps-04": "biceps-04.webp",
     "biceps-05": "biceps-05.webp",
-    "biceps-06": "biceps-06.webp"
+    "biceps-06": "biceps-06.webp",
+    "chainsaw-01": "chainsaw-01.webp",
+    "chainsaw-02": "chainsaw-02.webp",
+    "chainsaw-03": "chainsaw-03.webp",
+    "chainsaw-04": "chainsaw-04.webp",
+    "chainsaw-05": "chainsaw-05.webp",
+    "chainsaw-06": "chainsaw-06.webp",
+    "chainsaw-07": "chainsaw-07.webp",
+    "chainsaw-08": "chainsaw-08.webp"
   },
   "anchor": {
-    "x": 285.7,
-    "y": 895.9
+    "x": 257.3,
+    "y": 896.3
   },
-  "headTop": 7.1,
+  "headTop": 96.1,
   "shifts": {
     "idle": [
       0,
@@ -47,7 +55,7 @@
     ],
     "biceps-01": [
       0,
-      -2
+      -1
     ],
     "biceps-02": [
       -2,
@@ -68,11 +76,58 @@
     "biceps-06": [
       -2,
       1
+    ],
+    "chainsaw-01": [
+      -513,
+      -1537
+    ],
+    "chainsaw-02": [
+      -446,
+      -1537
+    ],
+    "chainsaw-03": [
+      -459,
+      -1536
+    ],
+    "chainsaw-04": [
+      -449,
+      -1535
+    ],
+    "chainsaw-05": [
+      -415,
+      -1530
+    ],
+    "chainsaw-06": [
+      -387,
+      -1526
+    ],
+    "chainsaw-07": [
+      -406,
+      -1538
+    ],
+    "chainsaw-08": [
+      -401,
+      -1534
     ]
   },
   "keyed": [
-    "biceps-01"
+    "biceps-01",
+    "chainsaw-01",
+    "chainsaw-02",
+    "chainsaw-03",
+    "chainsaw-07"
   ],
+  "scales": {
+    "chainsaw-01": 1.001,
+    "chainsaw-02": 0.991,
+    "chainsaw-03": 1.021,
+    "chainsaw-04": 0.989,
+    "chainsaw-05": 1.006,
+    "chainsaw-06": 1.122,
+    "chainsaw-07": 0.941,
+    "chainsaw-08": 0.959
+  },
+  "body": 800.2,
   "sources": {
     "idle": "chuck_master_idle.png",
     "glasses-01": "chuck_glasses_01.png",
@@ -85,6 +140,14 @@
     "biceps-03": "chuck_biceps_03.png",
     "biceps-04": "chuck_biceps_04.png",
     "biceps-05": "chuck_biceps_05.png",
-    "biceps-06": "chuck_biceps_06.png"
+    "biceps-06": "chuck_biceps_06.png",
+    "chainsaw-01": "chuck_chainsaw_01.png",
+    "chainsaw-02": "chuck_chainsaw_02.png",
+    "chainsaw-03": "chuck_chainsaw_03.png",
+    "chainsaw-04": "chuck_chainsaw_04.png",
+    "chainsaw-05": "chuck_chainsaw_05.png",
+    "chainsaw-06": "chuck_chainsaw_06.png",
+    "chainsaw-07": "chuck_chainsaw_07.png",
+    "chainsaw-08": "chuck_chainsaw_08.png"
   }
 }
