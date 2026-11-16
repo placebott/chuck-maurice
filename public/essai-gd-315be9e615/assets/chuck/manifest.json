@@ -1,5 +1,5 @@
 {
-  "width": 610,
+  "width": 631,
   "height": 900,
   "frames": {
     "idle": "idle.webp",
@@ -21,13 +21,21 @@
     "chainsaw-05": "chainsaw-05.webp",
     "chainsaw-06": "chainsaw-06.webp",
     "chainsaw-07": "chainsaw-07.webp",
-    "chainsaw-08": "chainsaw-08.webp"
+    "chainsaw-08": "chainsaw-08.webp",
+    "vacuum-01": "vacuum-01.webp",
+    "vacuum-02": "vacuum-02.webp",
+    "vacuum-03": "vacuum-03.webp",
+    "vacuum-04": "vacuum-04.webp",
+    "vacuum-05": "vacuum-05.webp",
+    "vacuum-06": "vacuum-06.webp",
+    "vacuum-07": "vacuum-07.webp",
+    "vacuum-08": "vacuum-08.webp"
   },
   "anchor": {
-    "x": 257.3,
+    "x": 285.0,
     "y": 896.3
   },
-  "headTop": 96.1,
+  "headTop": 110.5,
   "shifts": {
     "idle": [
       0,
@@ -108,6 +116,38 @@
     "chainsaw-08": [
       -401,
       -1534
+    ],
+    "vacuum-01": [
+      -551,
+      -1524
+    ],
+    "vacuum-02": [
+      -506,
+      -1533
+    ],
+    "vacuum-03": [
+      -494,
+      -1535
+    ],
+    "vacuum-04": [
+      -503,
+      -1537
+    ],
+    "vacuum-05": [
+      -450,
+      -1513
+    ],
+    "vacuum-06": [
+      -452,
+      -1509
+    ],
+    "vacuum-07": [
+      -456,
+      -1511
+    ],
+    "vacuum-08": [
+      -449,
+      -1535
     ]
   },
   "keyed": [
@@ -115,7 +155,8 @@
     "chainsaw-01",
     "chainsaw-02",
     "chainsaw-03",
-    "chainsaw-07"
+    "chainsaw-07",
+    "vacuum-04"
   ],
   "scales": {
     "chainsaw-01": 1.001,
@@ -125,9 +166,17 @@
     "chainsaw-05": 1.006,
     "chainsaw-06": 1.122,
     "chainsaw-07": 0.941,
-    "chainsaw-08": 0.959
+    "chainsaw-08": 0.959,
+    "vacuum-01": 1.0,
+    "vacuum-02": 1.0,
+    "vacuum-03": 1.0,
+    "vacuum-04": 1.0,
+    "vacuum-05": 1.1,
+    "vacuum-06": 1.1,
+    "vacuum-07": 1.1,
+    "vacuum-08": 1.14
   },
-  "body": 800.2,
+  "body": 785.8,
   "sources": {
     "idle": "chuck_master_idle.png",
     "glasses-01": "chuck_glasses_01.png",
@@ -148,6 +197,14 @@
     "chainsaw-05": "chuck_chainsaw_05.png",
     "chainsaw-06": "chuck_chainsaw_06.png",
     "chainsaw-07": "chuck_chainsaw_07.png",
-    "chainsaw-08": "chuck_chainsaw_08.png"
+    "chainsaw-08": "chuck_chainsaw_08.png",
+    "vacuum-01": "chuck_vacuum_01.png",
+    "vacuum-02": "chuck_vacuum_02.png",
+    "vacuum-03": "chuck_vacuum_03.png",
+    "vacuum-04": "chuck_vacuum_04.png",
+    "vacuum-05": "chuck_vacuum_05.png",
+    "vacuum-06": "chuck_vacuum_06.png",
+    "vacuum-07": "chuck_vacuum_07.png",
+    "vacuum-08": "chuck_vacuum_08.png"
   }
 }
