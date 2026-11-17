@@ -11,9 +11,9 @@
     <meta name="robots" content="noindex" />
     <title>Chuck Maurice — Le Grand Débarras</title>
     <meta name="description" content="Chuck Maurice — Le Grand Débarras, niveau 43 : glisser les pièces colorées sous les personnages de leur couleur." />
-    <script type="module" crossorigin src="./assets/index-hSC0FxCy.js"></script>
+    <script type="module" crossorigin src="./assets/index-DHm7pup3.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/phaser-DXXWZowi.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-Df71j8-u.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-CAVAbPs2.css">
   </head>
   <body>
     <div class="app" id="app">
@@ -25,7 +25,7 @@
         </div>
 
         <button class="plate" id="plate" type="button" aria-expanded="false" aria-controls="goals" title="Objectifs du niveau">
-          <span class="plate-title">NIVEAU <b id="level-number">–</b></span>
+          <span class="plate-title">NIVEAU <b id="level-number">–</b><span class="level-medal" id="level-medal" hidden></span></span>
           <span class="clock" id="clock" role="timer" aria-label="Temps">--:--</span>
           <span class="plate-moves" aria-label="Coups joués"><b id="moves">0</b><small>coups</small></span>
         </button>
@@ -38,6 +38,8 @@
           <p class="counter-text"><b id="captured">0</b>&nbsp;/&nbsp;<span id="goal">0</span></p>
           <span class="counter-bar" aria-hidden="true"><i id="counter-fill"></i></span>
         </div>
+
+        <button class="token-gauge" id="token-gauge" type="button" hidden></button>
 
         <div class="jeanmi" id="jeanmi" data-expression="calme" aria-live="polite">
           <img id="jeanmi-img" src="assets/jeanmi/calme.webp" alt="Jean-Mi, calme" width="786" height="600" decoding="async" fetchpriority="high" />
@@ -60,6 +62,7 @@
             <p class="stat" id="stat-time"></p>
             <p class="stat" id="stat-moves"></p>
             <p class="victory-record" id="victory-record"></p>
+            <p class="victory-medal" id="victory-medal" hidden></p>
             <p class="victory-teaser" id="victory-teaser" hidden></p>
           </div>
         </section>
@@ -200,6 +203,43 @@
           <p class="dbg-note">Microanimations et rage :</p>
           <div class="dbg-buttons" id="dbg-jeanmi-micro"></div>
           <p class="dbg-note" id="dbg-jeanmi-note" aria-live="polite"></p>
+        </section>
+        <section class="dbg-section">
+          <h3>Jetons (essai)</h3>
+          <p class="dbg-note">Le premier bouton touché passe en mode ESSAI : réserve et médailles deviennent temporaires (jusqu’au rechargement) ; la vraie sauvegarde n’est jamais modifiée.</p>
+          <p class="dbg-note" id="dbg-tokens-state">–</p>
+          <div class="dbg-buttons">
+            <button class="btn btn-small" type="button" data-tokens="0">0 jeton</button>
+            <button class="btn btn-small" type="button" data-tokens="1">1</button>
+            <button class="btn btn-small" type="button" data-tokens="2">2</button>
+            <button class="btn btn-small" type="button" data-tokens="3">3</button>
+            <button class="btn btn-small" id="dbg-tokens-spend" type="button">Dépenser 1</button>
+            <button class="btn btn-small" id="dbg-tokens-perfect" type="button">Victoire parfaite simulée</button>
+            <button class="btn btn-small" id="dbg-tokens-aided" type="button">Victoire aidée simulée</button>
+            <button class="btn btn-small" id="dbg-tokens-full" type="button">Réserve pleine, 4/5</button>
+            <button class="btn btn-small" id="dbg-tokens-intro" type="button">Revoir l’introduction</button>
+          </div>
+        </section>
+        <section class="dbg-section">
+          <h3>Chuck — jeton (aperçu)</h3>
+          <p class="dbg-note">Animation de récompense seule : aucun jeton n’est crédité. Le jeton vole vers une destination d’aperçu (rond pointillé, retiré à la fin).</p>
+          <div class="dbg-buttons">
+            <button class="btn btn-small" id="dbg-token" type="button">Jouer</button>
+            <button class="btn btn-small" id="dbg-token-fr" type="button">Français</button>
+            <button class="btn btn-small" id="dbg-token-en" type="button">English</button>
+          </div>
+        </section>
+        <section class="dbg-section">
+          <h3>Chuck — jetons (introduction, aperçu)</h3>
+          <p class="dbg-note">Présentation des jetons (prévue au niveau 11, pas encore déclenchée) : aucun jeton n’est crédité, la sauvegarde n’est pas touchée. Les jetons volent vers un rond pointillé provisoire.</p>
+          <div class="dbg-buttons">
+            <button class="btn btn-small" id="dbg-intro" type="button">Jouer</button>
+            <button class="btn btn-small" id="dbg-intro-fr" type="button">Français</button>
+            <button class="btn btn-small" id="dbg-intro-en" type="button">English</button>
+            <button class="btn btn-small" id="dbg-intro-fast" type="button">Visuel seul (4,5 s)</button>
+          </div>
+          <label class="dbg-row">Paume x <input id="dbg-intro-palm-x" type="range" min="0.05" max="0.45" step="0.005" value="0.2"> <output id="dbg-intro-palm-xv">0.200</output></label>
+          <label class="dbg-row">Paume y <input id="dbg-intro-palm-y" type="range" min="0.1" max="0.5" step="0.005" value="0.275"> <output id="dbg-intro-palm-yv">0.275</output></label>
         </section>
         <section class="dbg-section">
           <h3>Pièce sélectionnée</h3>
