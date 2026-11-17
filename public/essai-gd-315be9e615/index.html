@@ -11,9 +11,9 @@
     <meta name="robots" content="noindex" />
     <title>Chuck Maurice — Le Grand Débarras</title>
     <meta name="description" content="Chuck Maurice — Le Grand Débarras, niveau 43 : glisser les pièces colorées sous les personnages de leur couleur." />
-    <script type="module" crossorigin src="./assets/index-DULIlEfb.js"></script>
+    <script type="module" crossorigin src="./assets/index-DoY7nVGG.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/phaser-DXXWZowi.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-CAVAbPs2.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-uptDtorH.css">
   </head>
   <body>
     <div class="app" id="app">
@@ -24,10 +24,17 @@
           <span class="brand-plank">LE GRAND<br />DÉBARRAS</span>
         </div>
 
+        <button class="top-btn" id="restart" type="button" aria-label="Recommencer" title="Recommencer (R)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.6-5.7" /><path d="M20 4v5h-5" /></svg>
+          <span class="restart-ask" id="restart-ask" hidden>Encore&nbsp;?</span>
+        </button>
         <button class="plate" id="plate" type="button" aria-expanded="false" aria-controls="goals" title="Objectifs du niveau">
-          <span class="plate-title">NIVEAU <b id="level-number">–</b><span class="level-medal" id="level-medal" hidden></span></span>
+          <span class="plate-title" aria-label="Niveau">L<b id="level-number">–</b><span class="level-medal" id="level-medal" hidden></span></span>
           <span class="clock" id="clock" role="timer" aria-label="Temps">--:--</span>
           <span class="plate-moves" aria-label="Coups joués"><b id="moves">0</b><small>coups</small></span>
+        </button>
+        <button class="top-btn" id="pause" type="button" aria-label="Pause" title="Pause (P)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12" /></svg>
         </button>
         <div class="goals" id="goals" role="status" hidden></div>
       </header>
@@ -84,17 +91,15 @@
       <footer class="controls" id="controls">
         <div class="play-controls" id="play-controls">
           <div class="boosters" id="boosters" role="group" aria-label="Aides">
-            <button class="round-btn booster" type="button" data-slot="0"><svg viewBox="0 0 24 24" aria-hidden="true"></svg><span class="booster-count" hidden></span></button>
-            <button class="round-btn booster" type="button" data-slot="1"><svg viewBox="0 0 24 24" aria-hidden="true"></svg><span class="booster-count"></span></button>
-            <button class="round-btn booster" type="button" data-slot="2"><svg viewBox="0 0 24 24" aria-hidden="true"></svg><span class="booster-count"></span></button>
+            <button class="round-btn booster booster-super" type="button" data-slot="0"><svg viewBox="0 0 24 24" aria-hidden="true"></svg><span class="booster-count" hidden></span><span class="booster-sub" hidden></span></button>
+            <button class="round-btn booster" type="button" data-slot="1"><svg viewBox="0 0 24 24" aria-hidden="true"></svg><span class="booster-count" hidden></span></button>
+            <button class="round-btn booster" type="button" data-slot="2"><svg viewBox="0 0 24 24" aria-hidden="true"></svg><span class="booster-count" hidden></span></button>
           </div>
-          <span class="controls-sep" aria-hidden="true"></span>
-          <button class="round-btn" id="restart" type="button" aria-label="Recommencer" title="Recommencer (R)">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.6-5.7" /><path d="M20 4v5h-5" /></svg>
-          </button>
-          <button class="round-btn" id="pause" type="button" aria-label="Pause" title="Pause (P)">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12" /></svg>
-          </button>
+        </div>
+        <div class="super-confirm" id="super-confirm" role="dialog" aria-live="polite" hidden>
+          <span class="super-confirm-text" id="super-confirm-text"></span>
+          <button class="super-confirm-go" id="super-confirm-go" type="button"></button>
+          <button class="super-confirm-no" id="super-confirm-no" type="button" aria-label="Annuler">✕</button>
         </div>
         <p class="booster-note" id="booster-note" role="status" aria-live="polite" hidden></p>
         <div class="win-controls" id="win-controls" hidden>
@@ -218,6 +223,13 @@
             <button class="btn btn-small" id="dbg-tokens-aided" type="button">Victoire aidée simulée</button>
             <button class="btn btn-small" id="dbg-tokens-full" type="button">Réserve pleine, 4/5</button>
             <button class="btn btn-small" id="dbg-tokens-intro" type="button">Revoir l’introduction</button>
+          </div>
+        </section>
+        <section class="dbg-section">
+          <h3>Super aspirateur (essai)</h3>
+          <p class="dbg-note" id="dbg-super-state"></p>
+          <div class="dbg-buttons">
+            <button class="btn btn-small" id="dbg-super-reset" type="button">Recharger toutes les périodes</button>
           </div>
         </section>
         <section class="dbg-section">
