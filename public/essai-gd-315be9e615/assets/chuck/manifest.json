@@ -1,5 +1,5 @@
 {
-  "width": 631,
+  "width": 702,
   "height": 900,
   "frames": {
     "idle": "idle.webp",
@@ -29,10 +29,18 @@
     "vacuum-05": "vacuum-05.webp",
     "vacuum-06": "vacuum-06.webp",
     "vacuum-07": "vacuum-07.webp",
-    "vacuum-08": "vacuum-08.webp"
+    "vacuum-08": "vacuum-08.webp",
+    "lamp-01": "lamp-01.webp",
+    "lamp-02": "lamp-02.webp",
+    "lamp-03": "lamp-03.webp",
+    "lamp-04": "lamp-04.webp",
+    "lamp-05": "lamp-05.webp",
+    "lamp-06": "lamp-06.webp",
+    "lamp-07": "lamp-07.webp",
+    "lamp-08": "lamp-08.webp"
   },
   "anchor": {
-    "x": 285.0,
+    "x": 356.4,
     "y": 896.3
   },
   "headTop": 110.5,
@@ -148,6 +156,38 @@
     "vacuum-08": [
       -449,
       -1535
+    ],
+    "lamp-01": [
+      -662,
+      -1496
+    ],
+    "lamp-02": [
+      -452,
+      -1530
+    ],
+    "lamp-03": [
+      -428,
+      -1498
+    ],
+    "lamp-04": [
+      -387,
+      -1499
+    ],
+    "lamp-05": [
+      -440,
+      -1528
+    ],
+    "lamp-06": [
+      -404,
+      -1499
+    ],
+    "lamp-07": [
+      -403,
+      -1501
+    ],
+    "lamp-08": [
+      -386,
+      -1501
     ]
   },
   "keyed": [
@@ -156,7 +196,14 @@
     "chainsaw-02",
     "chainsaw-03",
     "chainsaw-07",
-    "vacuum-04"
+    "vacuum-04",
+    "lamp-02",
+    "lamp-03",
+    "lamp-04",
+    "lamp-05",
+    "lamp-06",
+    "lamp-07",
+    "lamp-08"
   ],
   "scales": {
     "chainsaw-01": 1.001,
@@ -174,7 +221,15 @@
     "vacuum-05": 1.1,
     "vacuum-06": 1.1,
     "vacuum-07": 1.1,
-    "vacuum-08": 1.14
+    "vacuum-08": 1.14,
+    "lamp-01": 1.023,
+    "lamp-02": 1.002,
+    "lamp-03": 1.022,
+    "lamp-04": 1.025,
+    "lamp-05": 1.006,
+    "lamp-06": 1.027,
+    "lamp-07": 1.024,
+    "lamp-08": 1.024
   },
   "body": 785.8,
   "sources": {
@@ -205,6 +260,14 @@
     "vacuum-05": "chuck_vacuum_05.png",
     "vacuum-06": "chuck_vacuum_06.png",
     "vacuum-07": "chuck_vacuum_07.png",
-    "vacuum-08": "chuck_vacuum_08.png"
+    "vacuum-08": "chuck_vacuum_08.png",
+    "lamp-01": "chuck_lamp_01.png",
+    "lamp-02": "chuck_lamp_02.png",
+    "lamp-03": "chuck_lamp_03.png",
+    "lamp-04": "chuck_lamp_04.png",
+    "lamp-05": "chuck_lamp_05.png",
+    "lamp-06": "chuck_lamp_06.png",
+    "lamp-07": "chuck_lamp_07.png",
+    "lamp-08": "chuck_lamp_08.png"
   }
 }
