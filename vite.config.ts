@@ -30,9 +30,11 @@ export default defineConfig({
     target: 'es2022',
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
-      // une page par mission : l'accueil (Opération Cornichon), Saucissonator 3000, Olive Storm et MAURIIIIICE !!!
+      // l'accueil (index.html) est le QG qui regroupe tous les jeux : la liste se modifie dans son tableau JEUX.
+      // Puis une page par mission : Opération Cornichon, Saucissonator 3000, Olive Storm et MAURIIIIICE !!!
       input: {
-        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        qg: fileURLToPath(new URL('./index.html', import.meta.url)),
+        main: fileURLToPath(new URL('./cornichon.html', import.meta.url)),
         saucissonator: fileURLToPath(new URL('./saucissonator.html', import.meta.url)),
         'olive-storm': fileURLToPath(new URL('./olive-storm.html', import.meta.url)),
         mauriiiiice: fileURLToPath(new URL('./mauriiiiice.html', import.meta.url)),

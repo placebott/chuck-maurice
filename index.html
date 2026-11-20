@@ -1,125 +1,305 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
-    <meta name="theme-color" content="#120a14" />
-    <title>Chuck Maurice — Opération Cornichon</title>
-    <meta name="description" content="Chuck Maurice doit ouvrir un pot de cornichons. La France retient son souffle. Un mini-jeu d'arcade absurde, rejouable en 20 secondes." />
-    <meta property="og:title" content="Chuck Maurice — Opération Cornichon" />
-    <meta property="og:description" content="Un homme. Un bocal. Vingt secondes pour sauver la France." />
-    <meta property="og:type" content="website" />
-    <link rel="icon" type="image/png" href="./assets/sprites/jar_closed.png" />
-  </head>
-  <body>
-    <div id="app" data-screen="loading">
-      <div class="stage" id="stage">
-        <div id="game" aria-hidden="true"></div>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chuck Maurice — Le Bureau des Missions</title>
+<meta name="description" content="Tous les mini-jeux Chuck Maurice au même endroit. Le Ministère du Condiment compte sur vous.">
+<meta name="theme-color" content="#120a14">
+<meta property="og:title" content="Chuck Maurice — Le Bureau des Missions">
+<meta property="og:description" content="Tous les mini-jeux Chuck Maurice au même endroit. Zéro excuse.">
+<link rel="icon" type="image/png" href="./assets/sprites/jar_closed.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#120a14; --plum:#24122a; --plum2:#341a3c;
+  --ink:#f6ecd9; --dim:#b9a8bd;
+  --green:#a4d83c; --mustard:#ffc928; --red:#ff4338;
+  --display:"Bowlby One","Arial Black",Impact,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
 
-        <div class="overlay">
-          <div class="logo" aria-hidden="true">
-            <span class="logo-kicker">LE MINISTÈRE DU CONDIMENT PRÉSENTE</span>
-            <span class="logo-name">CHUCK MAURICE</span>
-            <span class="logo-mission">OPÉRATION CORNICHON</span>
-          </div>
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 1.25rem 6rem;overflow:hidden;isolation:isolate}
+.rays{position:absolute;inset:-50%;z-index:-2;background:repeating-conic-gradient(from 0deg,var(--plum) 0 7.5deg,transparent 7.5deg 15deg);animation:spin 90s linear infinite;-webkit-mask:radial-gradient(circle,#000 0,transparent 62%);mask:radial-gradient(circle,#000 0,transparent 62%)}
+.dots{position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(246,236,217,.08) 1.2px,transparent 1.4px);background-size:14px 14px;-webkit-mask:linear-gradient(#000,transparent 85%);mask:linear-gradient(#000,transparent 85%)}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-          <div class="loading" id="loading">CHARGEMENT…</div>
+.floaty{position:absolute;z-index:-1;font-size:clamp(2rem,6vw,4.5rem);animation:bob 7s ease-in-out infinite;filter:drop-shadow(4px 6px 0 rgba(0,0,0,.55));user-select:none}
+.floaty:nth-of-type(1){top:14%;left:8%}
+.floaty:nth-of-type(2){top:20%;right:9%;animation-delay:-2s;animation-duration:8.5s}
+.floaty:nth-of-type(3){bottom:22%;left:13%;animation-delay:-4s;animation-duration:9s}
+.floaty:nth-of-type(4){bottom:26%;right:14%;animation-delay:-1s}
+.floaty:nth-of-type(5){top:47%;left:4%;animation-delay:-3s;animation-duration:10s}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-22px) rotate(10deg)}}
 
-          <div class="intro" id="intro" aria-live="polite"></div>
-          <div class="go" id="go" aria-hidden="true"></div>
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);padding:.4rem .9rem;font-weight:700;font-size:clamp(.62rem,1.9vw,.85rem);letter-spacing:.22em;text-transform:uppercase;transform:rotate(-3deg);margin-bottom:1.6rem;animation:slam .55s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes slam{from{transform:rotate(-14deg) scale(2.6);opacity:0}}
+h1{font-family:var(--display);font-weight:400;line-height:.86;text-transform:uppercase;font-size:clamp(3.3rem,15.5vw,12rem);letter-spacing:-.01em}
+h1 span{display:block;animation:rise .7s cubic-bezier(.2,.9,.3,1.2) both}
+h1 .l1{color:var(--ink);text-shadow:.045em .045em 0 var(--red),.09em .09em 0 #000;animation-delay:.15s}
+h1 .l2{color:var(--mustard);text-shadow:.045em .045em 0 var(--red),.09em .09em 0 #000;animation-delay:.28s}
+@keyframes rise{from{transform:translateY(60px) skewY(4deg);opacity:0}}
+.sub{margin-top:1.8rem;font-size:clamp(.95rem,2.6vw,1.3rem);font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--green)}
+.pitch{margin:.7rem auto 0;max-width:34rem;color:var(--dim);font-size:clamp(.85rem,2.2vw,1rem)}
+.cta{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:2.2rem}
+.btn{display:inline-flex;align-items:center;gap:.6rem;border:3px solid #000;background:var(--mustard);color:#120a14;font-family:var(--display);font-size:clamp(.95rem,2.6vw,1.15rem);text-transform:uppercase;text-decoration:none;padding:.85rem 1.4rem;box-shadow:6px 6px 0 #000;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #000}
+.btn:active{transform:translate(4px,4px);box-shadow:2px 2px 0 #000}
+.btn.alt{background:var(--ink)}
+.btn.green{background:var(--green)}
 
-          <div class="timer" id="timer" aria-label="Temps restant"><span id="timer-value">20</span></div>
-          <div class="banner" id="banner" role="status"></div>
-          <div class="barks" id="barks" aria-hidden="true"></div>
-          <div class="scanlines" aria-hidden="true"></div>
-        </div>
+/* ---------- TICKER ---------- */
+.ticker-wrap{overflow:hidden;padding:1.2rem 0;margin-top:-3.4rem;position:relative;z-index:2}
+.ticker{background:var(--mustard);color:#120a14;border-block:3px solid #000;overflow:hidden;white-space:nowrap;font-weight:700;text-transform:uppercase;font-size:.85rem;transform:rotate(-1.2deg) scale(1.03)}
+.ticker div{display:inline-block;padding:.6rem 0;animation:scroll 55s linear infinite}
+.ticker span{margin:0 1.4rem}
+@keyframes scroll{to{transform:translateX(-50%)}}
 
-        <button class="mute" id="mute" type="button" aria-pressed="false" aria-label="Couper le son">SON</button>
-      </div>
+/* ---------- SECTIONS ---------- */
+main{max-width:1180px;margin:0 auto;padding:4.5rem 1.25rem 3rem}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.6rem}
+h2{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:clamp(1.8rem,5.5vw,3rem);line-height:1}
+h2 small{display:block;font-family:var(--mono);font-size:.75rem;letter-spacing:.2em;color:var(--green);margin-bottom:.5rem;font-weight:700}
+.filters{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{border:2px solid var(--ink);background:transparent;padding:.35rem .8rem;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;transition:background .15s,color .15s}
+.chip:hover{background:rgba(246,236,217,.12)}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 
-      <div class="deck">
-        <!-- Écran titre -->
-        <section class="panel panel-title" aria-label="Menu principal">
-          <h1 class="sr-only">Chuck Maurice — Opération Cornichon</h1>
-          <button class="btn btn-primary btn-blink" id="start" type="button">SAUVER LA FRANCE</button>
-          <p class="hint">20 SECONDES. UN BOCAL. AUCUNE EXCUSE.</p>
-          <nav class="missions" aria-label="Missions">
-            <a class="mission is-current" href="./index.html" aria-current="page">
-              <small>MISSION 001</small>
-              OPÉRATION CORNICHON
-            </a>
-            <a class="mission" href="./saucissonator.html">
-              <small>MISSION 002</small>
-              SAUCISSONATOR 3000
-            </a>
-            <a class="mission" href="./olive-storm.html">
-              <small>MISSION 003</small>
-              OLIVE STORM
-            </a>
-            <a class="mission mission-wide" href="./mauriiiiice.html">
-              <small>MISSION 004 — MAURIIIIICE !!!</small>
-              OPÉRATION BON VOISINAGE
-              <em>LA TRANQUILLITÉ EST UNE MENACE NATIONALE.</em>
-            </a>
-          </nav>
-          <dl class="stats" id="stats"></dl>
-          <div class="medals">
-            <h2>MÉDAILLES <span id="medal-count"></span></h2>
-            <ul id="medals"></ul>
-            <p class="medal-info" id="medal-info" aria-live="polite">&nbsp;</p>
-          </div>
-        </section>
+/* ---------- À LA UNE ---------- */
+.feature{display:grid;grid-template-columns:1.1fr 1fr;border:3px solid #000;box-shadow:10px 10px 0 #000;background:var(--plum);margin-bottom:4.5rem;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.feature:hover{transform:translate(-4px,-4px);box-shadow:14px 14px 0 #000}
+.feature .art{min-height:300px;font-size:clamp(6rem,17vw,11rem)}
+.feature .body{padding:clamp(1.4rem,4vw,2.6rem);display:flex;flex-direction:column;justify-content:center;gap:.9rem;border-left:3px solid #000}
+.feature h3{font-size:clamp(1.7rem,4.6vw,2.9rem)}
+.feature p{color:var(--dim)}
+.feature .btn{align-self:flex-start;margin-top:.5rem}
+@media(max-width:760px){.feature{grid-template-columns:1fr}.feature .body{border-left:0;border-top:3px solid #000}.feature .art{min-height:210px}}
 
-        <!-- Jeu -->
-        <section class="panel panel-play" aria-label="Commandes">
-          <div class="gauge-wrap">
-            <div class="gauge-head">
-              <span>PUISSANCE</span>
-              <span class="gauge-pct" id="gauge-pct">0%</span>
-            </div>
-            <div class="gauge" id="gauge" role="progressbar" aria-label="Puissance" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <div class="zone zone-perfect"></div>
-              <div class="zone zone-chaos"></div>
-              <div class="zone zone-boom"></div>
-              <div class="gauge-fill" id="gauge-fill"></div>
-              <div class="gauge-needle" id="gauge-needle"></div>
-            </div>
-            <div class="gauge-labels" aria-hidden="true">
-              <span class="lbl-resist">ÇA RÉSISTE</span>
-              <span class="lbl-perfect">PARFAIT</span>
-              <span class="lbl-chaos">CHAOS</span>
-              <span class="lbl-boom">!</span>
-            </div>
-          </div>
-          <div class="controls">
-            <button class="btn btn-pump" id="pump" type="button">
-              FORCER
-              <small>ESPACE · MARTELER</small>
-            </button>
-            <button class="btn btn-open" id="open" type="button">
-              OUVRIR CE FOUTU BOCAL
-              <small>ENTRÉE</small>
-            </button>
-          </div>
-        </section>
+/* ---------- CARTES ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.8rem}
+.card{position:relative;display:flex;flex-direction:column;border:3px solid #000;background:var(--plum);box-shadow:7px 7px 0 #000;text-decoration:none;transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translate(var(--tx,0),var(--ty,0));transition:transform .18s,box-shadow .18s,opacity .5s}
+.card:hover{--tx:-4px;--ty:-4px;box-shadow:11px 11px 0 #000}
+.card.hidden{display:none}
+.card.pre{opacity:0;--ty:36px}
+.card.flash{box-shadow:0 0 0 5px var(--mustard),11px 11px 0 #000;--tx:-4px;--ty:-4px}
+.art{position:relative;display:grid;place-items:center;aspect-ratio:16/10;background:var(--c,#555);overflow:hidden;font-size:5.2rem;border-bottom:3px solid #000}
+.feature .art{aspect-ratio:auto;border-bottom:0}
+.art::before{content:"";position:absolute;inset:0;background:radial-gradient(rgba(0,0,0,.28) 1.6px,transparent 1.8px) 0 0/11px 11px,linear-gradient(135deg,rgba(255,255,255,.22),transparent 55%,rgba(0,0,0,.35))}
+.art::after{content:attr(data-num);position:absolute;right:-.06em;bottom:-.28em;font-family:var(--display);font-size:2.3em;line-height:1;color:transparent;-webkit-text-stroke:2px rgba(0,0,0,.35)}
+.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.art .emo{position:relative;z-index:1;filter:drop-shadow(5px 7px 0 rgba(0,0,0,.5));transition:transform .3s cubic-bezier(.2,1.8,.4,1)}
+.card:hover .emo,.feature:hover .emo{transform:scale(1.22) rotate(-10deg)}
+.tag-new,.tag-done{position:absolute;z-index:2;top:.7rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.2rem .5rem;border:2px solid #000}
+.tag-new{left:.7rem;background:var(--red);color:#fff;transform:rotate(-4deg)}
+.tag-done{right:.7rem;background:var(--green);color:#120a14;transform:rotate(3deg)}
+.cbody{padding:1.1rem 1.15rem 1.25rem;display:flex;flex-direction:column;gap:.55rem;flex:1}
+.num{font-size:.7rem;font-weight:700;letter-spacing:.2em;color:var(--green);text-transform:uppercase}
+h3{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.4rem;line-height:1.05}
+.cbody p{font-size:.85rem;color:var(--dim);flex:1}
+.meta{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.3rem}
+.meta span{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border:1.5px solid rgba(246,236,217,.35);padding:.15rem .45rem}
+.meta .warn{border-color:var(--mustard);color:var(--mustard)}
+.go{margin-top:.6rem;font-family:var(--display);text-transform:uppercase;font-size:.95rem;color:var(--mustard)}
+.go::after{content:" →";display:inline-block;transition:transform .2s}
+.card:hover .go::after{transform:translateX(6px)}
+.card.soon{background:transparent;border-style:dashed;border-color:rgba(246,236,217,.4);box-shadow:none;justify-content:center;align-items:center;text-align:center;padding:2rem 1.2rem;min-height:300px;gap:.7rem}
+.card.soon .q{font-family:var(--display);font-size:4.5rem;color:var(--plum2);-webkit-text-stroke:2px rgba(246,236,217,.4)}
+.card.soon p{font-size:.82rem;color:var(--dim);max-width:16rem}
+.empty{grid-column:1/-1;text-align:center;color:var(--dim);padding:2rem}
 
-        <!-- Résultat -->
-        <section class="panel panel-result" aria-label="Résultat">
-          <p class="result-message" id="result-message" aria-live="assertive"></p>
-          <div class="result-score">
-            <span id="result-score"></span>
-            <span class="record" id="result-record" hidden>NOUVEAU RECORD !</span>
-          </div>
-          <p class="result-detail" id="result-detail"></p>
-          <ul class="new-medals" id="new-medals"></ul>
-          <div class="result-actions">
-            <button class="btn btn-primary" id="retry" type="button">PRENDRE SA REVANCHE</button>
-            <button class="btn btn-ghost" id="share" type="button">PARTAGER</button>
-            <button class="btn btn-ghost" id="menu" type="button">MENU</button>
-          </div>
-        </section>
-      </div>
+footer{border-top:3px solid #000;background:var(--plum);text-align:center;padding:2.4rem 1.25rem calc(2.4rem + env(safe-area-inset-bottom));font-size:.78rem;color:var(--dim)}
+footer strong{color:var(--ink)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="rays"></div><div class="dots"></div>
+  <span class="floaty" aria-hidden="true">🥒</span>
+  <span class="floaty" aria-hidden="true">🫒</span>
+  <span class="floaty" aria-hidden="true">🥖</span>
+  <span class="floaty" aria-hidden="true">🧀</span>
+  <span class="floaty" aria-hidden="true">🥾</span>
+
+  <div class="stamp">Le Ministère du Condiment présente</div>
+  <h1><span class="l1">Chuck</span><span class="l2">Maurice</span></h1>
+  <p class="sub">Le Bureau des Missions</p>
+  <p class="pitch"><span id="count">0</span> missions. Zéro excuse. La France a besoin de vos pouces.</p>
+  <div class="cta">
+    <button class="btn" id="random">🎲 Mission au hasard</button>
+    <a class="btn alt" href="#missions">Voir les dossiers</a>
+  </div>
+</header>
+
+<div class="ticker-wrap"><div class="ticker" aria-hidden="true"><div id="ticker"></div></div></div>
+
+<main>
+  <section id="une-wrap">
+    <div class="head"><h2><small>Priorité nationale</small>À la une</h2></div>
+    <div id="une"></div>
+  </section>
+
+  <section id="missions">
+    <div class="head">
+      <h2><small>Dossiers ouverts</small>Toutes les missions</h2>
+      <div class="filters" id="filters" role="group" aria-label="Filtrer les missions"></div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<footer>
+  <p><strong>Ministère du Condiment</strong> — Bureau des Missions</p>
+  <p>Aucun cornichon n'a été maltraité durant la fabrication de ce site. Enfin, presque.</p>
+</footer>
+
+<script>
+/* =====================================================================
+   LISTE DES JEUX — c'est le SEUL endroit à modifier pour ajouter un jeu.
+   Copier un bloc { ... }, le coller, changer les valeurs. C'est tout.
+
+   titre    : nom du jeu
+   pitch    : une ou deux phrases d'accroche
+   url      : adresse du jeu (ex. "/mon-jeu.html" ou une adresse complète)
+   genre    : sert aux filtres (un nouveau genre crée son bouton tout seul)
+   emoji    : illustration de la carte si aucune image n'est fournie
+   couleur  : couleur de fond de la carte
+   image    : (optionnel) capture d'écran, ex. "/img/mon-jeu.jpg"
+   duree    : (optionnel) ex. "20 s", "5 min"
+   mobile   : true = jouable au doigt, false = clavier nécessaire
+   nouveau  : true = pastille "NOUVEAU"
+   une      : true = mis en avant en haut de page (un seul jeu)
+   ===================================================================== */
+const JEUX = [
+  { titre:"Opération Cornichon", pitch:"20 secondes, un bocal, aucune excuse. Ouvrez-le. Pour la France.",
+    url:"./cornichon.html", genre:"Réflexes", emoji:"🥒", couleur:"#5d9c2f", duree:"20 s", mobile:false },
+  { titre:"Saucissonator 3000", pitch:"Dossier classé charcuterie-défense. Le Ministère n'en dira pas plus.",
+    url:"./saucissonator.html", genre:"Réflexes", emoji:"🔪", couleur:"#c2453d", mobile:false },
+  { titre:"Olive Storm", pitch:"Alerte météo sur l'apéro : il pleut des olives et personne n'a de cure-dent.",
+    url:"./olive-storm.html", genre:"Réflexes", emoji:"🫒", couleur:"#6f7d2a", mobile:false },
+  { titre:"Mauriiiiice !!!", pitch:"Opération Bon Voisinage. La tranquillité est une menace nationale.",
+    url:"./mauriiiiice.html", genre:"Réflexes", emoji:"📢", couleur:"#d9822b", mobile:false },
+  { titre:"Le Grand Débarras", pitch:"Glissez les pièces colorées sous les personnages de leur couleur. Jean-Mi vous regarde.",
+    url:"/essai-gd-315be9e615/", genre:"Puzzle", emoji:"📦", couleur:"#7a4fd1", mobile:true, nouveau:true },
+  { titre:"Boss Squadron", pitch:"Shoot'em up vertical en 3D : décor qui défile, ombres, explosions. Beaucoup d'explosions.",
+    url:"https://demo-3d-mu.vercel.app/", genre:"Shoot", emoji:"🚀", couleur:"#1f7fc4", mobile:true, nouveau:true, une:true },
+];
+
+/* Phrases du bandeau défilant */
+const BANDEAU = [
+  "Chuck Maurice ne charge pas les jeux. Les jeux se chargent tout seuls, par respect",
+  "Un cornichon averti en vaut deux",
+  "Chuck Maurice a fini Tetris. Deux fois",
+  "Le Ministère rappelle que l'apéro est un devoir civique",
+  "Chuck Maurice ne perd jamais. Il laisse gagner",
+  "Toute ressemblance avec un bocal existant serait purement fortuite",
+];
+
+/* ============ À partir d'ici, plus rien à toucher ============ */
+const $ = s => document.querySelector(s);
+const touch = matchMedia("(pointer:coarse)").matches;
+const calm  = matchMedia("(prefers-reduced-motion:reduce)").matches;
+const num   = i => String(i + 1).padStart(3, "0");
+const esc   = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+let joues = [];
+try { joues = JSON.parse(localStorage.getItem("cm_joues") || "[]"); } catch (e) {}
+function marquer(url){
+  if (!joues.includes(url)) joues.push(url);
+  try { localStorage.setItem("cm_joues", JSON.stringify(joues)); } catch (e) {}
+}
+
+const art = (j, i) => `<div class="art" style="--c:${esc(j.couleur || "#555")}" data-num="${num(i)}">${
+  j.image ? `<img src="${esc(j.image)}" alt="" loading="lazy">` : `<span class="emo">${esc(j.emoji || "🎮")}</span>`}</div>`;
+const meta = j => `<div class="meta"><span>${esc(j.genre)}</span>${j.duree ? `<span>⏱ ${esc(j.duree)}</span>` : ""}${
+  j.mobile ? "<span>📱 Mobile</span>" : `<span class="${touch ? "warn" : ""}">⌨️ Clavier</span>`}</div>`;
+
+$("#count").textContent = JEUX.length;
+$("#ticker").innerHTML = [...BANDEAU, ...BANDEAU].map(t => `<span>★ ${esc(t)}</span>`).join("");
+
+/* À la une */
+const iu = JEUX.findIndex(j => j.une);
+if (iu < 0) $("#une-wrap").remove();
+else {
+  const j = JEUX[iu];
+  $("#une").innerHTML = `<a class="feature" href="${esc(j.url)}" data-url="${esc(j.url)}">${art(j, iu)}
+    <div class="body"><span class="num">Mission ${num(iu)}</span><h3>${esc(j.titre)}</h3><p>${esc(j.pitch)}</p>${meta(j)}
+    <span class="btn green">▶ Jouer maintenant</span></div></a>`;
+}
+
+/* Grille */
+$("#grid").innerHTML = JEUX.map((j, i) => `<a class="card pre" href="${esc(j.url)}" data-url="${esc(j.url)}" data-genre="${esc(j.genre)}" data-mobile="${!!j.mobile}">
+  ${j.nouveau ? '<span class="tag-new">Nouveau</span>' : ""}${joues.includes(j.url) ? '<span class="tag-done">✓ Joué</span>' : ""}
+  ${art(j, i)}<div class="cbody"><span class="num">Mission ${num(i)}</span><h3>${esc(j.titre)}</h3><p>${esc(j.pitch)}</p>${meta(j)}<span class="go">Jouer</span></div></a>`).join("")
+  + `<div class="card soon pre" data-soon><div class="q">???</div><h3>Prochaine mission</h3><p>En préparation dans les sous-sols du Ministère. Revenez vite.</p></div>`;
+
+const cards = [...document.querySelectorAll("#grid .card")];
+const games = cards.filter(c => c.dataset.url);
+document.querySelectorAll("[data-url]").forEach(a => a.addEventListener("click", () => marquer(a.dataset.url)));
+
+/* Filtres (générés à partir des genres) */
+const genres = [...new Set(JEUX.map(j => j.genre))];
+const chips = ["Toutes", ...genres, ...(JEUX.some(j => j.mobile) ? ["📱 Mobile"] : [])];
+$("#filters").innerHTML = chips.map((g, i) => `<button class="chip" aria-pressed="${i === 0}">${esc(g)}</button>`).join("");
+$("#filters").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b));
+  const f = b.textContent;
+  games.forEach(c => c.classList.toggle("hidden",
+    !(f === "Toutes" || (f === "📱 Mobile" ? c.dataset.mobile === "true" : c.dataset.genre === f))));
+});
+
+/* Apparition au défilement */
+if (calm || !("IntersectionObserver" in window)) cards.forEach(c => c.classList.remove("pre"));
+else {
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    setTimeout(() => e.target.classList.remove("pre"), (cards.indexOf(e.target) % 3) * 90);
+    io.unobserve(e.target);
+  }), { threshold: .12 });
+  cards.forEach(c => io.observe(c));
+}
+
+/* Légère inclinaison 3D à la souris */
+if (!touch && !calm) games.forEach(c => {
+  c.addEventListener("pointermove", e => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty("--ry", ((e.clientX - r.left) / r.width - .5) * 9 + "deg");
+    c.style.setProperty("--rx", (.5 - (e.clientY - r.top) / r.height) * 9 + "deg");
+  });
+  c.addEventListener("pointerleave", () => { c.style.removeProperty("--rx"); c.style.removeProperty("--ry"); });
+});
+
+/* Mission au hasard : roulette puis lancement */
+$("#random").addEventListener("click", () => {
+  const pool = games.filter(c => !c.classList.contains("hidden") && (!touch || c.dataset.mobile === "true"));
+  const list = pool.length ? pool : games;
+  if (!list.length) return;
+  const win = list[Math.floor(Math.random() * list.length)];
+  const go = () => { marquer(win.dataset.url); location.href = win.href; };
+  if (calm) return go();
+  win.scrollIntoView({ behavior: "smooth", block: "center" });
+  let n = 0; const tours = list.length * 2 + list.indexOf(win);
+  const t = setInterval(() => {
+    list.forEach(c => c.classList.remove("flash", "pre"));
+    list[n % list.length].classList.add("flash");
+    if (n++ >= tours) { clearInterval(t); setTimeout(go, 650); }
+  }, 110);
+});
+</script>
+</body>
 </html>
