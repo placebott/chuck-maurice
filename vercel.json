@@ -1,14 +1,9 @@
 {
+  "cleanUrls": true,
   "redirects": [
-    { "source": "/grand-debarras", "destination": "/grand-debarras/", "permanent": false },
-    { "source": "/essai-gd-315be9e615", "destination": "/grand-debarras/", "permanent": false },
-    { "source": "/essai-gd-315be9e615/", "destination": "/grand-debarras/", "permanent": false },
-    { "source": "/essai-gd-315be9e615/:path*", "destination": "/grand-debarras/:path*", "permanent": false }
-  ],
-  "headers": [
-    {
-      "source": "/grand-debarras/(.*)",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
-    }
+    { "source": "/grand-debarras", "destination": "/grand-debarras/", "permanent": true },
+    { "source": "/essai-gd-315be9e615", "destination": "/grand-debarras/", "permanent": true },
+    { "source": "/essai-gd-315be9e615/", "destination": "/grand-debarras/", "permanent": true },
+    { "source": "/essai-gd-315be9e615/:path*", "destination": "/grand-debarras/:path*", "permanent": true }
   ]
 }

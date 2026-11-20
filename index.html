@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#120a14">
 <meta property="og:title" content="Chuck Maurice — Le Bureau des Missions">
 <meta property="og:description" content="Tous les mini-jeux Chuck Maurice au même endroit. Zéro excuse.">
+<meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="./assets/sprites/jar_closed.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -136,7 +137,7 @@ footer strong{color:var(--ink)}
   <span class="floaty" aria-hidden="true">🥾</span>
 
   <div class="stamp">Le Ministère du Condiment présente</div>
-  <h1><span class="l1">Chuck</span><span class="l2">Maurice</span></h1>
+  <h1><span class="l1">Chuck</span> <span class="l2">Maurice</span></h1>
   <p class="sub">Le Bureau des Missions</p>
   <p class="pitch"><span id="count">0</span> missions. Zéro excuse. La France a besoin de vos pouces.</p>
   <div class="cta">
@@ -174,7 +175,7 @@ footer strong{color:var(--ink)}
 
    titre    : nom du jeu
    pitch    : une ou deux phrases d'accroche
-   url      : adresse du jeu (ex. "/mon-jeu.html" ou une adresse complète)
+   url      : adresse du jeu (ex. "./mon-jeu" ou une adresse complète)
    genre    : sert aux filtres (un nouveau genre crée son bouton tout seul)
    emoji    : illustration de la carte si aucune image n'est fournie
    couleur  : couleur de fond de la carte
@@ -183,16 +184,19 @@ footer strong{color:var(--ink)}
    mobile   : true = jouable au doigt, false = clavier nécessaire
    nouveau  : true = pastille "NOUVEAU"
    une      : true = mis en avant en haut de page (un seul jeu)
+
+   Au build, cette liste est aussi écrite en dur dans la page (cartes + liens)
+   pour les moteurs de recherche : voir le plugin « seo » de vite.config.ts.
    ===================================================================== */
 const JEUX = [
   { titre:"Opération Cornichon", pitch:"20 secondes, un bocal, aucune excuse. Ouvrez-le. Pour la France.",
-    url:"./cornichon.html", genre:"Réflexes", emoji:"🥒", couleur:"#5d9c2f", duree:"20 s", mobile:false },
+    url:"./cornichon", genre:"Réflexes", emoji:"🥒", couleur:"#5d9c2f", duree:"20 s", mobile:false },
   { titre:"Saucissonator 3000", pitch:"Dossier classé charcuterie-défense. Le Ministère n'en dira pas plus.",
-    url:"./saucissonator.html", genre:"Réflexes", emoji:"🔪", couleur:"#c2453d", mobile:false },
+    url:"./saucissonator", genre:"Réflexes", emoji:"🔪", couleur:"#c2453d", mobile:false },
   { titre:"Olive Storm", pitch:"Alerte météo sur l'apéro : il pleut des olives et personne n'a de cure-dent.",
-    url:"./olive-storm.html", genre:"Réflexes", emoji:"🫒", couleur:"#6f7d2a", mobile:false },
+    url:"./olive-storm", genre:"Réflexes", emoji:"🫒", couleur:"#6f7d2a", mobile:false },
   { titre:"Mauriiiiice !!!", pitch:"Opération Bon Voisinage. La tranquillité est une menace nationale.",
-    url:"./mauriiiiice.html", genre:"Réflexes", emoji:"📢", couleur:"#d9822b", mobile:false },
+    url:"./mauriiiiice", genre:"Réflexes", emoji:"📢", couleur:"#d9822b", mobile:false },
   { titre:"Le Grand Débarras", pitch:"Glissez les pièces colorées sous les personnages de leur couleur. Jean-Mi vous regarde.",
     url:"/grand-debarras/", genre:"Puzzle", emoji:"📦", couleur:"#7a4fd1", mobile:true, nouveau:true },
   { titre:"Boss Squadron", pitch:"Shoot'em up vertical en 3D : décor qui défile, ombres, explosions. Beaucoup d'explosions.",
@@ -217,7 +221,7 @@ const num   = i => String(i + 1).padStart(3, "0");
 const esc   = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
 
 let joues = [];
-try { joues = JSON.parse(localStorage.getItem("cm_joues") || "[]"); } catch (e) {}
+try { joues = JSON.parse(localStorage.getItem("cm_joues") || "[]").map(u => String(u).replace(/\.html$/, "")); } catch (e) {}
 function marquer(url){
   if (!joues.includes(url)) joues.push(url);
   try { localStorage.setItem("cm_joues", JSON.stringify(joues)); } catch (e) {}
@@ -301,5 +305,6 @@ $("#random").addEventListener("click", () => {
   }, 110);
 });
 </script>
+<script type="module" src="/src/analytics.ts"></script>
 </body>
 </html>
