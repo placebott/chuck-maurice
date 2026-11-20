@@ -4,6 +4,7 @@ import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
 import '../styles/olive.css';
 
+import { goHub, unlockAudioOnGesture } from '../hub';
 import { STORM, clamp, type EndingKind } from './config/balance';
 import {
   CENTER_TEXT, DIRECT_TEXT, ENDINGS, GO_TEXT, HEADLINES, INTRO_DURATION, INTRO_LINES, INTRO_PACE, JEANMI_YELL,
@@ -58,7 +59,8 @@ scene.onLoadError = (key) => {
 scene.onReady = () => {
   if (phase !== 'loading') return;
   phase = 'title';
-  ui.setScreen('title');
+  // le QG remplace l'écran-titre : on entre directement en mission
+  startIntro();
 };
 scene.onBark = (text, x, y, who) => ui.bark(text, x, y, who);
 scene.onCue = (cue) => {
@@ -106,13 +108,6 @@ function resetStage(): void {
   ui.clearIntro();
 }
 
-function goTitle(): void {
-  resetStage();
-  ui.renderTitle(save);
-  scene.showTitle();
-  phase = 'title';
-  ui.setScreen('title');
-}
 
 function resetRound(): void {
   mission = new Mission();
@@ -448,7 +443,7 @@ hold(ui.angleDownBtn, () => nudge(-STORM.angleStep));
 press(ui.retryBtn, () => {
   if (performance.now() > resultReadyAt - 450) startIntro();
 });
-press(ui.menuBtn, goTitle);
+press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 ui.shareBtn.addEventListener('click', () => void share());
 
@@ -538,10 +533,12 @@ window.addEventListener('keydown', (e) => {
       toggleMute();
       break;
     case 'Escape':
-      if (phase !== 'loading' && phase !== 'title') goTitle();
+      if (phase !== 'loading') goHub();
       break;
   }
 });
+
+unlockAudioOnGesture(() => sfx.unlock());
 
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('visibilitychange', () => {

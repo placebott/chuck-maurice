@@ -4,6 +4,7 @@ import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
 import '../styles/saucissonator.css';
 
+import { goHub, unlockAudioOnGesture } from '../hub';
 import { CUT, type EndingKind } from './config/balance';
 import {
   BOXER_BARKS, CHUCK_BARKS, COMBO_TEXT, ENDINGS, GO_TEXT, HEADLINES, INTRO_DURATION, INTRO_LINES, INTRO_PACE,
@@ -55,7 +56,8 @@ scene.onLoadError = (key) => {
 scene.onReady = () => {
   if (phase !== 'loading') return;
   phase = 'title';
-  ui.setScreen('title');
+  // le QG remplace l'écran-titre : on entre directement en mission
+  startIntro();
 };
 scene.onBark = (text, x, y, who) => ui.bark(text, x, y, who);
 scene.onSliceLand = () => sfx.land();
@@ -88,13 +90,6 @@ function resetStage(): void {
   ui.clearBarks();
 }
 
-function goTitle(): void {
-  resetStage();
-  ui.renderTitle(save);
-  scene.showTitle();
-  phase = 'title';
-  ui.setScreen('title');
-}
 
 function startIntro(): void {
   resetStage();
@@ -351,7 +346,7 @@ press(ui.cutBtn, cut);
 press(ui.retryBtn, () => {
   if (performance.now() > resultReadyAt - 450) startIntro();
 });
-press(ui.menuBtn, goTitle);
+press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 ui.shareBtn.addEventListener('click', () => void share());
 
@@ -389,11 +384,13 @@ window.addEventListener('keydown', (e) => {
   } else if (e.code === 'KeyM') {
     toggleMute();
   } else if (e.code === 'Escape') {
-    if (phase !== 'loading' && phase !== 'title') goTitle();
+    if (phase !== 'loading') goHub();
   }
 });
 
 // confort mobile : pas de menu contextuel ni de zoom au double appui
+unlockAudioOnGesture(() => sfx.unlock());
+
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) sfx.stopTension();

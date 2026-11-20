@@ -4,6 +4,7 @@ import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
 import '../styles/voisinage.css';
 
+import { goHub } from '../hub';
 import { DUEL, clamp, type Ending } from './config/balance';
 import {
   ACTS, ALERT_TEXT, CAUGHT_TEXT, CHUCK_CAUGHT, CHUCK_NEXT, ENDINGS, GO_TEXT, INTRO_DURATION, INTRO_LINES, INTRO_PACE,
@@ -70,7 +71,8 @@ scene.onLoadError = (key) => {
 scene.onReady = () => {
   if (phase !== 'loading') return;
   phase = 'title';
-  ui.setScreen('title');
+  // le QG remplace l'écran-titre : on entre directement en mission
+  startIntro();
 };
 scene.onTick = tick;
 scene.onCaption = (c) => ui.caption(c);
@@ -156,14 +158,6 @@ function resetStage(): void {
   ui.clearIntro();
 }
 
-function goTitle(): void {
-  if (phase === 'loading') return;
-  resetStage();
-  ui.renderTitle(save);
-  scene.showTitle();
-  phase = 'title';
-  ui.setScreen('title');
-}
 
 function resetRound(): void {
   duel = new Duel();
@@ -467,7 +461,7 @@ press(ui.startBtn, startIntro);
 press(ui.retryBtn, () => {
   if (performance.now() > resultReadyAt) startIntro();
 });
-press(ui.menuBtn, goTitle);
+press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 press(ui.calmBtn, toggleCalm);
 ui.shareBtn.addEventListener('click', () => void share());
@@ -501,7 +495,7 @@ window.addEventListener('keydown', (e) => {
       toggleMute();
       break;
     case 'Escape':
-      if (phase !== 'loading' && phase !== 'title') goTitle();
+      if (phase !== 'loading') goHub();
       break;
   }
 });

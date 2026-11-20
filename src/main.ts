@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import './styles/main.css';
 
+import { goHub, unlockAudioOnGesture } from './hub';
 import { BALANCE, judge, scoreFor, type Outcome } from './game/config/balance';
 import { CHUCK_BARKS, HEADLINES, INTRO_LINES, JAR_BARKS, MESSAGES, pick } from './game/config/messages';
 import { Round } from './game/systems/round';
@@ -52,7 +53,8 @@ scene.onReady = () => {
   if (phase !== 'loading') return;
   void document.fonts?.ready;
   phase = 'title';
-  ui.setScreen('title');
+  // le QG remplace l'écran-titre : on entre directement en mission
+  startIntro();
 };
 scene.onBark = (text, x, y, who) => ui.bark(text, x, y, who);
 scene.onTick = tick;
@@ -73,18 +75,6 @@ new Phaser.Game({
 });
 
 // ---------------------------------------------------------------- déroulé
-function goTitle(): void {
-  clearTimers();
-  sfx.stopTension();
-  ui.hideBanner();
-  ui.setEnded(false);
-  ui.clearIntro();
-  ui.clearBarks();
-  ui.renderTitle(save);
-  scene.showTitle();
-  phase = 'title';
-  ui.setScreen('title');
-}
 
 function startIntro(): void {
   clearTimers();
@@ -336,7 +326,7 @@ press(ui.openBtn, tryOpen);
 press(ui.retryBtn, () => {
   if (performance.now() > resultReadyAt - 450) startIntro();
 });
-press(ui.menuBtn, goTitle);
+press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 ui.shareBtn.addEventListener('click', () => void share());
 
@@ -379,12 +369,14 @@ window.addEventListener('keydown', (e) => {
       toggleMute();
       break;
     case 'Escape':
-      if (phase !== 'loading' && phase !== 'title') goTitle();
+      if (phase !== 'loading') goHub();
       break;
   }
 });
 
 // confort mobile : pas de menu contextuel ni de zoom au double appui
+unlockAudioOnGesture(() => sfx.unlock());
+
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) sfx.stopTension();
