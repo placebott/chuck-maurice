@@ -1,7 +1,7 @@
 import { rm } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, type HtmlTagDescriptor, type Plugin } from 'vite';
 
 /**
  * public/assets/ contient aussi les illustrations originales (≈ 15 Mo) et les
@@ -23,9 +23,142 @@ function dropSourceArt(): Plugin {
   };
 }
 
+/* =====================================================================
+   RÉFÉRENCEMENT — tout ce que lisent Google et les aperçus de partage.
+
+   Pour chaque page, le plugin ajoute au build : l'adresse canonique,
+   l'image de partage (public/og/, générée par `npm run assets:og`), les
+   balises Open Graph / Twitter et les données structurées. Il écrit aussi
+   sitemap.xml, et recopie en dur dans l'accueil les cartes du tableau JEUX
+   (sinon elles n'existent qu'après exécution du JavaScript).
+
+   Nouvelle page de jeu : l'ajouter ici ET dans `input` plus bas.
+   ===================================================================== */
+const SITE = 'https://www.chuckmaurice.com';
+const PAGES: Record<string, { path: string; image: string; game?: { name: string; genre: string } }> = {
+  index: { path: '/', image: 'accueil.jpg' },
+  cornichon: { path: '/cornichon', image: 'cornichon.jpg', game: { name: 'Opération Cornichon', genre: 'Arcade' } },
+  saucissonator: { path: '/saucissonator', image: 'saucissonator.jpg', game: { name: 'Saucissonator 3000', genre: 'Arcade' } },
+  'olive-storm': { path: '/olive-storm', image: 'olive-storm.jpg', game: { name: 'Olive Storm', genre: 'Arcade' } },
+  mauriiiiice: { path: '/mauriiiiice', image: 'mauriiiiice.jpg', game: { name: 'MAURIIIIICE !!!', genre: 'Arcade' } },
+};
+/** Pages servies telles quelles depuis public/ (leurs balises sont écrites à la main). */
+const STATIC_PATHS = ['/grand-debarras/'];
+
+interface Jeu {
+  titre: string; pitch: string; url: string; genre: string;
+  emoji?: string; couleur?: string; image?: string; duree?: string;
+  mobile?: boolean; nouveau?: boolean; une?: boolean;
+}
+
+const esc = (s: unknown): string =>
+  String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] ?? c);
+const absolute = (url: string): string => new URL(url, SITE + '/').href;
+const jsonLd = (data: unknown): HtmlTagDescriptor => ({
+  tag: 'script',
+  attrs: { type: 'application/ld+json' },
+  children: JSON.stringify(data).replace(/</g, '\\u003c'),
+  injectTo: 'head',
+});
+
+/** Même rendu que le script de index.html, sans les états propres au visiteur (« ✓ Joué », animation). */
+function prerenderHub(html: string): { html: string; jeux: Jeu[] } {
+  const source = /const JEUX = (\[[\s\S]*?\n\]);/.exec(html)?.[1];
+  if (!source) throw new Error('seo : tableau JEUX introuvable dans index.html');
+  const jeux = new Function(`return ${source}`)() as Jeu[];
+  const num = (i: number): string => String(i + 1).padStart(3, '0');
+  const art = (j: Jeu, i: number): string =>
+    `<div class="art" style="--c:${esc(j.couleur || '#555')}" data-num="${num(i)}">${
+      j.image ? `<img src="${esc(j.image)}" alt="" loading="lazy">` : `<span class="emo">${esc(j.emoji || '🎮')}</span>`}</div>`;
+  const meta = (j: Jeu): string =>
+    `<div class="meta"><span>${esc(j.genre)}</span>${j.duree ? `<span>⏱ ${esc(j.duree)}</span>` : ''}${
+      j.mobile ? '<span>📱 Mobile</span>' : '<span>⌨️ Clavier</span>'}</div>`;
+  const iu = jeux.findIndex((j) => j.une);
+  const une = iu < 0 ? '' : `<a class="feature" href="${esc(jeux[iu].url)}">${art(jeux[iu], iu)}
+    <div class="body"><span class="num">Mission ${num(iu)}</span><h3>${esc(jeux[iu].titre)}</h3><p>${esc(jeux[iu].pitch)}</p>${meta(jeux[iu])}
+    <span class="btn green">▶ Jouer maintenant</span></div></a>`;
+  const grid = jeux.map((j, i) => `<a class="card" href="${esc(j.url)}">
+  ${j.nouveau ? '<span class="tag-new">Nouveau</span>' : ''}${art(j, i)}<div class="cbody"><span class="num">Mission ${num(i)}</span><h3>${esc(j.titre)}</h3><p>${esc(j.pitch)}</p>${meta(j)}<span class="go">Jouer</span></div></a>`).join('\n');
+  const swap = (from: string, to: string): void => {
+    if (!html.includes(from)) throw new Error(`seo : repère « ${from} » introuvable dans index.html`);
+    html = html.replace(from, () => to);
+  };
+  swap('<div id="une"></div>', `<div id="une">${une}</div>`);
+  swap('<div class="grid" id="grid"></div>', `<div class="grid" id="grid">\n${grid}\n</div>`);
+  swap('<span id="count">0</span>', `<span id="count">${jeux.length}</span>`);
+  return { html, jeux };
+}
+
+function seo(): Plugin {
+  return {
+    name: 'seo',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html, ctx) {
+        const key = basename(ctx.filename, '.html');
+        const page = PAGES[key];
+        if (!page) return html;
+        const url = SITE + page.path;
+        const image = `${SITE}/og/${page.image}`;
+        const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? 'Chuck Maurice';
+        const description = /<meta name="description" content="([^"]*)"/.exec(html)?.[1] ?? '';
+        const metaTag = (attr: 'property' | 'name', k: string, content: string): HtmlTagDescriptor => ({
+          tag: 'meta', attrs: { [attr]: k, content }, injectTo: 'head',
+        });
+        const tags: HtmlTagDescriptor[] = [
+          { tag: 'link', attrs: { rel: 'canonical', href: url }, injectTo: 'head' },
+          { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }, injectTo: 'head' },
+          metaTag('property', 'og:url', url),
+          metaTag('property', 'og:site_name', 'Chuck Maurice'),
+          metaTag('property', 'og:locale', 'fr_FR'),
+          metaTag('property', 'og:image', image),
+          metaTag('property', 'og:image:width', '1200'),
+          metaTag('property', 'og:image:height', '630'),
+          metaTag('property', 'og:image:alt', title),
+          metaTag('name', 'twitter:card', 'summary_large_image'),
+          metaTag('name', 'twitter:image', image),
+        ];
+        const free = { '@type': 'Offer', price: '0', priceCurrency: 'EUR' };
+        if (page.game) {
+          tags.push(jsonLd({
+            '@context': 'https://schema.org', '@type': 'VideoGame',
+            name: page.game.name, description, url, image, inLanguage: 'fr',
+            genre: page.game.genre, gamePlatform: 'Navigateur web', applicationCategory: 'Game',
+            operatingSystem: 'Tous', offers: free,
+            publisher: { '@type': 'Organization', name: 'Chuck Maurice', url: SITE + '/' },
+          }));
+          return { html, tags };
+        }
+        const hub = prerenderHub(html);
+        tags.push(
+          jsonLd({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Chuck Maurice', url, description, inLanguage: 'fr' }),
+          jsonLd({
+            '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les mini-jeux Chuck Maurice',
+            itemListElement: hub.jeux.map((j, i) => ({
+              '@type': 'ListItem', position: i + 1,
+              item: { '@type': 'VideoGame', name: j.titre, description: j.pitch, url: absolute(j.url), genre: j.genre, gamePlatform: 'Navigateur web', offers: free },
+            })),
+          }),
+        );
+        return { html: hub.html, tags };
+      },
+    },
+    generateBundle() {
+      const day = new Date().toISOString().slice(0, 10);
+      const paths = [...Object.values(PAGES).map((p) => p.path), ...STATIC_PATHS];
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sitemap.xml',
+        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${
+          paths.map((p) => `  <url><loc>${SITE}${p}</loc><lastmod>${day}</lastmod></url>`).join('\n')}\n</urlset>\n`,
+      });
+    },
+  };
+}
+
 export default defineConfig({
   base: './',
-  plugins: [dropSourceArt()],
+  plugins: [seo(), dropSourceArt()],
   build: {
     target: 'es2022',
     chunkSizeWarningLimit: 1600,

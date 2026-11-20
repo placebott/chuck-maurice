@@ -12,7 +12,8 @@
     "assets": "python3 scripts/build_assets.py",
     "assets:saucissonator": "python3 scripts/build_saucissonator_assets.py",
     "assets:olive": "python3 scripts/build_olive_assets.py",
-    "assets:voisinage": "python3 scripts/build_bon_voisinage_assets.py"
+    "assets:voisinage": "python3 scripts/build_bon_voisinage_assets.py",
+    "assets:og": "python3 scripts/build_og_images.py"
   },
   "dependencies": {
     "@fontsource/press-start-2p": "^5.2.5",
