@@ -1,4 +1,4 @@
-import './analytics';
+import { partage, partieLancee, partieTerminee } from './analytics';
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import './styles/main.css';
@@ -127,6 +127,7 @@ function beginPlay(): void {
   lastTickSec = 99;
   phase = 'play';
   ui.setScreen('play');
+  partieLancee('cornichon');
 }
 
 function pump(): void {
@@ -207,6 +208,7 @@ function finish(outcome: Outcome, power: number): void {
     score,
   };
 
+  partieTerminee('cornichon', outcome);
   save.plays++;
   if (outcome === 'perfect') save.perfect++;
   else if (outcome === 'chaos') save.chaos++;
@@ -266,7 +268,7 @@ function finish(outcome: Outcome, power: number): void {
 async function share(): Promise<void> {
   if (!lastResult) return;
   const r = lastResult;
-  const url = location.origin + location.pathname;
+  const url = partage('cornichon');
   const text: Record<Outcome, string> = {
     perfect: `J'ai ouvert le bocal en ${r.elapsed.toFixed(1)} s (${r.score} pts). La France est sauvée.`,
     chaos: `J'ai ouvert le bocal (${r.score} pts). La cuisine s'en remettra. Probablement.`,

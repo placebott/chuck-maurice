@@ -1,4 +1,4 @@
-import '../analytics';
+import { partage, partieLancee, partieTerminee } from '../analytics';
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
@@ -210,6 +210,7 @@ function beginPlay(): void {
   scene.startPlay();
   resetRound();
   phase = 'play';
+  partieLancee('mauriiiiice');
   ui.setScreen('play');
 }
 
@@ -338,6 +339,7 @@ function finish(kind: Ending): void {
   const score = totalScore(outcome);
   summary = { ...outcome, sawShort: false };
 
+  partieTerminee('mauriiiiice', kind);
   save.plays++;
   save.strikes += duel.strikes;
   save.perfects += duel.perfects;
@@ -385,7 +387,7 @@ function showResult(): void {
 async function share(): Promise<void> {
   if (!lastResult) return;
   const r = lastResult;
-  const url = location.origin + location.pathname;
+  const url = partage('mauriiiiice');
   const text: Record<Ending, string> = {
     victory: r.perfect
       ? "Jean-Mi a craqué, le short aussi, et personne ne m'a vu (" + r.score + ' pts). Victoire parfaite.'
