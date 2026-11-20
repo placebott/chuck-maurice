@@ -1,4 +1,4 @@
-import '../analytics';
+import { partage, partieLancee, partieTerminee } from '../analytics';
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
@@ -156,6 +156,7 @@ function beginPlay(): void {
   resetRound();
   lastTickSec = 99;
   phase = 'play';
+  partieLancee('olive-storm');
   ui.setScreen('play');
   refreshAim();
   later(() => phase === 'play' && ui.announce(PHASES[1].announce), 700);
@@ -297,6 +298,7 @@ function finish(kind: EndingKind): void {
   ui.setBusy(false);
   scene.setAim(angle, null);
 
+  partieTerminee('olive-storm', kind);
   save.plays++;
   if (kind === 'victory') save.wins++;
   else save[kind]++;
@@ -354,7 +356,7 @@ function finish(kind: EndingKind): void {
 async function share(): Promise<void> {
   if (!lastResult) return;
   const r = lastResult;
-  const url = location.origin + location.pathname;
+  const url = partage('olive-storm');
   const text: Record<EndingKind, string> = {
     victory: `Trois olives dans le verre en ${r.used} tirs (${r.score} pts). La France contrôle l'espace aérien de l'apéritif.`,
     space: "J'ai tiré une olive si fort qu'elle survole Toulouse. L'armée de l'air a été informée.",

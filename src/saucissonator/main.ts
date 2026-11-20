@@ -1,4 +1,4 @@
-import '../analytics';
+import { partage, partieLancee, partieTerminee } from '../analytics';
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
@@ -132,6 +132,7 @@ function beginPlay(): void {
   ui.resetRound();
   lastTickSec = 99;
   phase = 'play';
+  partieLancee('saucissonator');
   ui.setScreen('play');
 }
 
@@ -220,6 +221,7 @@ function finish(): void {
     bestStreak: session.bestStreak,
   };
 
+  partieTerminee('saucissonator', kind);
   save.plays++;
   if (kind === 'victory') save.wins++;
   else save[kind]++;
@@ -286,7 +288,7 @@ function finish(): void {
 async function share(): Promise<void> {
   if (!lastResult) return;
   const r = lastResult;
-  const url = location.origin + location.pathname;
+  const url = partage('saucissonator');
   const text: Record<EndingKind, string> = {
     victory: `Douze rondelles en ${r.elapsed.toFixed(1)} s (${r.score} pts). La France est tranchée.`,
     thick: "J'ai découpé une rondelle si épaisse qu'elle a traversé le plancher. 48 000 francs de dégâts.",
