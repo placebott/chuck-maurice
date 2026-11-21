@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chuck Maurice — Le Courrier des fans</title>
+<meta name="description" content="Écrivez à Chuck Maurice. Il lit tout. En même temps. Guichet tenu par le Ministère du Condiment, sans inscription.">
+<meta name="theme-color" content="#120a14">
+<meta property="og:title" content="Chuck Maurice — Le Courrier des fans">
+<meta property="og:description" content="Écrivez à Chuck. Il lit tout. En même temps.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="./assets/sprites/jar_closed.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Caveat:wght@600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#120a14; --plum:#24122a; --plum2:#341a3c;
+  --ink:#f6ecd9; --dim:#b9a8bd; --paper:#f6ecd9; --paper2:#eadbbd; --encre:#2a1830;
+  --green:#a4d83c; --mustard:#ffc928; --red:#ff4338; --bleu:#2f5fd0;
+  --display:"Bowlby One","Arial Black",Impact,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+  --main:"Caveat","Comic Sans MS",cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
+[hidden]{display:none!important}
+
+/* ---------- EN-TÊTE ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.25rem;position:relative;z-index:3}
+.back{font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;border:2px solid var(--ink);padding:.35rem .8rem}
+.back:hover{background:var(--ink);color:var(--bg)}
+.guichet{font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--green);text-align:right}
+.guichet b{display:inline-block;width:.6em;height:.6em;border-radius:50%;background:var(--green);margin-right:.5em;animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+
+.hero{position:relative;text-align:center;padding:2.5rem 1.25rem 4.5rem;overflow:hidden;isolation:isolate}
+.rays{position:absolute;inset:-60% -30%;z-index:-2;background:repeating-conic-gradient(from 0deg,var(--plum) 0 7.5deg,transparent 7.5deg 15deg);animation:spin 90s linear infinite;-webkit-mask:radial-gradient(circle,#000 0,transparent 60%);mask:radial-gradient(circle,#000 0,transparent 60%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);padding:.4rem .9rem;font-weight:700;font-size:clamp(.6rem,1.9vw,.82rem);letter-spacing:.2em;text-transform:uppercase;transform:rotate(-3deg);margin-bottom:1.4rem;animation:slam .55s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes slam{from{transform:rotate(-14deg) scale(2.6);opacity:0}}
+h1{font-family:var(--display);font-weight:400;line-height:.9;text-transform:uppercase;font-size:clamp(2.4rem,10.5vw,7rem)}
+h1 span{display:block}
+h1 .l1{color:var(--ink);text-shadow:.045em .045em 0 var(--red),.09em .09em 0 #000}
+h1 .l2{color:var(--mustard);text-shadow:.045em .045em 0 var(--red),.09em .09em 0 #000}
+.sub{margin:1.4rem auto 0;max-width:36rem;font-size:clamp(.9rem,2.4vw,1.1rem);color:var(--ink)}
+.sub strong{color:var(--green)}
+.compteur{margin-top:.9rem;font-size:.82rem;color:var(--dim);min-height:1.3em}
+.compteur b{color:var(--mustard);font-family:var(--display);font-weight:400;font-size:1.3em}
+.envol{position:absolute;z-index:-1;font-size:clamp(1.6rem,5vw,3rem);animation:vole 11s linear infinite;filter:drop-shadow(3px 5px 0 rgba(0,0,0,.5));user-select:none}
+.envol:nth-of-type(1){top:16%;left:-10%}
+.envol:nth-of-type(2){top:58%;left:-10%;animation-delay:-4s;animation-duration:14s}
+.envol:nth-of-type(3){top:36%;left:-10%;animation-delay:-8s;animation-duration:17s}
+@keyframes vole{to{transform:translateX(125vw) rotate(25deg)}}
+
+main{max-width:1100px;margin:0 auto;padding:0 1.25rem 3rem}
+h2{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:clamp(1.5rem,4.6vw,2.4rem);line-height:1;margin-bottom:1.3rem}
+h2 small{display:block;font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--green);margin-bottom:.5rem;font-weight:700}
+
+/* ---------- LA CARTE POSTALE ---------- */
+.bureau{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:2rem;align-items:start;margin-top:-2rem;position:relative;z-index:2}
+@media(max-width:860px){.bureau{grid-template-columns:1fr}}
+.carte{position:relative;background:var(--paper);color:var(--encre);border:3px solid #000;box-shadow:10px 10px 0 #000;padding:1.3rem 1.3rem 1.4rem;transform:rotate(-.6deg);
+  background-image:repeating-linear-gradient(transparent 0 2.05rem,rgba(42,24,48,.14) 2.05rem calc(2.05rem + 1px));background-position:0 3.2rem}
+.carte::before{content:"";position:absolute;inset:0;border:8px solid transparent;pointer-events:none;
+  border-image:repeating-linear-gradient(-45deg,var(--red) 0 12px,var(--paper) 12px 24px,var(--bleu) 24px 36px,var(--paper) 36px 48px) 8}
+.carte-haut{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.4rem}
+.carte-haut p{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.7;padding-top:.5rem}
+.timbre{flex:none;width:74px;height:88px;background:var(--green);border:3px dashed var(--paper);outline:3px solid var(--green);display:grid;place-items:center;text-align:center;font-size:.5rem;font-weight:700;line-height:1.2;color:#120a14;transform:rotate(4deg);margin:.2rem .4rem 0 0}
+.timbre span{font-size:1.9rem;display:block;line-height:1}
+label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin:.9rem 0 .25rem}
+textarea,input[type=text],select{width:100%;background:transparent;border:0;border-bottom:2px solid var(--encre);border-radius:0;padding:.3rem .1rem;color:var(--encre)}
+textarea{font-family:var(--main);font-size:1.65rem;line-height:2.05rem;min-height:8.3rem;resize:vertical;border:0;display:block}
+textarea::placeholder,input::placeholder{color:rgba(42,24,48,.45)}
+input[type=text],select{font-weight:700;font-size:.95rem}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--encre) 50%),linear-gradient(135deg,var(--encre) 50%,transparent 50%);background-position:calc(100% - 14px) 55%,calc(100% - 8px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:1.6rem}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:0 1.2rem}
+@media(max-width:520px){.duo{grid-template-columns:1fr}}
+.reste{float:right;font-size:.7rem;font-weight:700;opacity:.7;margin-top:.2rem}
+.reste.limite{color:var(--red);opacity:1}
+.piege{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.poster{margin-top:1.3rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem}
+.btn{display:inline-flex;align-items:center;gap:.6rem;border:3px solid #000;background:var(--mustard);color:#120a14;font-family:var(--display);font-size:1.05rem;text-transform:uppercase;text-decoration:none;padding:.8rem 1.3rem;box-shadow:6px 6px 0 #000;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #000}
+.btn:active{transform:translate(4px,4px);box-shadow:2px 2px 0 #000}
+.btn[disabled]{opacity:.55;cursor:wait;transform:none;box-shadow:6px 6px 0 #000}
+.btn.alt{background:var(--ink)}
+.avis{flex:1 1 12rem;font-size:.82rem;font-weight:700;min-height:1.3em}
+.avis.non{color:#c01f15}
+.avis.oui{color:#2e6b0c}
+.carte.partie{animation:part .9s cubic-bezier(.5,-.3,.7,1) both}
+@keyframes part{to{transform:translate(60vw,-70vh) rotate(38deg) scale(.2);opacity:0}}
+.carte.revient{animation:revient .5s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes revient{from{transform:translateY(40px) rotate(-4deg);opacity:0}}
+
+/* ---------- RÈGLEMENT ---------- */
+.reglement{background:var(--plum);border:3px solid #000;box-shadow:7px 7px 0 #000;padding:1.2rem 1.2rem 1.3rem;transform:rotate(.8deg)}
+.reglement h3{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:1.05rem;color:var(--mustard);margin-bottom:.8rem}
+.reglement ol{list-style:none;counter-reset:r;display:grid;gap:.7rem;font-size:.82rem;color:var(--dim)}
+.reglement li{counter-increment:r;padding-left:3.1rem;position:relative}
+.reglement li::before{content:"Art. " counter(r);position:absolute;left:0;top:.1rem;font-size:.6rem;font-weight:700;color:var(--green);letter-spacing:.04em}
+.reglement li strong{color:var(--ink)}
+.chuck{display:flex;align-items:flex-end;gap:.9rem;margin-top:1.2rem;padding-top:1rem;border-top:2px dashed rgba(246,236,217,.25)}
+.chuck img{height:96px;image-rendering:pixelated;flex:none}
+.chuck p{font-size:.78rem;color:var(--ink);background:var(--plum2);border:2px solid #000;padding:.5rem .7rem;position:relative;margin-bottom:1.6rem}
+.chuck p::after{content:"";position:absolute;left:-10px;bottom:10px;border:6px solid transparent;border-right-color:#000}
+
+/* ---------- LE MUR ---------- */
+#mur-wrap{margin-top:4.5rem}
+.mur{columns:3 280px;column-gap:1.8rem}
+.lettre{break-inside:avoid;position:relative;background:var(--paper);color:var(--encre);border:3px solid #000;box-shadow:6px 6px 0 #000;padding:1rem 1rem 1.1rem;margin:0 0 1.9rem;transform:rotate(var(--r,0deg));transition:transform .18s,box-shadow .18s}
+.lettre:nth-child(3n){background:var(--paper2)}
+.lettre:hover{transform:rotate(0deg) translate(-3px,-3px);box-shadow:10px 10px 0 #000;z-index:2}
+.lettre.neuve{animation:tombe .7s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes tombe{from{transform:translateY(-70px) rotate(-12deg) scale(1.25);opacity:0}}
+.lettre.cachee{opacity:.45;outline:3px dashed var(--red)}
+.no{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+.texte{font-family:var(--main);font-size:1.6rem;line-height:1.15;margin:.5rem 0 .7rem;overflow-wrap:anywhere}
+.signe{font-size:.8rem;font-weight:700}
+.signe span{font-weight:400;opacity:.65}
+.mission-tag{display:inline-block;margin-top:.5rem;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1.5px solid var(--encre);padding:.1rem .4rem}
+.tampon{position:absolute;right:.6rem;top:.55rem;border:2.5px solid var(--c,var(--red));color:var(--c,var(--red));font-size:.56rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .4rem;transform:rotate(var(--t,8deg));opacity:.85;max-width:9.5rem;text-align:center;line-height:1.25;mix-blend-mode:multiply}
+.reponse{margin-top:.8rem;padding-top:.6rem;border-top:2px dashed rgba(42,24,48,.3);font-size:.76rem}
+.reponse b{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#c01f15;margin-bottom:.15rem}
+.garde{margin-top:.7rem;font-size:.68rem;font-weight:700;text-transform:uppercase;background:var(--encre);color:var(--paper);border:0;padding:.3rem .6rem}
+.vide{text-align:center;color:var(--dim);padding:2.5rem 1rem;border:3px dashed rgba(246,236,217,.3);font-size:.9rem}
+.vide b{display:block;font-family:var(--display);font-weight:400;color:var(--ink);font-size:1.3rem;text-transform:uppercase;margin-bottom:.5rem}
+.suite{display:flex;justify-content:center;margin-top:1rem}
+.faire-tourner{margin-top:4rem;text-align:center}
+.faire-tourner p{color:var(--dim);font-size:.85rem;margin-bottom:1.1rem}
+
+footer{border-top:3px solid #000;background:var(--plum);text-align:center;padding:2.2rem 1.25rem calc(2.2rem + env(safe-area-inset-bottom));font-size:.78rem;color:var(--dim)}
+footer strong{color:var(--ink)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a class="back" href="./">← Tous les jeux</a>
+  <p class="guichet"><b></b>Guichet n° 7 ouvert<br>(les 6 autres sont en pause depuis 1987)</p>
+</div>
+
+<header class="hero">
+  <div class="rays"></div>
+  <span class="envol" aria-hidden="true">✉️</span>
+  <span class="envol" aria-hidden="true">💌</span>
+  <span class="envol" aria-hidden="true">📮</span>
+  <div class="stamp">Ministère du Condiment — Service du courrier</div>
+  <h1><span class="l1">Le Courrier</span><span class="l2">des fans</span></h1>
+  <p class="sub">Un merci, un record, une réclamation contre Jean-Mi ? <strong>Écrivez à Chuck.</strong> Il lit tout. En diagonale. Avec les pieds.</p>
+  <p class="compteur" id="compteur" aria-live="polite">Ouverture de la boîte aux lettres…</p>
+</header>
+
+<main>
+  <div class="bureau">
+    <form class="carte" id="carte" novalidate>
+      <div class="carte-haut">
+        <p>Carte postale officielle<br>Franchise ministérielle</p>
+        <div class="timbre" aria-hidden="true"><div><span>🥒</span>RÉP. DU<br>CONDIMENT<br>0,00 F</div></div>
+      </div>
+      <label for="message">Cher Chuck,</label>
+      <textarea id="message" name="message" maxlength="280" required placeholder="j'ai ouvert le bocal du premier coup et je voulais que tu le saches…"></textarea>
+      <span class="reste" id="reste">280</span>
+      <div class="duo">
+        <div>
+          <label for="pseudo">Signé</label>
+          <input type="text" id="pseudo" name="pseudo" maxlength="24" required autocomplete="nickname" placeholder="Votre nom de code">
+        </div>
+        <div>
+          <label for="mission">Mission préférée <span style="opacity:.6">(facultatif)</span></label>
+          <select id="mission" name="mission">
+            <option value="">Je refuse de choisir</option>
+            <option value="cornichon">Opération Cornichon</option>
+            <option value="saucissonator">Saucissonator 3000</option>
+            <option value="olive-storm">Olive Storm</option>
+            <option value="mauriiiiice">Mauriiiiice !!!</option>
+            <option value="grand-debarras">Le Grand Débarras</option>
+            <option value="boss-squadron">Boss Squadron</option>
+          </select>
+        </div>
+      </div>
+      <!-- Piège à robots : un humain ne voit pas ce champ, donc ne le remplit pas. -->
+      <div class="piege" aria-hidden="true">
+        <label for="site">Ne pas remplir ce champ</label>
+        <input type="text" id="site" name="site" tabindex="-1" autocomplete="off">
+      </div>
+      <div class="poster">
+        <button class="btn" id="envoyer" type="submit">📮 Poster la lettre</button>
+        <p class="avis" id="avis" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <aside class="reglement">
+      <h3>Règlement du guichet</h3>
+      <ol>
+        <li><strong>Pas d'inscription.</strong> Chuck ne retient pas les mots de passe. Il retient les visages.</li>
+        <li><strong>Pas de liens.</strong> Chuck ne clique sur rien. Ce sont les liens qui cliquent sur Chuck.</li>
+        <li><strong>280 caractères.</strong> Il lit vite, mais il a un bocal sur le feu.</li>
+        <li><strong>Trois lettres par heure.</strong> Au-delà, c'est du harcèlement, et Jean-Mi en a le monopole.</li>
+        <li><strong>Les robots</strong> sont renvoyés à l'expéditeur. D'un coup de pied retourné.</li>
+      </ol>
+      <div class="chuck">
+        <img id="chuck" src="./assets/sprites/chuck_cool.png" alt="Chuck Maurice" width="87" height="176">
+        <p id="bulle">J'attends.</p>
+      </div>
+    </aside>
+  </div>
+
+  <section id="mur-wrap">
+    <h2><small>Reçu, lu, tamponné</small>Le mur du courrier</h2>
+    <div class="mur" id="mur"></div>
+    <div class="vide" id="vide" hidden><b>Boîte vide</b>Chuck fixe la boîte aux lettres. La boîte a peur. Soyez le premier à écrire.</div>
+    <div class="suite"><button class="btn alt" id="suite" type="button" hidden>Encore du courrier</button></div>
+  </section>
+
+  <section class="faire-tourner">
+    <h2><small>Devoir civique</small>Faites tourner</h2>
+    <p>Chaque partage ajoute un poil à la moustache de Chuck. La science est formelle.</p>
+    <div data-partage="courrier" data-titre="Le Courrier des fans de Chuck Maurice" data-texte="J'ai écrit à Chuck Maurice. Il a hoché la tête. Une fois. À ton tour :"></div>
+  </section>
+</main>
+
+<footer>
+  <p><strong>Ministère du Condiment</strong> — Service du courrier, guichet n° 7</p>
+  <p>Aucune adresse, aucun compte, aucun pigeon voyageur n'est conservé. Juste votre lettre.</p>
+</footer>
+
+<script type="module" src="/src/courrier.ts"></script>
+</body>
+</html>

@@ -4,6 +4,7 @@ import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
 import '../styles/voisinage.css';
 
+import { monterReseaux } from '../partage';
 import { goHub } from '../hub';
 import { DUEL, clamp, type Ending } from './config/balance';
 import {
@@ -384,10 +385,10 @@ function showResult(): void {
   if (earned.length) sfx.medal();
 }
 
-async function share(): Promise<void> {
-  if (!lastResult) return;
+/** Ce que dit le joueur quand il partage sa dernière partie. */
+function shareMessage(): { title: string; text: string } | null {
+  if (!lastResult) return null;
   const r = lastResult;
-  const url = partage('mauriiiiice');
   const text: Record<Ending, string> = {
     victory: r.perfect
       ? "Jean-Mi a craqué, le short aussi, et personne ne m'a vu (" + r.score + ' pts). Victoire parfaite.'
@@ -396,9 +397,17 @@ async function share(): Promise<void> {
     timeout: 'Jean-Mi a fini son pastis tranquille. Le calme aura duré 1,3 seconde.',
   };
   const payload = text[r.kind] + ' — CHUCK MAURICE : MAURIIIIICE !!!';
+  return { title: 'Chuck Maurice — MAURIIIIICE !!!', text: payload };
+}
+
+async function share(): Promise<void> {
+  const m = shareMessage();
+  if (!m) return;
+  const url = partage('mauriiiiice');
+  const payload = m.text;
   try {
     if (navigator.share) {
-      await navigator.share({ title: 'Chuck Maurice — MAURIIIIICE !!!', text: payload, url });
+      await navigator.share({ title: m.title, text: payload, url });
     } else {
       await navigator.clipboard.writeText(payload + ' ' + url);
       ui.shareBtn.textContent = 'COPIÉ !';
@@ -467,6 +476,7 @@ press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 press(ui.calmBtn, toggleCalm);
 ui.shareBtn.addEventListener('click', () => void share());
+monterReseaux(ui.shareBtn, 'mauriiiiice', shareMessage);
 
 ui.stage.addEventListener('pointerdown', (e) => {
   if ((e.target as HTMLElement).closest('button')) return;

@@ -4,6 +4,7 @@ import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
 import '../styles/saucissonator.css';
 
+import { monterReseaux } from '../partage';
 import { goHub, unlockAudioOnGesture } from '../hub';
 import { CUT, type EndingKind } from './config/balance';
 import {
@@ -285,10 +286,10 @@ function finish(): void {
   }, lead + staging.panel);
 }
 
-async function share(): Promise<void> {
-  if (!lastResult) return;
+/** Ce que dit le joueur quand il partage sa dernière partie. */
+function shareMessage(): { title: string; text: string } | null {
+  if (!lastResult) return null;
   const r = lastResult;
-  const url = partage('saucissonator');
   const text: Record<EndingKind, string> = {
     victory: `Douze rondelles en ${r.elapsed.toFixed(1)} s (${r.score} pts). La France est tranchée.`,
     thick: "J'ai découpé une rondelle si épaisse qu'elle a traversé le plancher. 48 000 francs de dégâts.",
@@ -296,9 +297,17 @@ async function share(): Promise<void> {
     nuclear: "J'ai tranché le saucisson. Et la planche. Et le plan de travail. Opération terminée, cuisine également.",
   };
   const payload = `${text[r.kind]} — CHUCK MAURICE : SAUCISSONATOR 3000`;
+  return { title: 'Chuck Maurice — Saucissonator 3000', text: payload };
+}
+
+async function share(): Promise<void> {
+  const m = shareMessage();
+  if (!m) return;
+  const url = partage('saucissonator');
+  const payload = m.text;
   try {
     if (navigator.share) {
-      await navigator.share({ title: 'Chuck Maurice — Saucissonator 3000', text: payload, url });
+      await navigator.share({ title: m.title, text: payload, url });
     } else {
       await navigator.clipboard.writeText(`${payload} ${url}`);
       ui.shareBtn.textContent = 'COPIÉ !';
@@ -351,6 +360,7 @@ press(ui.retryBtn, () => {
 press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 ui.shareBtn.addEventListener('click', () => void share());
+monterReseaux(ui.shareBtn, 'saucissonator', shareMessage);
 
 // la scène entière est une zone de coupe : un clic, un toucher ou le début d'un geste
 // vertical tranche immédiatement (attendre la fin du geste coûterait en précision)

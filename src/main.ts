@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import '@fontsource/press-start-2p/latin-400.css';
 import './styles/main.css';
 
+import { monterReseaux } from './partage';
 import { goHub, unlockAudioOnGesture } from './hub';
 import { BALANCE, judge, scoreFor, type Outcome } from './game/config/balance';
 import { CHUCK_BARKS, HEADLINES, INTRO_LINES, JAR_BARKS, MESSAGES, pick } from './game/config/messages';
@@ -265,10 +266,10 @@ function finish(outcome: Outcome, power: number): void {
   }, panelDelay);
 }
 
-async function share(): Promise<void> {
-  if (!lastResult) return;
+/** Ce que dit le joueur quand il partage sa dernière partie. */
+function shareMessage(): { title: string; text: string } | null {
+  if (!lastResult) return null;
   const r = lastResult;
-  const url = partage('cornichon');
   const text: Record<Outcome, string> = {
     perfect: `J'ai ouvert le bocal en ${r.elapsed.toFixed(1)} s (${r.score} pts). La France est sauvée.`,
     chaos: `J'ai ouvert le bocal (${r.score} pts). La cuisine s'en remettra. Probablement.`,
@@ -276,9 +277,17 @@ async function share(): Promise<void> {
     timeout: 'Le bocal a gagné. La nation est sous le choc.',
   };
   const payload = `${text[r.outcome]} — CHUCK MAURICE : OPÉRATION CORNICHON`;
+  return { title: 'Chuck Maurice — Opération Cornichon', text: payload };
+}
+
+async function share(): Promise<void> {
+  const m = shareMessage();
+  if (!m) return;
+  const url = partage('cornichon');
+  const payload = m.text;
   try {
     if (navigator.share) {
-      await navigator.share({ title: 'Chuck Maurice — Opération Cornichon', text: payload, url });
+      await navigator.share({ title: m.title, text: payload, url });
     } else {
       await navigator.clipboard.writeText(`${payload} ${url}`);
       ui.shareBtn.textContent = 'COPIÉ !';
@@ -331,6 +340,7 @@ press(ui.retryBtn, () => {
 press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 ui.shareBtn.addEventListener('click', () => void share());
+monterReseaux(ui.shareBtn, 'cornichon', shareMessage);
 
 // toucher la scène : marteler pendant le jeu, passer le briefing sinon
 ui.stage.addEventListener('pointerdown', (e) => {

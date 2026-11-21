@@ -117,6 +117,27 @@ h3{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size
 .card.soon p{font-size:.82rem;color:var(--dim);max-width:16rem}
 .empty{grid-column:1/-1;text-align:center;color:var(--dim);padding:2rem}
 
+/* ---------- COURRIER ET PARTAGE ---------- */
+#courrier,#partager{margin-top:4.5rem}
+a.chip{text-decoration:none}
+.lettres{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.6rem;margin-bottom:1.8rem}
+.lettres:empty{display:none}
+.lettre{background:var(--ink);color:#2a1830;border:3px solid #000;box-shadow:6px 6px 0 #000;padding:1rem;transform:rotate(var(--r,0deg));text-decoration:none;display:block;transition:transform .18s,box-shadow .18s}
+.lettre:hover{transform:rotate(0deg) translate(-3px,-3px);box-shadow:10px 10px 0 #000}
+.lettre .no{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+.lettre .texte{font-size:.95rem;font-weight:700;margin:.5rem 0 .6rem;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.lettre .signe{font-size:.75rem;opacity:.75}
+.boite{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.4rem;border:3px dashed rgba(246,236,217,.45);padding:1.3rem 1.4rem;text-decoration:none;color:var(--dim);font-size:.9rem;transition:border-color .15s,background .15s}
+.boite:hover{border-color:var(--mustard);background:var(--plum)}
+.boite>span:first-child{font-size:2.6rem;line-height:1}
+.boite>span:nth-child(2){flex:1 1 16rem}
+.boite strong{color:var(--ink)}
+.boite:hover .go::after{transform:translateX(6px)}
+.tourner{color:var(--dim);font-size:.9rem;margin:-.6rem 0 1.2rem}
+#partager .reseaux{justify-content:flex-start}
+footer .liens{margin-top:.8rem}
+footer .liens a{color:var(--mustard);font-weight:700}
+
 footer{border-top:3px solid #000;background:var(--plum);text-align:center;padding:2.4rem 1.25rem calc(2.4rem + env(safe-area-inset-bottom));font-size:.78rem;color:var(--dim)}
 footer strong{color:var(--ink)}
 
@@ -143,6 +164,7 @@ footer strong{color:var(--ink)}
   <div class="cta">
     <button class="btn" id="random">🎲 Mission au hasard</button>
     <a class="btn alt" href="#missions">Voir les dossiers</a>
+    <a class="btn green" href="./courrier">✉️ Écrire à Chuck</a>
   </div>
 </header>
 
@@ -161,11 +183,27 @@ footer strong{color:var(--ink)}
     </div>
     <div class="grid" id="grid"></div>
   </section>
+
+  <section id="courrier">
+    <div class="head">
+      <h2><small>Reçu, lu, tamponné</small>Le Courrier des fans</h2>
+      <a class="chip" href="./courrier">Tout le courrier →</a>
+    </div>
+    <div class="lettres" id="lettres"></div>
+    <a class="boite" href="./courrier"><span aria-hidden="true">📮</span><span><strong>Écrivez à Chuck.</strong> Un merci, un record, une réclamation contre Jean-Mi. Il lit tout. En diagonale. Avec les pieds.</span><span class="go">Poster une lettre</span></a>
+  </section>
+
+  <section id="partager">
+    <div class="head"><h2><small>Devoir civique</small>Faites tourner</h2></div>
+    <p class="tourner">Chaque partage ajoute un poil à la moustache de Chuck. La science est formelle.</p>
+    <div data-partage="accueil" data-titre="Chuck Maurice — mini-jeux d'arcade absurdes" data-texte="Un homme. Un bocal. Six missions absurdes. Chuck Maurice a besoin de tes pouces :"></div>
+  </section>
 </main>
 
 <footer>
   <p><strong>Ministère du Condiment</strong> — Bureau des Missions</p>
   <p>Aucun cornichon n'a été maltraité durant la fabrication de ce site. Enfin, presque.</p>
+  <p class="liens"><a href="./courrier">Le Courrier des fans</a></p>
 </footer>
 
 <script>
@@ -304,7 +342,25 @@ $("#random").addEventListener("click", () => {
     if (n++ >= tours) { clearInterval(t); setTimeout(go, 650); }
   }, 110);
 });
+
+/* Dernières lettres du Courrier des fans (voir courrier.html). En cas de panne, la section reste sans lettres. */
+fetch("https://vyylxdcqbxyhqusuwshf.supabase.co/functions/v1/courrier?limite=3")
+  .then(r => r.json())
+  .then(d => {
+    if (!d.ok) return;
+    const box = $("#lettres");
+    for (const l of d.lettres) {
+      const a = document.createElement("a");
+      a.className = "lettre"; a.href = "./courrier";
+      a.style.setProperty("--r", (((l.id * 37) % 9) - 4) * 0.45 + "deg");
+      const no = document.createElement("p"); no.className = "no"; no.textContent = "Lettre n° " + String(l.id).padStart(5, "0");
+      const tx = document.createElement("p"); tx.className = "texte"; tx.textContent = "« " + l.message + " »";
+      const sg = document.createElement("p"); sg.className = "signe"; sg.textContent = "— " + l.pseudo;
+      a.append(no, tx, sg); box.append(a);
+    }
+  })
+  .catch(() => {});
 </script>
-<script type="module" src="/src/analytics.ts"></script>
+<script type="module" src="/src/partage.ts"></script>
 </body>
 </html>

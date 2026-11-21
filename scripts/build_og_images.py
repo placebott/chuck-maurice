@@ -109,6 +109,11 @@ def main():
     text(im, "MISSION 005", ["LE GRAND", "DÉBARRAS"], "LE PUZZLE DE JEAN-MI", 104)
     save(im, "grand-debarras.jpg")
 
+    im = plain("#3a1420")
+    sprite(im, SPR / "chuck_cool.png", 480, 1090, 560)
+    text(im, "MINISTÈRE DU CONDIMENT — SERVICE DU COURRIER", ["LE COURRIER", "DES FANS"], "ÉCRIVEZ À CHUCK. IL LIT TOUT.", 92)
+    save(im, "courrier.jpg")
+
     # Favicon et icône d'écran d'accueil : le bocal.
     jar = Image.open(SPR / "jar_closed.png").convert("RGBA")
     sq = Image.new("RGBA", (96, 96), (0, 0, 0, 0))

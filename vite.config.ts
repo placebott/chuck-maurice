@@ -41,6 +41,7 @@ const PAGES: Record<string, { path: string; image: string; game?: { name: string
   saucissonator: { path: '/saucissonator', image: 'saucissonator.jpg', game: { name: 'Saucissonator 3000', genre: 'Arcade' } },
   'olive-storm': { path: '/olive-storm', image: 'olive-storm.jpg', game: { name: 'Olive Storm', genre: 'Arcade' } },
   mauriiiiice: { path: '/mauriiiiice', image: 'mauriiiiice.jpg', game: { name: 'MAURIIIIICE !!!', genre: 'Arcade' } },
+  courrier: { path: '/courrier', image: 'courrier.jpg' },
 };
 /** Pages servies telles quelles depuis public/ (leurs balises sont écrites à la main). */
 const STATIC_PATHS = ['/grand-debarras/'];
@@ -129,6 +130,10 @@ function seo(): Plugin {
           }));
           return { html, tags };
         }
+        if (key !== 'index') {
+          tags.push(jsonLd({ '@context': 'https://schema.org', '@type': 'WebPage', name: title, url, description, inLanguage: 'fr', isPartOf: { '@type': 'WebSite', name: 'Chuck Maurice', url: SITE + '/' } }));
+          return { html, tags };
+        }
         const hub = prerenderHub(html);
         tags.push(
           jsonLd({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Chuck Maurice', url, description, inLanguage: 'fr' }),
@@ -171,6 +176,8 @@ export default defineConfig({
         saucissonator: fileURLToPath(new URL('./saucissonator.html', import.meta.url)),
         'olive-storm': fileURLToPath(new URL('./olive-storm.html', import.meta.url)),
         mauriiiiice: fileURLToPath(new URL('./mauriiiiice.html', import.meta.url)),
+        // Le Courrier des fans : livre d'or (lettres gardées dans Supabase, voir src/courrier.ts)
+        courrier: fileURLToPath(new URL('./courrier.html', import.meta.url)),
       },
       output: { manualChunks: { phaser: ['phaser'] } },
     },

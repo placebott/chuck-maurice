@@ -4,6 +4,7 @@ import '@fontsource/press-start-2p/latin-400.css';
 import '../styles/main.css';
 import '../styles/olive.css';
 
+import { monterReseaux } from '../partage';
 import { goHub, unlockAudioOnGesture } from '../hub';
 import { STORM, clamp, type EndingKind } from './config/balance';
 import {
@@ -353,10 +354,10 @@ function finish(kind: EndingKind): void {
   }, lead + staging.panel);
 }
 
-async function share(): Promise<void> {
-  if (!lastResult) return;
+/** Ce que dit le joueur quand il partage sa dernière partie. */
+function shareMessage(): { title: string; text: string } | null {
+  if (!lastResult) return null;
   const r = lastResult;
-  const url = partage('olive-storm');
   const text: Record<EndingKind, string> = {
     victory: `Trois olives dans le verre en ${r.used} tirs (${r.score} pts). La France contrôle l'espace aérien de l'apéritif.`,
     space: "J'ai tiré une olive si fort qu'elle survole Toulouse. L'armée de l'air a été informée.",
@@ -364,9 +365,17 @@ async function share(): Promise<void> {
     diplomatic: "Mon olive a fini sur le crâne de Jean-Mi. Conflit de voisinage niveau 5.",
   };
   const payload = `${text[r.kind]} — CHUCK MAURICE : OLIVE STORM`;
+  return { title: 'Chuck Maurice — Olive Storm', text: payload };
+}
+
+async function share(): Promise<void> {
+  const m = shareMessage();
+  if (!m) return;
+  const url = partage('olive-storm');
+  const payload = m.text;
   try {
     if (navigator.share) {
-      await navigator.share({ title: 'Chuck Maurice — Olive Storm', text: payload, url });
+      await navigator.share({ title: m.title, text: payload, url });
     } else {
       await navigator.clipboard.writeText(`${payload} ${url}`);
       ui.shareBtn.textContent = 'COPIÉ !';
@@ -448,6 +457,7 @@ press(ui.retryBtn, () => {
 press(ui.menuBtn, goHub);
 press(ui.muteBtn, toggleMute);
 ui.shareBtn.addEventListener('click', () => void share());
+monterReseaux(ui.shareBtn, 'olive-storm', shareMessage);
 
 /**
  * Visée « lance-pierre » : on pose le doigt (ou le curseur) n'importe où sur la scène, on tire vers
