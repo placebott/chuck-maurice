@@ -78,7 +78,8 @@ function prerenderHub(html: string): { html: string; jeux: Jeu[] } {
   const une = iu < 0 ? '' : `<a class="feature" href="${esc(jeux[iu].url)}">${art(jeux[iu], iu)}
     <div class="body"><span class="num">Mission ${num(iu)}</span><h3>${esc(jeux[iu].titre)}</h3><p>${esc(jeux[iu].pitch)}</p>${meta(jeux[iu])}
     <span class="btn green">▶ Jouer maintenant</span></div></a>`;
-  const grid = jeux.map((j, i) => `<a class="card" href="${esc(j.url)}">
+  // même ordre que la page : du plus récent au plus ancien, numéro de mission inchangé
+  const grid = jeux.map((j, i) => [j, i] as const).reverse().map(([j, i]) => `<a class="card" href="${esc(j.url)}">
   ${j.nouveau ? '<span class="tag-new">Nouveau</span>' : ''}${art(j, i)}<div class="cbody"><span class="num">Mission ${num(i)}</span><h3>${esc(j.titre)}</h3><p>${esc(j.pitch)}</p>${meta(j)}<span class="go">Jouer</span></div></a>`).join('\n');
   const swap = (from: string, to: string): void => {
     if (!html.includes(from)) throw new Error(`seo : repère « ${from} » introuvable dans index.html`);
@@ -139,7 +140,7 @@ function seo(): Plugin {
           jsonLd({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Chuck Maurice', url, description, inLanguage: 'fr' }),
           jsonLd({
             '@context': 'https://schema.org', '@type': 'ItemList', name: 'Les mini-jeux Chuck Maurice',
-            itemListElement: hub.jeux.map((j, i) => ({
+            itemListElement: [...hub.jeux].reverse().map((j, i) => ({
               '@type': 'ListItem', position: i + 1,
               item: { '@type': 'VideoGame', name: j.titre, description: j.pitch, url: absolute(j.url), genre: j.genre, gamePlatform: 'Navigateur web', offers: free },
             })),

@@ -223,6 +223,9 @@ footer strong{color:var(--ink)}
    nouveau  : true = pastille "NOUVEAU"
    une      : true = mis en avant en haut de page (un seul jeu)
 
+   ORDRE : ajouter les nouveaux jeux À LA FIN de la liste. La page les affiche
+   du plus récent au plus ancien ; le numéro de mission suit l'ordre de la liste.
+
    Au build, cette liste est aussi écrite en dur dans la page (cartes + liens)
    pour les moteurs de recherche : voir le plugin « seo » de vite.config.ts.
    ===================================================================== */
@@ -284,7 +287,9 @@ else {
 }
 
 /* Grille */
-$("#grid").innerHTML = JEUX.map((j, i) => `<a class="card pre" href="${esc(j.url)}" data-url="${esc(j.url)}" data-genre="${esc(j.genre)}" data-mobile="${!!j.mobile}">
+/* du plus récent (fin de liste) au plus ancien ; i reste la place dans JEUX, donc le numéro de mission */
+const RECENTS = JEUX.map((j, i) => [j, i]).reverse();
+$("#grid").innerHTML = RECENTS.map(([j, i]) => `<a class="card pre" href="${esc(j.url)}" data-url="${esc(j.url)}" data-genre="${esc(j.genre)}" data-mobile="${!!j.mobile}">
   ${j.nouveau ? '<span class="tag-new">Nouveau</span>' : ""}${joues.includes(j.url) ? '<span class="tag-done">✓ Joué</span>' : ""}
   ${art(j, i)}<div class="cbody"><span class="num">Mission ${num(i)}</span><h3>${esc(j.titre)}</h3><p>${esc(j.pitch)}</p>${meta(j)}<span class="go">Jouer</span></div></a>`).join("")
   + `<div class="card soon pre" data-soon><div class="q">???</div><h3>Prochaine mission</h3><p>En préparation dans les sous-sols du Ministère. Revenez vite.</p></div>`;
@@ -294,7 +299,7 @@ const games = cards.filter(c => c.dataset.url);
 document.querySelectorAll("[data-url]").forEach(a => a.addEventListener("click", () => marquer(a.dataset.url)));
 
 /* Filtres (générés à partir des genres) */
-const genres = [...new Set(JEUX.map(j => j.genre))];
+const genres = [...new Set(RECENTS.map(([j]) => j.genre))];
 const chips = ["Toutes", ...genres, ...(JEUX.some(j => j.mobile) ? ["📱 Mobile"] : [])];
 $("#filters").innerHTML = chips.map((g, i) => `<button class="chip" aria-pressed="${i === 0}">${esc(g)}</button>`).join("");
 $("#filters").addEventListener("click", e => {
