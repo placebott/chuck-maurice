@@ -143,7 +143,9 @@ Deno.serve(async (req: Request) => {
     if ([...message].length < 2 || [...message].length > 280) return refus('message');
     if (LIEN.test(message) || LIEN.test(pseudo)) return refus('lien');
 
-    const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'inconnue';
+    // adresse posée par Cloudflare (en amont de Supabase) : un client ne peut pas la falsifier
+    // (vérifié le 21/11/2026 : un X-Forwarded-For inventé est écrasé avant d'arriver ici)
+    const ip = req.headers.get('cf-connecting-ip')?.trim() || (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'inconnue';
     const empreinte = (await hmac(sel, `ip:${ip}`)).slice(0, 32);
     const { data, error } = await db.rpc('courrier_poster', { p_pseudo: pseudo, p_message: message, p_mission: mission, p_empreinte: empreinte });
     if (error) throw error;
