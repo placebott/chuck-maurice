@@ -9,12 +9,15 @@
 //   - « site » est un champ invisible : s'il est rempli, c'est un robot ;
 //   - le jeton prouve que la page a été ouverte au moins 3 secondes avant l'envoi ;
 //   - aucun lien dans les lettres (c'est ce que cherchent les spammeurs) ;
+//   - gros mots remplacés par des condiments, insultes haineuses refusées (grossieretes.ts) ;
 //   - 3 lettres par heure et 10 par jour par expéditeur (empreinte anonyme de l'adresse,
 //     purgée après 24 h), doublons refusés, coupe-circuit global : voir courrier_poster (SQL).
 //
 // Déploiement : fonction publique (verify_jwt = false), elle fait ses propres contrôles.
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+
+import { filtrer } from './grossieretes.ts';
 
 const ORIGINES = new Set([
   'https://www.chuckmaurice.com',
@@ -136,12 +139,21 @@ Deno.serve(async (req: Request) => {
     if (age === null || age > DELAI_MAX_MS) return refus('jeton', 403);
     if (age < DELAI_MIN_MS) return refus('trop-vite', 429);
 
-    const pseudo = nettoyer(corps.pseudo);
-    const message = nettoyer(corps.message);
+    let pseudo = nettoyer(corps.pseudo);
+    let message = nettoyer(corps.message);
     const mission = typeof corps.mission === 'string' && MISSIONS.has(corps.mission) ? corps.mission : null;
     if ([...pseudo].length < 1 || [...pseudo].length > 24) return refus('pseudo');
     if ([...message].length < 2 || [...message].length > 280) return refus('message');
     if (LIEN.test(message) || LIEN.test(pseudo)) return refus('lien');
+    const graine = [...message].reduce((n, c) => n + c.codePointAt(0)!, 0);
+    const vPseudo = filtrer(pseudo, graine);
+    const vMessage = filtrer(message, graine + 3);
+    if (vPseudo.interdit || vMessage.interdit) return refus('insulte', 403);
+    pseudo = vPseudo.texte;
+    message = vMessage.texte;
+    const remplaces = vPseudo.remplaces + vMessage.remplaces;
+    if ([...pseudo].length > 24) return refus('pseudo');
+    if ([...message].length > 280) return refus('message');
 
     // adresse posée par Cloudflare (en amont de Supabase) : un client ne peut pas la falsifier
     // (vérifié le 21/11/2026 : un X-Forwarded-For inventé est écrasé avant d'arriver ici)
@@ -150,7 +162,7 @@ Deno.serve(async (req: Request) => {
     const { data, error } = await db.rpc('courrier_poster', { p_pseudo: pseudo, p_message: message, p_mission: mission, p_empreinte: empreinte });
     if (error) throw error;
     if (!data?.ok) return refus(data?.raison ?? 'erreur', 429);
-    return json({ ok: true, lettre: { id: data.id, pseudo, message, mission, date: data.date } });
+    return json({ ok: true, remplaces, lettre: { id: data.id, pseudo, message, mission, date: data.date } });
   } catch (e) {
     console.error('courrier', e);
     return refus('panne', 500);

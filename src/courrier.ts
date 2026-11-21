@@ -74,6 +74,7 @@ const REFUS: Record<string, string> = {
   robot: 'Chuck a senti un robot. Chuck n’aime pas les robots.',
   'trop-vite': 'Trop rapide. Même Chuck met trois secondes à écrire une lettre.',
   jeton: 'Le guichet s’était assoupi. Réessayez, il est réveillé.',
+  insulte: 'Ce genre de mots ne passe pas le guichet. Chuck a déchiré la lettre. En deux. D’un regard.',
   lien: 'Pas de liens. Chuck ne clique sur rien. Ce sont les liens qui cliquent sur Chuck.',
   pseudo: 'Il manque la signature. Chuck ne lit pas les lettres anonymes. Il les sent.',
   message: 'Entre 2 et 280 caractères. Chuck a un bocal sur le feu.',
@@ -255,7 +256,7 @@ async function poster(): Promise<void> {
 
   if (!r.ok) {
     avis(REFUS[r.raison ?? ''] ?? REFUS.panne, 'non');
-    chuck('despair', r.raison === 'robot' ? 'Bip bip toi-même.' : 'Recommence. Calmement.');
+    chuck('despair', r.raison === 'robot' ? 'Bip bip toi-même.' : r.raison === 'insulte' ? 'Non.' : 'Recommence. Calmement.');
     return;
   }
   const lettre = r.lettre as Lettre;
@@ -263,8 +264,14 @@ async function poster(): Promise<void> {
   try { localStorage.setItem('cm_pseudo', pseudo); } catch { /* tant pis */ }
   total++;
   afficherCompteur();
-  avis('Lettre postée. Chuck l’a déjà lue. Il était derrière vous.', 'oui');
-  chuck('victory', 'Reçu. Touché. Pas montré.');
+  const remplaces = Number(r.remplaces) || 0;
+  if (remplaces) {
+    avis(`Lettre postée. Le Ministère a remplacé ${remplaces === 1 ? 'un gros mot' : `${remplaces} gros mots`} par des condiments. Fraîcheur garantie.`, 'oui');
+    chuck('cool', 'On reste poli au guichet. Mais j’ai lu l’original.');
+  } else {
+    avis('Lettre postée. Chuck l’a déjà lue. Il était derrière vous.', 'oui');
+    chuck('victory', 'Reçu. Touché. Pas montré.');
+  }
   ui.vide.hidden = true;
 
   const deposer = () => {

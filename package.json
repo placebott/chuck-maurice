@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "esbuild tests/saucissonator.test.ts tests/olive.test.ts tests/voisinage.test.ts --bundle --platform=node --format=esm --log-level=warning --out-extension:.js=.mjs --outdir=.vite/tests && node --test .vite/tests/saucissonator.test.mjs .vite/tests/olive.test.mjs .vite/tests/voisinage.test.mjs",
+    "test": "esbuild tests/saucissonator.test.ts tests/olive.test.ts tests/voisinage.test.ts tests/grossieretes.test.ts --bundle --platform=node --format=esm --log-level=warning --out-extension:.js=.mjs --outdir=.vite/tests && node --test .vite/tests/saucissonator.test.mjs .vite/tests/olive.test.mjs .vite/tests/voisinage.test.mjs .vite/tests/grossieretes.test.mjs",
     "assets": "python3 scripts/build_assets.py",
     "assets:saucissonator": "python3 scripts/build_saucissonator_assets.py",
     "assets:olive": "python3 scripts/build_olive_assets.py",
