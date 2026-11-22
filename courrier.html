@@ -10,9 +10,8 @@
 <meta property="og:description" content="Écrivez à Chuck. Il lit tout. En même temps.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="./assets/sprites/jar_closed.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Caveat:wght@600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/bowlby-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/polices.css">
 <style>
 :root{
   --bg:#120a14; --plum:#24122a; --plum2:#341a3c;
@@ -127,6 +126,8 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .tampon{position:absolute;right:.6rem;top:.55rem;border:2.5px solid var(--c,var(--red));color:var(--c,var(--red));font-size:.56rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .4rem;transform:rotate(var(--t,8deg));opacity:.85;max-width:9.5rem;text-align:center;line-height:1.25;mix-blend-mode:multiply}
 .reponse{margin-top:.8rem;padding-top:.6rem;border-top:2px dashed rgba(42,24,48,.3);font-size:.76rem}
 .reponse b{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#c01f15;margin-bottom:.15rem}
+.lettre.privee{background:#d9e4ff;outline:3px dashed var(--bleu)}
+.garde.retirer{background:transparent;color:var(--encre);border:2px solid var(--encre)}
 .garde{margin-top:.7rem;font-size:.68rem;font-weight:700;text-transform:uppercase;background:var(--encre);color:var(--paper);border:0;padding:.3rem .6rem}
 .vide{text-align:center;color:var(--dim);padding:2.5rem 1rem;border:3px dashed rgba(246,236,217,.3);font-size:.9rem}
 .vide b{display:block;font-family:var(--display);font-weight:400;color:var(--ink);font-size:1.3rem;text-transform:uppercase;margin-bottom:.5rem}
@@ -209,6 +210,7 @@ footer strong{color:var(--ink)}
         <li><strong>Pas de gros mots.</strong> Le Ministère les remplace par des condiments. Les insultes, elles, finissent au broyeur.</li>
         <li><strong>Trois lettres par heure.</strong> Au-delà, c'est du harcèlement, et Jean-Mi en a le monopole.</li>
         <li><strong>Les robots</strong> sont renvoyés à l'expéditeur. D'un coup de pied retourné.</li>
+        <li><strong>Remords ?</strong> Un bouton « Retirer ma lettre » apparaît sous la vôtre, sur l'appareil qui l'a postée.</li>
       </ol>
       <div class="chuck">
         <img id="chuck" src="./assets/sprites/chuck_cool.png" alt="Chuck Maurice" width="87" height="176">
@@ -234,6 +236,7 @@ footer strong{color:var(--ink)}
 <footer>
   <p><strong>Ministère du Condiment</strong> — Service du courrier, guichet n° 7</p>
   <p>Aucune adresse, aucun compte, aucun pigeon voyageur n'est conservé. Juste votre lettre.</p>
+  <p><a href="./confidentialite" style="color:var(--mustard);font-weight:700">Vie privée et mentions légales</a></p>
 </footer>
 
 <script type="module" src="/src/courrier.ts"></script>

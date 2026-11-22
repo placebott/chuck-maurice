@@ -42,6 +42,7 @@ const PAGES: Record<string, { path: string; image: string; game?: { name: string
   'olive-storm': { path: '/olive-storm', image: 'olive-storm.jpg', game: { name: 'Olive Storm', genre: 'Arcade' } },
   mauriiiiice: { path: '/mauriiiiice', image: 'mauriiiiice.jpg', game: { name: 'MAURIIIIICE !!!', genre: 'Arcade' } },
   courrier: { path: '/courrier', image: 'courrier.jpg' },
+  confidentialite: { path: '/confidentialite', image: 'accueil.jpg' },
 };
 /** Pages servies telles quelles depuis public/ (leurs balises sont écrites à la main). */
 const STATIC_PATHS = ['/grand-debarras/'];
@@ -179,6 +180,8 @@ export default defineConfig({
         mauriiiiice: fileURLToPath(new URL('./mauriiiiice.html', import.meta.url)),
         // Le Courrier des fans : livre d'or (lettres gardées dans Supabase, voir src/courrier.ts)
         courrier: fileURLToPath(new URL('./courrier.html', import.meta.url)),
+        // Vie privée et mentions légales (+ formulaire confidentiel vers le guichet du courrier)
+        confidentialite: fileURLToPath(new URL('./confidentialite.html', import.meta.url)),
       },
       output: { manualChunks: { phaser: ['phaser'] } },
     },

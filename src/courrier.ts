@@ -21,6 +21,21 @@ interface Lettre {
   mission: string | null;
   date: string;
   masque?: boolean;
+  prive?: boolean;
+}
+
+/** Jetons de retrait des lettres postées depuis ce navigateur : { numéro de lettre: jeton }. */
+const CLE_MES_LETTRES = 'cm_mes_lettres';
+function mesLettres(): Record<string, string> {
+  try { return JSON.parse(localStorage.getItem(CLE_MES_LETTRES) ?? '{}') ?? {}; } catch { return {}; }
+}
+function retenirLettre(id: number, retrait: string): void {
+  try { localStorage.setItem(CLE_MES_LETTRES, JSON.stringify({ ...mesLettres(), [id]: retrait })); } catch { /* tant pis */ }
+}
+function oublierLettre(id: number): void {
+  const m = mesLettres();
+  delete m[id];
+  try { localStorage.setItem(CLE_MES_LETTRES, JSON.stringify(m)); } catch { /* tant pis */ }
 }
 
 /* =====================================================================
@@ -74,6 +89,7 @@ const REFUS: Record<string, string> = {
   robot: 'Chuck a senti un robot. Chuck n’aime pas les robots.',
   'trop-vite': 'Trop rapide. Même Chuck met trois secondes à écrire une lettre.',
   jeton: 'Le guichet s’était assoupi. Réessayez, il est réveillé.',
+  retrait: 'Cette lettre n’est plus là, ou elle n’est pas à vous.',
   insulte: 'Ce genre de mots ne passe pas le guichet. Chuck a déchiré la lettre. En deux. D’un regard.',
   lien: 'Pas de liens. Chuck ne clique sur rien. Ce sont les liens qui cliquent sur Chuck.',
   pseudo: 'Il manque la signature. Chuck ne lit pas les lettres anonymes. Il les sent.',
@@ -157,7 +173,7 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, classe: string, texte
 
 /** Une lettre du mur. Tout le texte du visiteur passe par textContent : jamais de HTML. */
 function carteLettre(l: Lettre, neuve = false): HTMLElement {
-  const a = el('article', `lettre${neuve ? ' neuve' : ''}${l.masque ? ' cachee' : ''}`);
+  const a = el('article', `lettre${neuve ? ' neuve' : ''}${l.masque ? ' cachee' : ''}${l.prive ? ' privee' : ''}`);
   a.style.setProperty('--r', `${(((l.id * 37) % 9) - 4) * 0.45}deg`);
   const tampon = TAMPONS[(l.id * 7) % TAMPONS.length];
   const t = el('span', 'tampon', tampon.texte);
@@ -168,9 +184,31 @@ function carteLettre(l: Lettre, neuve = false): HTMLElement {
   signe.append(el('span', '', ` — ${quand(l.date)}`));
   a.append(signe);
   if (l.mission && MISSIONS[l.mission]) a.append(el('span', 'mission-tag', MISSIONS[l.mission]));
+  if (l.prive) {
+    // message confidentiel (page vie privée) : visible ici seulement par le gardien
+    a.append(el('p', 'reponse', 'Message confidentiel au Ministère — jamais publié. Répondre si la personne a laissé un moyen de contact.'));
+    return a;
+  }
   const rep = el('p', 'reponse');
   rep.append(el('b', '', 'Réponse du bureau de Chuck'), document.createTextNode(REPONSES[l.id % REPONSES.length]));
   a.append(rep);
+  const jetonRetrait = mesLettres()[l.id];
+  if (jetonRetrait) {
+    const b = el('button', 'garde retirer', 'Retirer ma lettre');
+    b.type = 'button';
+    b.addEventListener('click', async () => {
+      if (!confirm('Retirer définitivement votre lettre du mur ?')) return;
+      const r = await appel('POST', { action: 'retirer', id: l.id, retrait: jetonRetrait });
+      if (!r.ok && r.raison !== 'retrait') { avis(REFUS[r.raison ?? ''] ?? REFUS.panne, 'non'); return; }
+      oublierLettre(l.id);
+      a.remove();
+      total = Math.max(0, total - 1);
+      afficherCompteur();
+      avis('Lettre retirée. Chuck fera comme s’il ne l’avait jamais lue. Il l’a lue.', 'oui');
+      ui.vide.hidden = ui.mur.childElementCount > 0;
+    });
+    a.append(b);
+  }
   if (gardien) {
     const b = el('button', 'garde', l.masque ? 'Remettre' : 'Cacher');
     b.type = 'button';
@@ -260,6 +298,7 @@ async function poster(): Promise<void> {
     return;
   }
   const lettre = r.lettre as Lettre;
+  if (typeof r.retrait === 'string') retenirLettre(lettre.id, r.retrait);
   lettrePostee(lettre.mission);
   try { localStorage.setItem('cm_pseudo', pseudo); } catch { /* tant pis */ }
   total++;

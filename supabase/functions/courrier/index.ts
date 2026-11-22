@@ -4,6 +4,9 @@
 //                                          + un jeton de dépôt (horodaté, signé)
 //   POST /courrier { pseudo, message, mission, site, jeton }   dépose une lettre
 //   POST /courrier { action: "masquer" | "montrer", id, cle }  gardien : cache ou remet une lettre
+//   POST /courrier { ..., prive: true }                    message confidentiel au Ministère : jamais
+//                                                          publié, lisible seulement avec la clé du gardien
+//   POST /courrier { action: "retirer", id, retrait }      l'auteur retire sa lettre (jeton remis au dépôt)
 //
 // Anti-robots, sans compte ni captcha :
 //   - « site » est un champ invisible : s'il est rempli, c'est un robot ;
@@ -101,7 +104,7 @@ Deno.serve(async (req: Request) => {
       const limite = Math.min(50, Math.max(1, Number(url.searchParams.get('limite')) || 30));
       const avant = Number(url.searchParams.get('avant')) || 0;
       const gardien = egal(url.searchParams.get('cle') ?? '', cleGardien);
-      let q = db.from('courrier').select('id, pseudo, message, mission, created_at, masque').order('id', { ascending: false }).limit(limite + 1);
+      let q = db.from('courrier').select('id, pseudo, message, mission, created_at, masque, prive').order('id', { ascending: false }).limit(limite + 1);
       if (!gardien) q = q.eq('masque', false);
       if (avant > 0) q = q.lt('id', avant);
       const [{ data, error }, { count }] = await Promise.all([
@@ -110,7 +113,7 @@ Deno.serve(async (req: Request) => {
       ]);
       if (error) throw error;
       const lettres = (data ?? []).slice(0, limite).map((l) => ({
-        id: l.id, pseudo: l.pseudo, message: l.message, mission: l.mission, date: l.created_at, ...(gardien ? { masque: l.masque } : {}),
+        id: l.id, pseudo: l.pseudo, message: l.message, mission: l.mission, date: l.created_at, ...(gardien ? { masque: l.masque, prive: l.prive } : {}),
       }));
       return json({ ok: true, lettres, total: count ?? 0, suite: (data ?? []).length > limite, jeton: await nouveauJeton(sel), ...(gardien ? { gardien: true } : {}) });
     }
@@ -128,8 +131,20 @@ Deno.serve(async (req: Request) => {
       if (!egal(typeof corps.cle === 'string' ? corps.cle : '', cleGardien)) return refus('cle', 403);
       const id = Number(corps.id);
       if (!Number.isInteger(id)) return refus('format');
-      const { error } = await db.from('courrier').update({ masque: corps.action === 'masquer' }).eq('id', id);
+      // un message confidentiel reste caché, quoi qu'il arrive
+      const { error } = await db.from('courrier').update({ masque: corps.action === 'masquer' }).eq('id', id).eq('prive', false);
       if (error) throw error;
+      return json({ ok: true });
+    }
+
+    // --- l'auteur retire sa lettre (droit à l'effacement, sans rien demander à personne)
+    if (corps.action === 'retirer') {
+      const id = Number(corps.id);
+      if (!Number.isInteger(id) || typeof corps.retrait !== 'string' || corps.retrait.length !== 32) return refus('format');
+      const empreinteRetrait = await hmac(sel, `retrait:${corps.retrait}`);
+      const { data, error } = await db.from('courrier').delete().eq('id', id).eq('retrait', empreinteRetrait).select('id');
+      if (error) throw error;
+      if (!data?.length) return refus('retrait', 404);
       return json({ ok: true });
     }
 
@@ -141,28 +156,40 @@ Deno.serve(async (req: Request) => {
 
     let pseudo = nettoyer(corps.pseudo);
     let message = nettoyer(corps.message);
-    const mission = typeof corps.mission === 'string' && MISSIONS.has(corps.mission) ? corps.mission : null;
+    const prive = corps.prive === true;
+    const maxMessage = prive ? 1000 : 280;
+    const mission = !prive && typeof corps.mission === 'string' && MISSIONS.has(corps.mission) ? corps.mission : null;
     if ([...pseudo].length < 1 || [...pseudo].length > 24) return refus('pseudo');
-    if ([...message].length < 2 || [...message].length > 280) return refus('message');
+    if ([...message].length < 2 || [...message].length > maxMessage) return refus('message');
     if (LIEN.test(message) || LIEN.test(pseudo)) return refus('lien');
-    const graine = [...message].reduce((n, c) => n + c.codePointAt(0)!, 0);
-    const vPseudo = filtrer(pseudo, graine);
-    const vMessage = filtrer(message, graine + 3);
-    if (vPseudo.interdit || vMessage.interdit) return refus('insulte', 403);
-    pseudo = vPseudo.texte;
-    message = vMessage.texte;
-    const remplaces = vPseudo.remplaces + vMessage.remplaces;
-    if ([...pseudo].length > 24) return refus('pseudo');
-    if ([...message].length > 280) return refus('message');
+    let remplaces = 0;
+    if (!prive) {
+      // lettres publiques seulement : un message confidentiel arrive tel quel au Ministère
+      const graine = [...message].reduce((n, c) => n + c.codePointAt(0)!, 0);
+      const vPseudo = filtrer(pseudo, graine);
+      const vMessage = filtrer(message, graine + 3);
+      if (vPseudo.interdit || vMessage.interdit) return refus('insulte', 403);
+      pseudo = vPseudo.texte;
+      message = vMessage.texte;
+      remplaces = vPseudo.remplaces + vMessage.remplaces;
+      if ([...pseudo].length > 24) return refus('pseudo');
+      if ([...message].length > 280) return refus('message');
+    }
+    // jeton de retrait : remis à l'auteur d'une lettre publique, seule son empreinte est gardée
+    const retrait = prive ? null : hex(crypto.getRandomValues(new Uint8Array(16)).buffer);
 
     // adresse posée par Cloudflare (en amont de Supabase) : un client ne peut pas la falsifier
     // (vérifié le 21/11/2026 : un X-Forwarded-For inventé est écrasé avant d'arriver ici)
     const ip = req.headers.get('cf-connecting-ip')?.trim() || (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'inconnue';
     const empreinte = (await hmac(sel, `ip:${ip}`)).slice(0, 32);
-    const { data, error } = await db.rpc('courrier_poster', { p_pseudo: pseudo, p_message: message, p_mission: mission, p_empreinte: empreinte });
+    const { data, error } = await db.rpc('courrier_poster', {
+      p_pseudo: pseudo, p_message: message, p_mission: mission, p_empreinte: empreinte,
+      p_prive: prive, p_retrait: retrait ? await hmac(sel, `retrait:${retrait}`) : null,
+    });
     if (error) throw error;
     if (!data?.ok) return refus(data?.raison ?? 'erreur', 429);
-    return json({ ok: true, remplaces, lettre: { id: data.id, pseudo, message, mission, date: data.date } });
+    if (prive) return json({ ok: true, prive: true });
+    return json({ ok: true, remplaces, retrait, lettre: { id: data.id, pseudo, message, mission, date: data.date } });
   } catch (e) {
     console.error('courrier', e);
     return refus('panne', 500);

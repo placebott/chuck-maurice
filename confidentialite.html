@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chuck Maurice — Vie privée et mentions légales</title>
+<meta name="description" content="Pas de cookie, pas de pisteur, pas de publicité. Ce que chuckmaurice.com garde (presque rien), où, combien de temps, et comment tout effacer.">
+<meta name="theme-color" content="#120a14">
+<meta property="og:title" content="Chuck Maurice — Vie privée et mentions légales">
+<meta property="og:description" content="Pas de cookie. Chuck n'a pas besoin de vous suivre : il sait déjà où vous êtes.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="./assets/sprites/jar_closed.png">
+<link rel="preload" href="/fonts/bowlby-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/polices.css">
+<style>
+:root{
+  --bg:#120a14; --plum:#24122a; --plum2:#341a3c;
+  --ink:#f6ecd9; --dim:#b9a8bd; --paper:#f6ecd9; --encre:#2a1830;
+  --green:#a4d83c; --mustard:#ffc928; --red:#ff4338; --bleu:#2f5fd0;
+  --display:"Bowlby One","Arial Black",Impact,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--mustard)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--mustard);outline-offset:3px}
+[hidden]{display:none!important}
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.25rem}
+.back{font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;border:2px solid var(--ink);padding:.35rem .8rem;color:var(--ink)}
+.back:hover{background:var(--ink);color:var(--bg)}
+header{text-align:center;padding:2rem 1.25rem 2.5rem}
+.stamp{display:inline-block;border:3px solid var(--green);color:var(--green);padding:.35rem .8rem;font-weight:700;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;transform:rotate(-2deg);margin-bottom:1.2rem}
+h1{font-family:var(--display);font-weight:400;text-transform:uppercase;line-height:.95;font-size:clamp(2rem,8vw,4.6rem);color:var(--mustard);text-shadow:.045em .045em 0 var(--red),.09em .09em 0 #000}
+.chapo{max-width:40rem;margin:1.2rem auto 0;color:var(--ink)}
+main{max-width:860px;margin:0 auto;padding:0 1.25rem 3rem}
+.bref{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:3rem}
+.bref div{background:var(--plum);border:3px solid #000;box-shadow:6px 6px 0 #000;padding:1rem;text-align:center}
+.bref b{display:block;font-family:var(--display);font-weight:400;font-size:1.6rem;color:var(--green);line-height:1.1}
+.bref span{font-size:.8rem;color:var(--dim)}
+section{margin-bottom:2.6rem}
+h2{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:clamp(1.25rem,3.6vw,1.7rem);line-height:1.1;margin-bottom:.8rem}
+h2 small{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--green);margin-bottom:.35rem;font-weight:700}
+p,li{font-size:.9rem;color:var(--dim)}
+p+p{margin-top:.7rem}
+strong{color:var(--ink)}
+ul{padding-left:1.2rem;display:grid;gap:.4rem;margin:.6rem 0}
+table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.8rem}
+th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid rgba(246,236,217,.18);vertical-align:top;color:var(--dim)}
+th{color:var(--ink);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
+td code{color:var(--ink);font-size:.75rem;overflow-wrap:anywhere}
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:3px solid #000;background:var(--mustard);color:#120a14;font-family:var(--display);font-size:.95rem;text-transform:uppercase;padding:.7rem 1.1rem;box-shadow:5px 5px 0 #000;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 #000}
+.btn[disabled]{opacity:.55;cursor:wait}
+.btn.rouge{background:var(--red);color:#fff}
+.retour{margin-top:.9rem;font-size:.85rem;font-weight:700;min-height:1.4em}
+.retour.oui{color:var(--green)}
+.retour.non{color:var(--red)}
+.carte{background:var(--paper);color:var(--encre);border:3px solid #000;box-shadow:8px 8px 0 #000;padding:1.2rem;margin-top:1rem}
+.carte label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin:.8rem 0 .25rem;color:var(--encre)}
+.carte input[type=text],.carte textarea{width:100%;background:transparent;border:0;border-bottom:2px solid var(--encre);padding:.35rem .1rem;color:var(--encre);font-weight:700}
+.carte textarea{min-height:7rem;resize:vertical;border:2px solid var(--encre);padding:.5rem;font-weight:400}
+.carte .aide{font-size:.75rem;color:var(--encre);opacity:.75;margin-top:.3rem}
+.carte .retour.oui{color:#2e6b0c}
+.carte .retour.non{color:#c01f15}
+.piege{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+footer{border-top:3px solid #000;background:var(--plum);text-align:center;padding:2rem 1.25rem calc(2rem + env(safe-area-inset-bottom));font-size:.75rem;color:var(--dim)}
+</style>
+</head>
+<body>
+
+<div class="top"><a class="back" href="./">← Tous les jeux</a></div>
+
+<header>
+  <div class="stamp">Ministère du Condiment — Bureau de la discrétion</div>
+  <h1>Vie privée et<br>mentions légales</h1>
+  <p class="chapo">Chuck n'a pas besoin de vous suivre : il sait déjà où vous êtes. Le site, lui, ne garde presque rien. Voici exactement quoi, où et combien de temps.</p>
+</header>
+
+<main>
+  <div class="bref" aria-label="En bref">
+    <div><b>0 cookie</b><span>sur tout le site, jeux compris</span></div>
+    <div><b>0 pub</b><span>ni pisteur, ni revente</span></div>
+    <div><b>0 compte</b><span>aucune inscription, nulle part</span></div>
+    <div><b>0 Google</b><span>polices hébergées ici, pas chez eux</span></div>
+  </div>
+
+  <section>
+    <h2><small>Article 1</small>Ce que votre navigateur garde</h2>
+    <p>Pour que vos parties ne repartent pas de zéro, le site range quelques informations <strong>dans votre navigateur, sur votre appareil</strong> (le « stockage local »). Elles ne nous sont jamais envoyées. Ce ne sont pas des cookies, et comme elles servent seulement au fonctionnement que vous demandez (sauvegarder votre partie), elles ne nécessitent pas de consentement.</p>
+    <table>
+      <thead><tr><th>Ce qui est gardé</th><th>Pourquoi</th></tr></thead>
+      <tbody>
+        <tr><td><code>chuck-maurice:…</code></td><td>Records, médailles et réglage du son des missions 001 à 004.</td></tr>
+        <tr><td><code>grand-debarras.…</code></td><td>Progression, étoiles, jetons et niveau en cours du Grand Débarras.</td></tr>
+        <tr><td><code>cm_joues</code></td><td>La pastille « ✓ Joué » sur l'accueil.</td></tr>
+        <tr><td><code>cm_pseudo</code></td><td>Votre signature, pré-remplie au Courrier des fans.</td></tr>
+        <tr><td><code>cm_mes_lettres</code></td><td>La clé qui vous permet de retirer vos propres lettres.</td></tr>
+      </tbody>
+    </table>
+    <p>Tout cela reste chez vous jusqu'à ce que vous l'effaciez. Un bouton suffit :</p>
+    <p><button class="btn rouge" id="effacer" type="button">🧹 Effacer mes données de ce site</button></p>
+    <p class="retour" id="effacer-retour" role="status" aria-live="polite"></p>
+  </section>
+
+  <section>
+    <h2><small>Article 2</small>Mesure d'audience</h2>
+    <p>Pour savoir quels jeux plaisent, le site utilise <strong>Vercel Web Analytics</strong>, sans cookie. Vercel ne vous reconnaît pas d'un jour à l'autre : le visiteur est représenté par une empreinte calculée à partir de la requête, valable une seule journée puis remise à zéro, ce qui empêche de vous suivre entre différents jours ou différents sites. Le Ministère ne voit que des totaux : pages vues, pays, type d'appareil, site d'où vous venez, et quelques événements de jeu (partie lancée, partie terminée, partage).</p>
+  </section>
+
+  <section>
+    <h2><small>Article 3</small>Le Courrier des fans</h2>
+    <ul>
+      <li><strong>Ce qui est publié</strong> : la signature et le message que vous écrivez, la mission préférée si vous la choisissez, la date. Rien d'autre. N'y mettez pas d'informations personnelles : le mur est public.</li>
+      <li><strong>Contre les robots</strong> : votre adresse IP est transformée en une empreinte illisible (on ne peut pas retrouver l'adresse à partir de l'empreinte), conservée 24 heures au plus, uniquement pour limiter le nombre de lettres par expéditeur. L'adresse elle-même n'est jamais enregistrée.</li>
+      <li><strong>Durée</strong> : une lettre reste sur le mur tant que vous ne la retirez pas.</li>
+      <li><strong>Retirer sa lettre</strong> : un bouton « Retirer ma lettre » apparaît sous la vôtre, sur l'appareil qui l'a postée. Depuis un autre appareil, ou si vous avez effacé vos données, écrivez au Ministère (article 6).</li>
+      <li><strong>Où</strong> : les lettres sont stockées chez Supabase, sur des serveurs situés à Paris.</li>
+      <li><strong>Pourquoi</strong> : publier votre lettre parce que vous l'avez demandé ; l'empreinte anti-robots relève de l'intérêt légitime du site à ne pas être envahi de spam.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><small>Article 4</small>Partage sur les réseaux</h2>
+    <p>Les boutons Facebook, X et WhatsApp sont de simples liens. Aucun script de ces réseaux n'est chargé sur le site : ils ne savent rien de votre visite tant que vous ne cliquez pas. Si vous cliquez, vous arrivez chez eux, et leurs propres règles s'appliquent.</p>
+  </section>
+
+  <section>
+    <h2><small>Article 5</small>Hébergement</h2>
+    <p>Le site est hébergé par <strong>Vercel Inc.</strong>, 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis (privacy@vercel.com). Comme tout hébergeur, Vercel traite techniquement l'adresse IP des visiteurs pour leur envoyer les pages. Vercel est certifié au cadre de protection des données UE–États-Unis (EU-U.S. Data Privacy Framework), qui encadre ces transferts.</p>
+    <p>Boss Squadron (bosssquadron.chuckmaurice.com) est hébergé de la même façon et ne dépose rien sur votre appareil.</p>
+  </section>
+
+  <section>
+    <h2><small>Article 6</small>Vos droits, et écrire au Ministère en privé</h2>
+    <p>Vous pouvez demander l'accès à vos données, leur correction ou leur suppression, et vous opposer à leur traitement. Écrivez ci-dessous : ce message est <strong>confidentiel</strong>, il n'est jamais publié et seul l'éditeur du site peut le lire. Pour qu'il puisse vous répondre, laissez un moyen de contact (e-mail, par exemple) dans le message.</p>
+    <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez saisir la <a href="https://www.cnil.fr/fr/plaintes" rel="noopener">CNIL</a>.</p>
+    <form class="carte" id="prive" novalidate>
+      <label for="p-pseudo">Votre nom ou pseudo</label>
+      <input type="text" id="p-pseudo" maxlength="24" required autocomplete="nickname">
+      <label for="p-message">Votre demande</label>
+      <textarea id="p-message" maxlength="1000" required placeholder="Exemple : merci de retirer ma lettre n° 00012 signée « Léa ». Pour me répondre : …"></textarea>
+      <p class="aide">1000 caractères au plus. Les liens ne passent pas ; écrivez une adresse e-mail en toutes lettres si besoin (« lea arobase exemple point fr »).</p>
+      <div class="piege" aria-hidden="true"><label for="p-site">Ne pas remplir</label><input type="text" id="p-site" tabindex="-1" autocomplete="off"></div>
+      <p style="margin-top:1rem"><button class="btn" id="p-envoyer" type="submit">✉️ Envoyer au Ministère</button></p>
+      <p class="retour" id="p-retour" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section>
+    <h2><small>Article 7</small>Mentions légales</h2>
+    <p><strong>Éditeur</strong> : chuckmaurice.com est un site personnel et non commercial, édité par un particulier. Conformément à l'article 6, III, 2 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique, l'éditeur a choisi de ne pas publier son identité ; ses coordonnées ont été communiquées à l'hébergeur. Pour le contacter, utilisez le formulaire confidentiel de l'article 6.</p>
+    <p><strong>Hébergeur</strong> : Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis.</p>
+    <p><strong>Personnages</strong> : Chuck Maurice, Jean-Mi, le boxer et le Ministère du Condiment sont des personnages de fiction. Toute ressemblance avec un bocal existant serait purement fortuite.</p>
+    <p><strong>Polices</strong> : Bowlby One, Space Mono et Caveat, sous licence SIL Open Font License 1.1, hébergées sur le site.</p>
+  </section>
+</main>
+
+<footer>Dernière mise à jour : 22 novembre 2026 — Ministère du Condiment, Bureau de la discrétion</footer>
+
+<script type="module" src="/src/confidentialite.ts"></script>
+</body>
+</html>
