@@ -1,9 +1,32 @@
 {
   "cleanUrls": true,
   "redirects": [
-    { "source": "/grand-debarras", "destination": "/grand-debarras/", "permanent": true },
-    { "source": "/essai-gd-315be9e615", "destination": "/grand-debarras/", "permanent": true },
-    { "source": "/essai-gd-315be9e615/", "destination": "/grand-debarras/", "permanent": true },
-    { "source": "/essai-gd-315be9e615/:path*", "destination": "/grand-debarras/:path*", "permanent": true }
-  ]
+    {
+      "source": "/grand-debarras",
+      "destination": "/grand-debarras/",
+      "permanent": true
+    },
+    {
+      "source": "/essai-gd-315be9e615",
+      "destination": "/grand-debarras/",
+      "permanent": true
+    },
+    {
+      "source": "/essai-gd-315be9e615/",
+      "destination": "/grand-debarras/",
+      "permanent": true
+    },
+    {
+      "source": "/essai-gd-315be9e615/:path*",
+      "destination": "/grand-debarras/:path*",
+      "permanent": true
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "*": false,
+      "main": true
+    }
+  }
 }
