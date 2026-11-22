@@ -7,6 +7,14 @@
 import './analytics';
 
 const GUICHET = 'https://vyylxdcqbxyhqusuwshf.supabase.co/functions/v1/courrier';
+// Adresse de contact reconstituée dans le navigateur : les robots qui ramassent les adresses
+// pour le spam lisent le code de la page, où elle n'apparaît pas en clair.
+for (const a of document.querySelectorAll<HTMLAnchorElement>('a.courriel')) {
+  const adresse = `${a.dataset.u}@${a.dataset.d}`;
+  a.href = `mailto:${adresse}`;
+  a.textContent = adresse;
+}
+
 const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
 
 // ------------------------------------------------------------------ effacer ses données
